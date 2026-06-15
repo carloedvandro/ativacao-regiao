@@ -8,10 +8,10 @@
 *{box-sizing:border-box}
 body{
   margin:0;
-  background:#f7f0fb;
+  background:#fff;
   font-family:Inter,Arial,sans-serif;
   padding:20px;
-  color:#21004B;
+  color:#111;
 }
 .preview{
   width:min(1080px,100%);
@@ -44,7 +44,7 @@ body{
   left:4%;
   top:4%;
   z-index:7;
-  background:rgba(238,253,255,.92);
+  background:transparent;
   padding:8px 12px;
   border-radius:10px;
 }
@@ -128,7 +128,7 @@ body{
 .mask{
   position:absolute;
   z-index:4;
-  background:#eefdff;
+  background:#fff;
   border-radius:6px;
 }
 .m-sudeste {left:5%;  top:13%;  width:21%; height:16%}
@@ -138,15 +138,12 @@ body{
 .m-centro  {right:6%; top:67%;  width:23%; height:16%}
 .m-total   {left:5%;  top:67%;  width:21%; height:16%}
 /* Estados de seleção da região */
-.info.dim{opacity:.25}
-.info.active{
-  opacity:1;
-  text-shadow:0 0 6px currentColor, 0 0 14px currentColor, 0 0 22px currentColor;
-}
+.info.dim{opacity:.35}
+.info.active{opacity:1;}
 .i-sudeste{left:6.2%;top:14.4%;width:18%;text-align:right;color:#5b18e8}
 .i-sul{right:8%;top:15.2%;width:20%;color:#ff1596}
 .i-norte{left:6.2%;top:42.5%;width:18%;text-align:right;color:#2aaec0}
-.i-nordeste{right:8%;top:40.2%;width:20%;color:#7d552f}
+.i-nordeste{right:8%;top:40.2%;width:20%;color:#28a745}
 .i-centro{right:8%;top:68.2%;width:20%;color:#ff8a14}
 .i-total{left:6.2%;top:68.2%;width:18%;text-align:right;color:#b523f5}
 /* Hotspots invisíveis nas fatias */
@@ -258,7 +255,7 @@ const regioes = [
   {nome:"Sudeste", total:14, cor:"#5b18e8", percentual:"30,4%", planos:[["SmartVoz 50GB",12],["SmartVoz 80GB",2]]},
   {nome:"Sul", total:13, cor:"#ff1596", percentual:"28,3%", planos:[["SmartVoz 50GB",13]]},
   {nome:"Norte", total:8, cor:"#2aaec0", percentual:"17,4%", planos:[["SmartVoz 50GB",8]]},
-  {nome:"Nordeste", total:7, cor:"#7d552f", percentual:"15,2%", planos:[["SmartVoz 50GB",7]]},
+  {nome:"Nordeste", total:7, cor:"#28a745", percentual:"15,2%", planos:[["SmartVoz 50GB",7]]},
   {nome:"Centro-Oeste", total:4, cor:"#ff8a14", percentual:"8,7%", planos:[["SmartVoz 50GB",3],["SmartVoz 80GB",1]]},
   {nome:"Total geral", total:46, cor:"#b523f5", percentual:"100%", planos:[["SmartVoz 50GB",43],["SmartVoz 80GB",3]]}
 ];

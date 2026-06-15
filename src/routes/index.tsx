@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import DistribuicaoRegiao from "@/components/DistribuicaoRegiao";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -14,6 +14,10 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  useEffect(() => {
+    window.location.replace("/distribuicao-regiao.html");
+  }, []);
+
   return (
     <main
       style={{
@@ -29,7 +33,9 @@ function Index() {
       <h1 style={{ position: "absolute", left: "-9999px" }}>
         Distribuição por Região — SmartVoz
       </h1>
-      <DistribuicaoRegiao />
+      <p style={{ color: "#21004B", fontFamily: "Inter, Arial, sans-serif" }}>
+        Carregando…
+      </p>
     </main>
   );
 }

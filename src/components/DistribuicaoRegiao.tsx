@@ -1,46 +1,31 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  BarChart3,
-  Clock3,
-  Download,
-  RefreshCw,
-  Trophy,
-  ChevronDown,
-  Check,
-} from "lucide-react";
+import { BarChart3, Clock3, Download, Trophy, ChevronDown, Check } from "lucide-react";
 import "./DistribuicaoRegiao.css";
 
-type EstadoItem = {
-  uf: string;
-  nome: string;
-  ativacoes: number;
-  variacao: number;
-};
+type EstadoItem = { uf: string; nome: string; ativacoes: number; variacao: number };
 
 type RegiaoItem = {
   id: string;
+  sliceClass: string;
   nome: string;
   cor: string;
   percentual: number;
   ativacoes: number;
   variacao: number;
   descricao: string;
-  sliceClass: string;
-  calloutClass: string;
   estados: EstadoItem[];
 };
 
 const REGIOES: RegiaoItem[] = [
   {
     id: "sudeste",
+    sliceClass: "slice-sudeste",
     nome: "Sudeste",
     cor: "#079B1E",
     percentual: 30.4,
     ativacoes: 14212,
     variacao: 8.7,
     descricao: "Total de ativações realizadas na região Sudeste no período selecionado.",
-    sliceClass: "slice-sudeste",
-    calloutClass: "callout-sudeste",
     estados: [
       { uf: "SP", nome: "São Paulo", ativacoes: 7836, variacao: 9.5 },
       { uf: "MG", nome: "Minas Gerais", ativacoes: 3125, variacao: 7.1 },
@@ -50,14 +35,13 @@ const REGIOES: RegiaoItem[] = [
   },
   {
     id: "sul",
+    sliceClass: "slice-sul",
     nome: "Sul",
     cor: "#F01483",
     percentual: 28.3,
     ativacoes: 13225,
     variacao: 11.3,
     descricao: "Total de ativações realizadas na região Sul no período selecionado.",
-    sliceClass: "slice-sul",
-    calloutClass: "callout-sul",
     estados: [
       { uf: "RS", nome: "Rio Grande do Sul", ativacoes: 6102, variacao: 10.9 },
       { uf: "PR", nome: "Paraná", ativacoes: 4120, variacao: 8.2 },
@@ -66,14 +50,13 @@ const REGIOES: RegiaoItem[] = [
   },
   {
     id: "norte",
+    sliceClass: "slice-norte",
     nome: "Norte",
     cor: "#5B18E8",
     percentual: 15.2,
     ativacoes: 7114,
     variacao: 6.1,
     descricao: "Total de ativações realizadas na região Norte no período selecionado.",
-    sliceClass: "slice-norte",
-    calloutClass: "callout-norte",
     estados: [
       { uf: "AM", nome: "Amazonas", ativacoes: 3120, variacao: 5.8 },
       { uf: "PA", nome: "Pará", ativacoes: 2380, variacao: 4.8 },
@@ -83,14 +66,13 @@ const REGIOES: RegiaoItem[] = [
   },
   {
     id: "centro-oeste",
+    sliceClass: "slice-centro",
     nome: "Centro-Oeste",
     cor: "#14B8A6",
     percentual: 10.9,
     ativacoes: 5098,
     variacao: 9.4,
     descricao: "Total de ativações realizadas na região Centro-Oeste no período selecionado.",
-    sliceClass: "slice-centro",
-    calloutClass: "callout-centro-oeste",
     estados: [
       { uf: "GO", nome: "Goiás", ativacoes: 2350, variacao: 8.4 },
       { uf: "DF", nome: "Distrito Federal", ativacoes: 1248, variacao: 6.2 },
@@ -100,14 +82,13 @@ const REGIOES: RegiaoItem[] = [
   },
   {
     id: "nordeste",
+    sliceClass: "slice-nordeste",
     nome: "Nordeste",
     cor: "#B523F5",
     percentual: 8.7,
     ativacoes: 4058,
     variacao: -2.3,
     descricao: "Total de ativações realizadas na região Nordeste no período selecionado.",
-    sliceClass: "slice-nordeste",
-    calloutClass: "callout-nordeste",
     estados: [
       { uf: "BA", nome: "Bahia", ativacoes: 1320, variacao: 2.2 },
       { uf: "PE", nome: "Pernambuco", ativacoes: 890, variacao: -1.4 },
@@ -118,14 +99,13 @@ const REGIOES: RegiaoItem[] = [
   },
   {
     id: "outros",
+    sliceClass: "slice-outros",
     nome: "Outros / Exterior",
     cor: "#FF8A00",
     percentual: 6.5,
     ativacoes: 3075,
     variacao: 4.8,
     descricao: "Total de ativações realizadas em Outros / Exterior no período selecionado.",
-    sliceClass: "slice-outros",
-    calloutClass: "callout-outros",
     estados: [
       { uf: "EXT", nome: "Exterior", ativacoes: 1850, variacao: 3.6 },
       { uf: "OUT", nome: "Outros", ativacoes: 1225, variacao: 2.7 },
@@ -146,9 +126,9 @@ function formatPercent(value: number) {
 function Variation({ value }: { value: number }) {
   const positive = value >= 0;
   return (
-    <em className={`variation ${positive ? "up" : "down"}`}>
+    <span className={`variation ${positive ? "up" : "down"}`}>
       {positive ? "▲" : "▼"} {formatPercent(Math.abs(value))}
-    </em>
+    </span>
   );
 }
 
@@ -171,32 +151,29 @@ export default function DistribuicaoRegiao() {
 
   const selectedRegion = useMemo(
     () => REGIOES.find((item) => item.id === selectedId) ?? null,
-    [selectedId]
+    [selectedId],
   );
 
   const leader = useMemo(
     () => [...REGIOES].sort((a, b) => b.ativacoes - a.ativacoes)[0],
-    []
+    [],
   );
 
   const sortedRegions = useMemo(() => {
     return [...REGIOES].sort((a, b) =>
-      sortRegions === "participacao"
-        ? b.percentual - a.percentual
-        : b.ativacoes - a.ativacoes
+      sortRegions === "participacao" ? b.percentual - a.percentual : b.ativacoes - a.ativacoes,
     );
   }, [sortRegions]);
 
-  const tableRegion = selectedRegion ?? leader;
-
   const statesToShow = useMemo(() => {
-    const list = tableRegion.estados;
+    const list = selectedRegion ? selectedRegion.estados : leader.estados;
     return [...list].sort((a, b) =>
-      sortStates === "ativacoes" ? b.ativacoes - a.ativacoes : b.variacao - a.variacao
+      sortStates === "ativacoes" ? b.ativacoes - a.ativacoes : b.variacao - a.variacao,
     );
-  }, [tableRegion, sortStates]);
+  }, [leader.estados, selectedRegion, sortStates]);
 
   const selectLabel = selectedRegion?.nome ?? "Todas as regiões";
+  const activeColor = selectedRegion?.cor ?? "#6A0DAD";
 
   function selectRegion(id: string) {
     setSelectedId(id);
@@ -233,31 +210,31 @@ export default function DistribuicaoRegiao() {
           Atualização em tempo real
         </div>
 
-        <header className="region-header">
+        <div className="region-header">
           <h1>Distribuição por Região</h1>
           <p>Ativações SmartVoz por região</p>
 
           <div className="region-select">
             <button
-              type="button"
               className="region-select-button"
-              onClick={() => setOpen((v) => !v)}
+              onClick={() => setOpen((value) => !value)}
+              type="button"
             >
-              <BarChart3 size={22} color="#6a0dad" />
-              <span>{selectLabel}</span>
-              <ChevronDown size={20} className={open ? "rotate" : ""} />
+              <span className="menu-color" style={{ background: activeColor }} />
+              {selectLabel}
+              <ChevronDown className={open ? "rotate" : ""} size={20} />
             </button>
 
             {open && (
-              <div className="region-menu" role="listbox">
+              <div className="region-menu">
                 <button
                   type="button"
                   className={selectedId === "all" ? "active" : ""}
                   onClick={() => selectRegion("all")}
                 >
-                  <BarChart3 size={18} color="#6a0dad" />
-                  <span>Todas as regiões</span>
-                  {selectedId === "all" && <Check size={18} />}
+                  <span className="menu-color" style={{ background: "#6A0DAD" }} />
+                  Todas as regiões
+                  {selectedId === "all" && <Check size={16} />}
                 </button>
                 {REGIOES.map((item) => (
                   <button
@@ -266,24 +243,23 @@ export default function DistribuicaoRegiao() {
                     className={selectedId === item.id ? "active" : ""}
                     onClick={() => selectRegion(item.id)}
                   >
-                    <i className="menu-color" style={{ background: item.cor }} />
-                    <span>{item.nome}</span>
-                    {selectedId === item.id && <Check size={18} />}
+                    <span className="menu-color" style={{ background: item.cor }} />
+                    {item.nome}
+                    {selectedId === item.id && <Check size={16} />}
                   </button>
                 ))}
               </div>
             )}
           </div>
-        </header>
+        </div>
 
         <div className="chart-zone">
           <div className={`donut-3d ${pulse ? "pulse" : ""}`}>
-            <div className="slice slice-norte"><span>15,2%</span></div>
-            <div className="slice slice-sul"><span>28,3%</span></div>
-            <div className="slice slice-sudeste"><span>30,4%</span></div>
-            <div className="slice slice-outros"><span>6,5%</span></div>
-            <div className="slice slice-nordeste"><span>8,7%</span></div>
-            <div className="slice slice-centro"><span>10,9%</span></div>
+            {REGIOES.map((region) => (
+              <div key={region.id} className={`slice ${region.sliceClass}`}>
+                <span>{formatPercent(region.percentual)}</span>
+              </div>
+            ))}
             <div className="donut-hole" />
           </div>
 
@@ -291,39 +267,36 @@ export default function DistribuicaoRegiao() {
             <button
               key={region.id}
               type="button"
-              className={`callout ${region.calloutClass} ${
-                selectedId === region.id ? "selected" : ""
-              }`}
-              onClick={() => selectRegion(region.id)}
+              className={`callout callout-${region.id} ${selectedId === region.id ? "selected" : ""}`}
               style={{ color: region.cor }}
+              onClick={() => selectRegion(region.id)}
             >
-              <strong>{region.nome}</strong>
+              <strong>{formatPercent(region.percentual)}</strong>
+              <span>{region.nome}</span>
               <span>{region.descricao}</span>
             </button>
           ))}
 
           <div className="total-pill">
-            <BarChart3 size={20} color="#6a0dad" />
-            <span>Total de ativações</span>
+            <BarChart3 size={20} />
+            Total de ativações
             <strong>{formatNumber(TOTAL_ATIVACOES)}</strong>
           </div>
         </div>
 
         <div className="summary-grid">
           <div className="summary-card">
-            <div className="summary-icon"><BarChart3 size={28} /></div>
+            <div className="summary-icon"><BarChart3 size={26} /></div>
             <div>
               <span>Total de ativações</span>
               <strong>{formatNumber(TOTAL_ATIVACOES)}</strong>
               <small>Período selecionado</small>
-              <em>▲ 12,5% <span style={{ color: "#667085", fontWeight: 600 }}>vs período anterior</span></em>
+              <em>▲ 7,8% vs período anterior</em>
             </div>
           </div>
 
           <div className="summary-card">
-            <div className="summary-icon" style={{ background: "#e8f7ec", color: "#079b1e" }}>
-              <Trophy size={28} />
-            </div>
+            <div className="summary-icon"><Trophy size={26} /></div>
             <div>
               <span>Região líder</span>
               <strong>{leader.nome}</strong>
@@ -333,16 +306,12 @@ export default function DistribuicaoRegiao() {
           </div>
 
           <div className="summary-card">
-            <div className="summary-icon" style={{ background: "#e8f1ff", color: "#1f6feb" }}>
-              <Clock3 size={28} />
-            </div>
+            <div className="summary-icon"><Clock3 size={26} /></div>
             <div>
               <span>Atualização</span>
               <strong>Em tempo real</strong>
               <small>Dados atualizados</small>
-              <em className="now" style={{ background: "transparent", color: "#008c4a", padding: 0 }}>
-                Agora mesmo
-              </em>
+              <em className="now">Agora mesmo</em>
             </div>
           </div>
         </div>
@@ -350,12 +319,14 @@ export default function DistribuicaoRegiao() {
         <div className="tables-grid">
           <div className="data-table-card">
             <div className="table-head">
-              <h2><strong>Regiões</strong></h2>
+              <h2>Regiões</h2>
               <label>
                 Ordenar por
                 <select
                   value={sortRegions}
-                  onChange={(e) => setSortRegions(e.target.value as "participacao" | "ativacoes")}
+                  onChange={(event) =>
+                    setSortRegions(event.target.value as "participacao" | "ativacoes")
+                  }
                 >
                   <option value="participacao">Participação</option>
                   <option value="ativacoes">Ativações</option>
@@ -384,8 +355,8 @@ export default function DistribuicaoRegiao() {
                 <span>{formatNumber(item.ativacoes)}</span>
                 <span>
                   <b>{formatPercent(item.percentual)}</b>
-                  <em className="bar-track">
-                    <i className="bar-fill" style={{ width: `${item.percentual * 2.5}%`, background: item.cor }} />
+                  <em className="bar">
+                    <i style={{ width: `${item.percentual * 2}%`, background: item.cor }} />
                   </em>
                 </span>
                 <Variation value={item.variacao} />
@@ -397,12 +368,16 @@ export default function DistribuicaoRegiao() {
 
           <div className="data-table-card">
             <div className="table-head">
-              <h2>Estados da região <strong>{tableRegion.nome}</strong></h2>
+              <h2>
+                Estados da região <strong>{selectedRegion?.nome ?? leader.nome}</strong>
+              </h2>
               <label>
                 Ordenar por
                 <select
                   value={sortStates}
-                  onChange={(e) => setSortStates(e.target.value as "ativacoes" | "variacao")}
+                  onChange={(event) =>
+                    setSortStates(event.target.value as "ativacoes" | "variacao")
+                  }
                 >
                   <option value="ativacoes">Ativações</option>
                   <option value="variacao">Variação</option>
@@ -418,18 +393,20 @@ export default function DistribuicaoRegiao() {
             </div>
 
             {statesToShow.map((item) => {
-              const percent = (item.ativacoes / tableRegion.ativacoes) * 100;
+              const base = selectedRegion?.ativacoes ?? leader.ativacoes;
+              const percent = (item.ativacoes / base) * 100;
+              const color = (selectedRegion ?? leader).cor;
               return (
-                <div className="table-row" key={item.uf}>
+                <div key={item.uf} className="table-row">
                   <span className="region-name">
-                    <i style={{ background: tableRegion.cor }} />
-                    {item.uf}
+                    <i style={{ background: color }} />
+                    {item.uf} — {item.nome}
                   </span>
                   <span>{formatNumber(item.ativacoes)}</span>
                   <span>
                     <b>{formatPercent(percent)}</b>
-                    <em className="bar-track">
-                      <i className="bar-fill" style={{ width: `${percent}%`, background: tableRegion.cor }} />
+                    <em className="bar">
+                      <i style={{ width: `${Math.min(percent, 100)}%`, background: color }} />
                     </em>
                   </span>
                   <Variation value={item.variacao} />
@@ -437,21 +414,19 @@ export default function DistribuicaoRegiao() {
               );
             })}
 
-            <div className="table-row total">
-              <span>Total {tableRegion.nome}</span>
-              <span>{formatNumber(tableRegion.ativacoes)}</span>
-              <span>100%</span>
-              <Variation value={tableRegion.variacao} />
-            </div>
+            <p className="table-footer">
+              Total {selectedRegion?.nome ?? leader.nome}:{" "}
+              {formatNumber(selectedRegion?.ativacoes ?? leader.ativacoes)}
+            </p>
           </div>
         </div>
 
         <div className="dashboard-footer">
           <span>
-            <RefreshCw size={16} />
+            <Clock3 size={16} />
             Sincronizado automaticamente a cada 10 segundos
           </span>
-          <span className="sep">|</span>
+          <span>|</span>
           <span>Última atualização: {lastUpdate.toLocaleTimeString("pt-BR")}</span>
           <button type="button" onClick={exportCSV}>
             <Download size={16} />

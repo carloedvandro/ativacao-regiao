@@ -277,6 +277,26 @@ html,body{
 <div class="tooltip" id="tooltip"></div>
 
 <script>
+(function(){
+  const img = document.querySelector('.art img');
+  if(!img) return;
+  function process(){
+    const c = document.createElement('canvas');
+    c.width = img.naturalWidth || 800;
+    c.height = img.naturalHeight || 500;
+    const ctx = c.getContext('2d');
+    ctx.drawImage(img,0,0);
+    const d = ctx.getImageData(0,0,c.width,c.height);
+    for(let i=0;i<d.data.length;i+=4){
+      const r=d.data[i], g=d.data[i+1], b=d.data[i+2];
+      if(r>210 && g>230 && b>240) d.data[i+3]=0;
+    }
+    ctx.putImageData(d,0,0);
+    img.src = c.toDataURL('image/png');
+  }
+  if(img.complete) process();
+  else img.onload = process;
+})();
 const regioes = [
   {nome:"Sudeste", total:14, cor:"#5b18e8", percentual:"30,4%", planos:[["SmartVoz 50GB",12],["SmartVoz 80GB",2]]},
   {nome:"Sul", total:13, cor:"#ff1596", percentual:"28,3%", planos:[["SmartVoz 50GB",13]]},

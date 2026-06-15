@@ -287,12 +287,7 @@ function renderMenu(){
   `).join("");
 }
 
-function updateActiveHotspot(){
-  document.querySelectorAll(".hotspot").forEach(h => h.classList.remove("active"));
-  const active = document.querySelector(`.hotspot[data-index="${selected}"]`);
-  if(active) active.classList.add("active");
-
-  // destaca apenas a região selecionada na descrição lateral
+function updateActive(){
   infoClasses.forEach((cls,i)=>{
     const el = document.querySelector("."+cls);
     if(!el) return;
@@ -308,7 +303,7 @@ function selectRegion(i){
   document.getElementById("dot").style.background = regioes[i].cor;
   document.getElementById("select").classList.remove("open");
   renderMenu();
-  updateActiveHotspot();
+  updateActive();
 }
 
 function toggleMenu(){

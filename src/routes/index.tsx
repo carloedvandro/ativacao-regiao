@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import DistribuicaoRegiao from "@/components/DistribuicaoRegiao";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -29,7 +28,30 @@ function Index() {
       <h1 style={{ position: "absolute", left: "-9999px" }}>
         Distribuição por Região — SmartVoz
       </h1>
-      <DistribuicaoRegiao />
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "1080px",
+          aspectRatio: "800 / 500",
+          position: "relative",
+          overflow: "hidden",
+          borderRadius: "10px",
+          boxShadow: "0 18px 45px rgba(0,0,0,.12)",
+        }}
+      >
+        <iframe
+          src="/distribuicao-regiao.html"
+          title="Distribuição por Região — SmartVoz"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            border: "none",
+            display: "block",
+          }}
+        />
+      </div>
     </main>
   );
 }

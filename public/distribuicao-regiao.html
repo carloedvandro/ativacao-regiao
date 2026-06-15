@@ -271,13 +271,6 @@ const regioes = [
 let selected = 0;
 
 const infoClasses = ["i-sudeste","i-sul","i-norte","i-nordeste","i-centro","i-total"];
-const hotspotClasses = ["h-sudeste","h-sul","h-norte","h-nordeste","h-centro","h-total"];
-
-// aplica a cor da região como variável CSS em cada hotspot
-hotspotClasses.forEach((cls,i)=>{
-  const el = document.querySelector("."+cls);
-  if(el) el.style.setProperty("--c", regioes[i].cor);
-});
 
 function renderMenu(){
   document.getElementById("menu").innerHTML = regioes.map((r,i)=>`

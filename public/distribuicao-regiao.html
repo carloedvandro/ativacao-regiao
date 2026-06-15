@@ -177,13 +177,20 @@ body{
   background:#FAF7FF;
 }
 @media(max-width:760px){
-  body{padding:12px}
-  .titleBox{position:relative;left:auto;top:auto;margin:12px 12px 0}
-  .select{position:relative;right:auto;top:auto;margin:12px}
-  .select button{width:100%}
+  body{padding:8px}
+  .preview{border-radius:8px}
+  .titleBox{position:relative;left:auto;top:auto;margin:10px 10px 0;padding:6px 10px}
+  .titleBox h2{font-size:clamp(14px,4.5vw,22px)}
+  .titleBox p{font-size:clamp(10px,3vw,12px)}
+  .select{position:relative;right:auto;top:auto;margin:10px}
+  .select button{height:40px;min-width:auto;width:100%;font-size:clamp(12px,3.5vw,14px)}
   .menu{left:0;right:0;width:100%}
-  .info{font-size:8px}
-  .info b{font-size:10px}
+  .info{font-size:clamp(9px,2.2vw,11px)}
+  .info b{font-size:clamp(13px,3.5vw,16px)}
+  .tooltip{min-width:180px;padding:10px 12px}
+  .tooltip b{font-size:14px}
+  .tooltip .big{font-size:18px}
+  .footer{font-size:clamp(11px,3vw,14px);padding:10px 12px}
 }
 </style>
 </head>

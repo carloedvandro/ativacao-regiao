@@ -281,6 +281,15 @@ const regioes = [
 
 let selected = 0;
 
+const infoClasses = ["i-sudeste","i-sul","i-norte","i-nordeste","i-centro","i-total"];
+const hotspotClasses = ["h-sudeste","h-sul","h-norte","h-nordeste","h-centro","h-total"];
+
+// aplica a cor da região como variável CSS em cada hotspot
+hotspotClasses.forEach((cls,i)=>{
+  const el = document.querySelector("."+cls);
+  if(el) el.style.setProperty("--c", regioes[i].cor);
+});
+
 function renderMenu(){
   document.getElementById("menu").innerHTML = regioes.map((r,i)=>`
     <div class="opt ${i===selected?'active':''}" onclick="selectRegion(${i})">
@@ -293,6 +302,15 @@ function updateActiveHotspot(){
   document.querySelectorAll(".hotspot").forEach(h => h.classList.remove("active"));
   const active = document.querySelector(`.hotspot[data-index="${selected}"]`);
   if(active) active.classList.add("active");
+
+  // destaca apenas a região selecionada na descrição lateral
+  infoClasses.forEach((cls,i)=>{
+    const el = document.querySelector("."+cls);
+    if(!el) return;
+    el.classList.remove("active","dim");
+    if(i===selected) el.classList.add("active");
+    else el.classList.add("dim");
+  });
 }
 
 function selectRegion(i){

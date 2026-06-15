@@ -118,7 +118,7 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
 }
 .info b{
   display:block;
-  font-size:clamp(12px,1.55vw,18px);
+  font-size:clamp(11px,1.35vw,16px);
   font-weight:950;
   margin-bottom:3px;
 }
@@ -130,23 +130,23 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
   background:#fff;
   border-radius:6px;
 }
-.m-sudeste {left:4%;  top:12%;  width:24%; height:20%}
-.m-sul     {right:4%; top:12%;  width:26%; height:22%}
-.m-norte   {left:4%;  top:40%;  width:24%; height:20%}
-.m-nordeste{right:4%; top:38%;  width:26%; height:20%}
-.m-centro  {right:4%; top:60%;  width:26%; height:26%}
-.m-total   {left:4%;  top:66%;  width:24%; height:20%}
-.m-sul-extra{right:3%; top:28%; width:22%; height:12%}
-.m-centro-extra{right:3%; top:58%; width:24%; height:10%}
+.m-sudeste {left:3%;  top:11%;  width:27%; height:22%}
+.m-sul     {right:3%; top:11%;  width:30%; height:24%}
+.m-norte   {left:3%;  top:39%;  width:27%; height:22%}
+.m-nordeste{right:3%; top:37%;  width:30%; height:22%}
+.m-centro  {right:3%; top:59%;  width:28%; height:28%}
+.m-total   {left:3%;  top:65%;  width:27%; height:22%}
+.m-sul-extra{right:2%; top:27%; width:25%; height:14%}
+.m-centro-extra{right:2%; top:57%; width:26%; height:12%}
 /* Estados de seleção da região */
 .info.dim{opacity:.35}
 .info.active{opacity:1;}
-.i-sudeste{left:6.2%;top:14.4%;width:18%;text-align:right;color:#5b18e8}
-.i-sul{right:8%;top:15.2%;width:20%;color:#ff1596}
-.i-norte{left:6.2%;top:42.5%;width:18%;text-align:right;color:#2aaec0}
-.i-nordeste{right:8%;top:40.2%;width:20%;color:#28a745}
-.i-centro{right:8%;top:68.2%;width:20%;color:#ff8a14}
-.i-total{left:6.2%;top:68.2%;width:18%;text-align:right;color:#b523f5}
+.i-sudeste{left:5%;top:14%;width:20%;text-align:right;color:#5b18e8}
+.i-sul{right:6%;top:15%;width:22%;color:#ff1596}
+.i-norte{left:5%;top:42%;width:20%;text-align:right;color:#2aaec0}
+.i-nordeste{right:6%;top:40%;width:22%;color:#28a745}
+.i-centro{right:6%;top:68%;width:22%;color:#ff8a14}
+.i-total{left:5%;top:68%;width:20%;text-align:right;color:#b523f5}
 /* Hotspots invisíveis nas fatias */
 .hotspot{
   position:absolute;
@@ -164,7 +164,7 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
   position:fixed;
   display:none;
   z-index:30;
-  min-width:230px;
+  min-width:260px;
   background:#fff;
   border:1px solid #d9dee7;
   border-radius:15px;
@@ -173,7 +173,7 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
   pointer-events:none;
 }
 .tooltip b{font-size:16px}
-.tooltip .big{font-size:24px;font-weight:900;margin:8px 0;color:#111}
+.tooltip .big{font-size:22px;font-weight:900;margin:8px 0;color:#111}
 .tooltip small{color:#667085}
 .footer{
   padding:12px 16px;
@@ -230,7 +230,7 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
     <div class="info i-norte"><b>Norte</b><strong>8 ativações</strong><br>17,4% do total<br>(8) SmartVoz 50GB</div>
     <div class="info i-nordeste"><b>Nordeste</b><strong>7 ativações</strong><br>15,2% do total<br>(7) SmartVoz 50GB</div>
     <div class="info i-centro"><b>Centro-Oeste</b><strong>4 ativações</strong><br>8,7% do total<br>(3) SmartVoz 50GB<br>(1) SmartVoz 80GB</div>
-    <div class="info i-total"><b>Total geral</b><strong>46 ativações</strong><br>SmartVoz<br>50GB e 80GB</div>
+    <div class="info i-total"><b>Total geral</b><strong>46 ativações</strong><br>100% do total<br>SmartVoz<br>50GB e 80GB</div>
 
     <div class="mask m-sudeste"></div>
     <div class="mask m-sul"></div>
@@ -267,7 +267,7 @@ window.addEventListener('load',function(){
   const d = ctx.getImageData(0,0,c.width,c.height);
   for(let i=0;i<d.data.length;i+=4){
     const r=d.data[i], g=d.data[i+1], b=d.data[i+2];
-    if(r>180 && g>180 && b>180){ d.data[i]=255; d.data[i+1]=255; d.data[i+2]=255; d.data[i+3]=255; }
+    if(r>150 && g>150 && b>150){ d.data[i]=255; d.data[i+1]=255; d.data[i+2]=255; d.data[i+3]=255; }
   }
   ctx.putImageData(d,0,0);
   img.src = c.toDataURL('image/png');

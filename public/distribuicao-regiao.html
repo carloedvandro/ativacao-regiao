@@ -267,7 +267,7 @@ window.addEventListener('load',function(){
   const d = ctx.getImageData(0,0,c.width,c.height);
   for(let i=0;i<d.data.length;i+=4){
     const r=d.data[i], g=d.data[i+1], b=d.data[i+2];
-    if(r>200 && g>220 && b>235) d.data[i+3]=0;
+    if(r>180 && g>180 && b>180){ d.data[i]=255; d.data[i+1]=255; d.data[i+2]=255; d.data[i+3]=255; }
   }
   ctx.putImageData(d,0,0);
   img.src = c.toDataURL('image/png');

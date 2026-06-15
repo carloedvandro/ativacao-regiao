@@ -265,9 +265,17 @@ window.addEventListener('load',function(){
   const ctx = c.getContext('2d');
   ctx.drawImage(img,0,0);
   const d = ctx.getImageData(0,0,c.width,c.height);
-  for(let i=0;i<d.data.length;i+=4){
-    const r=d.data[i], g=d.data[i+1], b=d.data[i+2];
-    if(r>150 && g>150 && b>150){ d.data[i]=255; d.data[i+1]=255; d.data[i+2]=255; d.data[i+3]=255; }
+  const cx = c.width/2, cy = c.height/2;
+  const r2 = Math.pow(Math.min(c.width,c.height)*0.36,2);
+  for(let y=0;y<c.height;y++){
+    const dy=y-cy;
+    for(let x=0;x<c.width;x++){
+      const dx=x-cx;
+      if(dx*dx+dy*dy <= r2) continue;
+      const i=(y*c.width+x)*4;
+      const r=d.data[i], g=d.data[i+1], b=d.data[i+2];
+      if(r>185 && g>195 && b>205){ d.data[i]=255; d.data[i+1]=255; d.data[i+2]=255; d.data[i+3]=255; }
+    }
   }
   ctx.putImageData(d,0,0);
   img.src = c.toDataURL('image/png');

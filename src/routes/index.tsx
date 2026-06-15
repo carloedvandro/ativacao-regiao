@@ -3,27 +3,21 @@ import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "Distribuição por Região — SmartVoz" },
+      { name: "description", content: "Distribuição por região das ativações na rede SmartVoz." },
+      { property: "og:title", content: "Distribuição por Região — SmartVoz" },
+      { property: "og:description", content: "Distribuição por região das ativações na rede SmartVoz." },
     ],
   }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <iframe
+      src="/distribuicao-regiao.html"
+      title="Distribuição por Região — SmartVoz"
+      style={{ border: 0, width: "100vw", height: "100vh", display: "block" }}
+    />
   );
 }

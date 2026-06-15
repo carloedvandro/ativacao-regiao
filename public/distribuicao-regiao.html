@@ -224,7 +224,7 @@ body{
 
     <div class="titleBox">
       <h2>Distribuição por Região</h2>
-      <p>Total: <b>46 ativações</b> na rede SmartVoz</p>
+      <p>Total: <b id="headerTotal">46.782 ativações</b> na rede SmartVoz <span class="live">ao vivo</span></p>
     </div>
 
     <div class="select" id="select">
@@ -236,12 +236,12 @@ body{
       <div class="menu" id="menu"></div>
     </div>
 
-    <div class="info i-sudeste"><b>Sudeste</b><strong>14 ativações</strong><br>30,4% do total<br>(12) SmartVoz 50GB<br>(2) SmartVoz 80GB</div>
-    <div class="info i-sul"><b>Sul</b><strong>13 ativações</strong><br>28,3% do total<br>(13) SmartVoz 50GB</div>
-    <div class="info i-norte"><b>Norte</b><strong>8 ativações</strong><br>17,4% do total<br>(8) SmartVoz 50GB</div>
-    <div class="info i-nordeste"><b>Nordeste</b><strong>7 ativações</strong><br>15,2% do total<br>(7) SmartVoz 50GB</div>
-    <div class="info i-centro"><b>Centro-Oeste</b><strong>4 ativações</strong><br>8,7% do total<br>(3) SmartVoz 50GB<br>(1) SmartVoz 80GB</div>
-    <div class="info i-total"><b>Total geral</b><strong>46 ativações</strong><br>SmartVoz<br>50GB e 80GB</div>
+    <div class="info i-sudeste" data-region="0"><b>Sudeste</b><strong><span class="rTotal">0</span> ativações</strong><br><span class="rPct">0%</span> do total</div>
+    <div class="info i-sul" data-region="1"><b>Sul</b><strong><span class="rTotal">0</span> ativações</strong><br><span class="rPct">0%</span> do total</div>
+    <div class="info i-norte" data-region="2"><b>Norte</b><strong><span class="rTotal">0</span> ativações</strong><br><span class="rPct">0%</span> do total</div>
+    <div class="info i-nordeste" data-region="3"><b>Nordeste</b><strong><span class="rTotal">0</span> ativações</strong><br><span class="rPct">0%</span> do total</div>
+    <div class="info i-centro" data-region="4"><b>Centro-Oeste</b><strong><span class="rTotal">0</span> ativações</strong><br><span class="rPct">0%</span> do total</div>
+    <div class="info i-total" data-region="5"><b>Outros/Exterior</b><strong><span class="rTotal">0</span> ativações</strong><br><span class="rPct">0%</span> do total</div>
 
     <div class="hotspot h-sudeste" data-index="0" onmousemove="tip(event,0)" onmouseleave="hideTip()" onclick="selectRegion(0)"></div>
     <div class="hotspot h-sul" data-index="1" onmousemove="tip(event,1)" onmouseleave="hideTip()" onclick="selectRegion(1)"></div>
@@ -252,12 +252,15 @@ body{
   </div>
 
   <div class="footer">
-    <b>Funções ativas:</b>
+    <div class="totalCard">
+      <span class="icon">📊</span>
+      <span>Total de ativações</span>
+      <span class="num" id="totalNum">46.782</span>
+      <span class="live">ao vivo</span>
+    </div>
     <span class="pill">dropdown por região</span>
-    <span class="pill">tooltip por fatia</span>
     <span class="pill">hotspot clicável</span>
-    <span class="pill">quantidade de ativações</span>
-    <span class="pill">planos por região</span>
+    <span class="pill">atualização em tempo real</span>
   </div>
 </div>
 

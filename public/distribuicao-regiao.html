@@ -267,21 +267,48 @@ body{
 <div class="tooltip" id="tooltip"></div>
 
 <script>
+// Distribuição alvo (em %) — soma 100%
 const regioes = [
-  {nome:"Sudeste", total:14, cor:"#5b18e8", percentual:"30,4%", planos:[["SmartVoz 50GB",12],["SmartVoz 80GB",2]]},
-  {nome:"Sul", total:13, cor:"#ff1596", percentual:"28,3%", planos:[["SmartVoz 50GB",13]]},
-  {nome:"Norte", total:8, cor:"#2aaec0", percentual:"17,4%", planos:[["SmartVoz 50GB",8]]},
-  {nome:"Nordeste", total:7, cor:"#7d552f", percentual:"15,2%", planos:[["SmartVoz 50GB",7]]},
-  {nome:"Centro-Oeste", total:4, cor:"#ff8a14", percentual:"8,7%", planos:[["SmartVoz 50GB",3],["SmartVoz 80GB",1]]},
-  {nome:"Total geral", total:46, cor:"#b523f5", percentual:"100%", planos:[["SmartVoz 50GB",43],["SmartVoz 80GB",3]]}
+  {nome:"Sudeste",        cor:"#5b18e8", peso:25, total:11696, planos:[["SmartVoz 50GB",10000],["SmartVoz 80GB",1696]]},
+  {nome:"Sul",            cor:"#ff1596", peso:28, total:13099, planos:[["SmartVoz 50GB",12000],["SmartVoz 80GB",1099]]},
+  {nome:"Norte",          cor:"#2aaec0", peso:7,  total:3275,  planos:[["SmartVoz 50GB",3275]]},
+  {nome:"Nordeste",       cor:"#7d552f", peso:14, total:6549,  planos:[["SmartVoz 50GB",6000],["SmartVoz 80GB",549]]},
+  {nome:"Centro-Oeste",   cor:"#ff8a14", peso:10, total:4678,  planos:[["SmartVoz 50GB",4000],["SmartVoz 80GB",678]]},
+  {nome:"Outros/Exterior",cor:"#b523f5", peso:16, total:7485,  planos:[["SmartVoz 50GB",6500],["SmartVoz 80GB",985]]}
 ];
 
 let selected = 0;
 
+const fmt = n => n.toLocaleString("pt-BR");
+
+function totalGeral(){
+  return regioes.reduce((s,r)=>s+r.total,0);
+}
+
+function renderInfos(){
+  const tg = totalGeral();
+  document.querySelectorAll(".info[data-region]").forEach(el=>{
+    const i = +el.dataset.region;
+    const r = regioes[i];
+    const pct = tg ? (r.total*100/tg) : 0;
+    el.querySelector(".rTotal").textContent = fmt(r.total);
+    el.querySelector(".rPct").textContent = pct.toFixed(1).replace(".",",")+"%";
+  });
+  const tn = document.getElementById("totalNum");
+  if(tn){
+    tn.textContent = fmt(tg);
+    tn.classList.add("flash");
+    setTimeout(()=>tn.classList.remove("flash"),250);
+  }
+  const ht = document.getElementById("headerTotal");
+  if(ht) ht.textContent = fmt(tg)+" ativações";
+}
+
 function renderMenu(){
   document.getElementById("menu").innerHTML = regioes.map((r,i)=>`
     <div class="opt ${i===selected?'active':''}" onclick="selectRegion(${i})">
-      <span>${r.nome}</span><span>${i===selected?'✓':''}</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${r.cor};margin-right:8px;vertical-align:middle"></span>${r.nome}</span>
+      <span style="color:#7c3aed;font-weight:800">${fmt(r.total)}${i===selected?' ✓':''}</span>
     </div>
   `).join("");
 }
@@ -307,13 +334,15 @@ function toggleMenu(){
 
 function tip(e,i){
   const r = regioes[i];
+  const tg = totalGeral();
+  const pct = tg ? (r.total*100/tg).toFixed(1).replace(".",",")+"%" : "0%";
   const t = document.getElementById("tooltip");
   t.innerHTML = `
     <b>${r.nome}</b>
-    <div class="big">${r.total} ativações</div>
-    <small>Participação: ${r.percentual}</small><br>
+    <div class="big">${fmt(r.total)} ativações</div>
+    <small>Participação: ${pct}</small><br>
     <small>Planos:</small><br>
-    ${r.planos.map(p=>`<b>(${p[1]})</b> ${p[0]}`).join("<br>")}
+    ${r.planos.map(p=>`<b>(${fmt(p[1])})</b> ${p[0]}`).join("<br>")}
   `;
   t.style.display = "block";
   t.style.left = Math.min(e.clientX + 14, innerWidth - 260) + "px";
@@ -324,8 +353,34 @@ function hideTip(){
   document.getElementById("tooltip").style.display = "none";
 }
 
+// Inicializa cor do "dot" do dropdown
+document.getElementById("dot").style.background = regioes[selected].cor;
+document.getElementById("selectedText").textContent = regioes[selected].nome;
+
+renderInfos();
 renderMenu();
 updateActiveHotspot();
+
+// Simulação em tempo real: a cada 1,8s entram novos clientes,
+// distribuídos proporcionalmente aos pesos das regiões.
+function tickAtivacoes(){
+  const novos = 3 + Math.floor(Math.random()*8); // 3 a 10 novas ativações
+  const pesos = regioes.map(r=>r.peso);
+  const somaPesos = pesos.reduce((a,b)=>a+b,0);
+  for(let k=0;k<novos;k++){
+    let rnd = Math.random()*somaPesos, acc = 0, idx = 0;
+    for(let i=0;i<regioes.length;i++){
+      acc += pesos[i];
+      if(rnd <= acc){ idx = i; break; }
+    }
+    regioes[idx].total += 1;
+    // adiciona ao primeiro plano da região
+    if(regioes[idx].planos[0]) regioes[idx].planos[0][1] += 1;
+  }
+  renderInfos();
+  renderMenu();
+}
+setInterval(tickAtivacoes, 1800);
 </script>
 </body>
 </html>

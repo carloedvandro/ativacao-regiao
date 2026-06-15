@@ -6,15 +6,12 @@
 <title>Distribuição por Região — SmartVoz</title>
 <style>
 *{box-sizing:border-box}
-html,body{scrollbar-width:none;-ms-overflow-style:none}
-html::-webkit-scrollbar,body::-webkit-scrollbar,*::-webkit-scrollbar{width:0;height:0;display:none}
 body{
   margin:0;
   background:#f7f0fb;
   font-family:Inter,Arial,sans-serif;
   padding:20px;
   color:#21004B;
-  overflow:hidden;
 }
 .preview{
   width:min(1080px,100%);
@@ -179,33 +176,6 @@ body{
   font-weight:800;
   background:#FAF7FF;
 }
-.totalCard{
-  display:inline-flex;
-  align-items:center;
-  gap:12px;
-  border:1px solid #E9DDF8;
-  border-radius:14px;
-  padding:10px 18px;
-  background:#FAF7FF;
-  font-size:16px;
-  font-weight:800;
-  color:#21004B;
-}
-.totalCard .icon{color:#7c3aed;font-size:20px;line-height:1}
-.totalCard .num{
-  color:#3b5bff;
-  font-size:22px;
-  font-weight:900;
-  font-variant-numeric:tabular-nums;
-  transition:transform .25s;
-}
-.totalCard .num.flash{transform:scale(1.08);color:#5b18e8}
-.live{
-  display:inline-flex;align-items:center;gap:6px;
-  font-size:11px;font-weight:700;color:#16a34a;margin-left:6px;
-}
-.live::before{content:"";width:8px;height:8px;border-radius:50%;background:#16a34a;animation:pulse 1.4s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 @media(max-width:760px){
   body{padding:12px}
   .titleBox{position:relative;left:auto;top:auto;margin:12px 12px 0}
@@ -224,7 +194,7 @@ body{
 
     <div class="titleBox">
       <h2>Distribuição por Região</h2>
-      <p>Total: <b id="headerTotal">46.782 ativações</b> na rede SmartVoz <span class="live">ao vivo</span></p>
+      <p>Total: <b>46 ativações</b> na rede SmartVoz</p>
     </div>
 
     <div class="select" id="select">
@@ -236,12 +206,12 @@ body{
       <div class="menu" id="menu"></div>
     </div>
 
-    <div class="info i-sudeste" data-region="0"><b>Sudeste</b><strong><span class="rTotal">0</span> ativações</strong><br><span class="rPct">0%</span> do total</div>
-    <div class="info i-sul" data-region="1"><b>Sul</b><strong><span class="rTotal">0</span> ativações</strong><br><span class="rPct">0%</span> do total</div>
-    <div class="info i-norte" data-region="2"><b>Norte</b><strong><span class="rTotal">0</span> ativações</strong><br><span class="rPct">0%</span> do total</div>
-    <div class="info i-nordeste" data-region="3"><b>Nordeste</b><strong><span class="rTotal">0</span> ativações</strong><br><span class="rPct">0%</span> do total</div>
-    <div class="info i-centro" data-region="4"><b>Centro-Oeste</b><strong><span class="rTotal">0</span> ativações</strong><br><span class="rPct">0%</span> do total</div>
-    <div class="info i-total" data-region="5"><b>Outros/Exterior</b><strong><span class="rTotal">0</span> ativações</strong><br><span class="rPct">0%</span> do total</div>
+    <div class="info i-sudeste"><b>Sudeste</b><strong>14 ativações</strong><br>30,4% do total<br>(12) SmartVoz 50GB<br>(2) SmartVoz 80GB</div>
+    <div class="info i-sul"><b>Sul</b><strong>13 ativações</strong><br>28,3% do total<br>(13) SmartVoz 50GB</div>
+    <div class="info i-norte"><b>Norte</b><strong>8 ativações</strong><br>17,4% do total<br>(8) SmartVoz 50GB</div>
+    <div class="info i-nordeste"><b>Nordeste</b><strong>7 ativações</strong><br>15,2% do total<br>(7) SmartVoz 50GB</div>
+    <div class="info i-centro"><b>Centro-Oeste</b><strong>4 ativações</strong><br>8,7% do total<br>(3) SmartVoz 50GB<br>(1) SmartVoz 80GB</div>
+    <div class="info i-total"><b>Total geral</b><strong>46 ativações</strong><br>SmartVoz<br>50GB e 80GB</div>
 
     <div class="hotspot h-sudeste" data-index="0" onmousemove="tip(event,0)" onmouseleave="hideTip()" onclick="selectRegion(0)"></div>
     <div class="hotspot h-sul" data-index="1" onmousemove="tip(event,1)" onmouseleave="hideTip()" onclick="selectRegion(1)"></div>
@@ -252,63 +222,33 @@ body{
   </div>
 
   <div class="footer">
-    <div class="totalCard">
-      <span class="icon">📊</span>
-      <span>Total de ativações</span>
-      <span class="num" id="totalNum">46.782</span>
-      <span class="live">ao vivo</span>
-    </div>
+    <b>Funções ativas:</b>
     <span class="pill">dropdown por região</span>
+    <span class="pill">tooltip por fatia</span>
     <span class="pill">hotspot clicável</span>
-    <span class="pill">atualização em tempo real</span>
+    <span class="pill">quantidade de ativações</span>
+    <span class="pill">planos por região</span>
   </div>
 </div>
 
 <div class="tooltip" id="tooltip"></div>
 
 <script>
-// Distribuição alvo (em %) — soma 100%
 const regioes = [
-  {nome:"Sudeste",        cor:"#5b18e8", peso:25, total:11696, planos:[["SmartVoz 50GB",10000],["SmartVoz 80GB",1696]]},
-  {nome:"Sul",            cor:"#ff1596", peso:28, total:13099, planos:[["SmartVoz 50GB",12000],["SmartVoz 80GB",1099]]},
-  {nome:"Norte",          cor:"#2aaec0", peso:7,  total:3275,  planos:[["SmartVoz 50GB",3275]]},
-  {nome:"Nordeste",       cor:"#7d552f", peso:14, total:6549,  planos:[["SmartVoz 50GB",6000],["SmartVoz 80GB",549]]},
-  {nome:"Centro-Oeste",   cor:"#ff8a14", peso:10, total:4678,  planos:[["SmartVoz 50GB",4000],["SmartVoz 80GB",678]]},
-  {nome:"Outros/Exterior",cor:"#b523f5", peso:16, total:7485,  planos:[["SmartVoz 50GB",6500],["SmartVoz 80GB",985]]}
+  {nome:"Sudeste", total:14, cor:"#5b18e8", percentual:"30,4%", planos:[["SmartVoz 50GB",12],["SmartVoz 80GB",2]]},
+  {nome:"Sul", total:13, cor:"#ff1596", percentual:"28,3%", planos:[["SmartVoz 50GB",13]]},
+  {nome:"Norte", total:8, cor:"#2aaec0", percentual:"17,4%", planos:[["SmartVoz 50GB",8]]},
+  {nome:"Nordeste", total:7, cor:"#7d552f", percentual:"15,2%", planos:[["SmartVoz 50GB",7]]},
+  {nome:"Centro-Oeste", total:4, cor:"#ff8a14", percentual:"8,7%", planos:[["SmartVoz 50GB",3],["SmartVoz 80GB",1]]},
+  {nome:"Total geral", total:46, cor:"#b523f5", percentual:"100%", planos:[["SmartVoz 50GB",43],["SmartVoz 80GB",3]]}
 ];
 
 let selected = 0;
 
-const fmt = n => n.toLocaleString("pt-BR");
-
-function totalGeral(){
-  return regioes.reduce((s,r)=>s+r.total,0);
-}
-
-function renderInfos(){
-  const tg = totalGeral();
-  document.querySelectorAll(".info[data-region]").forEach(el=>{
-    const i = +el.dataset.region;
-    const r = regioes[i];
-    const pct = tg ? (r.total*100/tg) : 0;
-    el.querySelector(".rTotal").textContent = fmt(r.total);
-    el.querySelector(".rPct").textContent = pct.toFixed(1).replace(".",",")+"%";
-  });
-  const tn = document.getElementById("totalNum");
-  if(tn){
-    tn.textContent = fmt(tg);
-    tn.classList.add("flash");
-    setTimeout(()=>tn.classList.remove("flash"),250);
-  }
-  const ht = document.getElementById("headerTotal");
-  if(ht) ht.textContent = fmt(tg)+" ativações";
-}
-
 function renderMenu(){
   document.getElementById("menu").innerHTML = regioes.map((r,i)=>`
     <div class="opt ${i===selected?'active':''}" onclick="selectRegion(${i})">
-      <span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${r.cor};margin-right:8px;vertical-align:middle"></span>${r.nome}</span>
-      <span style="color:#7c3aed;font-weight:800">${fmt(r.total)}${i===selected?' ✓':''}</span>
+      <span>${r.nome}</span><span>${i===selected?'✓':''}</span>
     </div>
   `).join("");
 }
@@ -334,15 +274,13 @@ function toggleMenu(){
 
 function tip(e,i){
   const r = regioes[i];
-  const tg = totalGeral();
-  const pct = tg ? (r.total*100/tg).toFixed(1).replace(".",",")+"%" : "0%";
   const t = document.getElementById("tooltip");
   t.innerHTML = `
     <b>${r.nome}</b>
-    <div class="big">${fmt(r.total)} ativações</div>
-    <small>Participação: ${pct}</small><br>
+    <div class="big">${r.total} ativações</div>
+    <small>Participação: ${r.percentual}</small><br>
     <small>Planos:</small><br>
-    ${r.planos.map(p=>`<b>(${fmt(p[1])})</b> ${p[0]}`).join("<br>")}
+    ${r.planos.map(p=>`<b>(${p[1]})</b> ${p[0]}`).join("<br>")}
   `;
   t.style.display = "block";
   t.style.left = Math.min(e.clientX + 14, innerWidth - 260) + "px";
@@ -353,34 +291,8 @@ function hideTip(){
   document.getElementById("tooltip").style.display = "none";
 }
 
-// Inicializa cor do "dot" do dropdown
-document.getElementById("dot").style.background = regioes[selected].cor;
-document.getElementById("selectedText").textContent = regioes[selected].nome;
-
-renderInfos();
 renderMenu();
 updateActiveHotspot();
-
-// Simulação em tempo real: a cada 1,8s entram novos clientes,
-// distribuídos proporcionalmente aos pesos das regiões.
-function tickAtivacoes(){
-  const novos = 3 + Math.floor(Math.random()*8); // 3 a 10 novas ativações
-  const pesos = regioes.map(r=>r.peso);
-  const somaPesos = pesos.reduce((a,b)=>a+b,0);
-  for(let k=0;k<novos;k++){
-    let rnd = Math.random()*somaPesos, acc = 0, idx = 0;
-    for(let i=0;i<regioes.length;i++){
-      acc += pesos[i];
-      if(rnd <= acc){ idx = i; break; }
-    }
-    regioes[idx].total += 1;
-    // adiciona ao primeiro plano da região
-    if(regioes[idx].planos[0]) regioes[idx].planos[0][1] += 1;
-  }
-  renderInfos();
-  renderMenu();
-}
-setInterval(tickAtivacoes, 1800);
 </script>
 </body>
 </html>

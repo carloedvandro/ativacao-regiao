@@ -16,7 +16,7 @@ body{
 .preview{
   width:min(1080px,100%);
   margin:auto;
-  background:#eefdff;
+  background:transparent;
   border:1px solid #cfe6ec;
   box-shadow:0 18px 45px rgba(0,0,0,.12);
   position:relative;
@@ -27,7 +27,7 @@ body{
   position:relative;
   width:100%;
   aspect-ratio:800/500;
-  background:#eefdff;
+  background:transparent;
 }
 .art img{
   position:absolute;
@@ -137,10 +137,10 @@ body{
 .m-centro  {right:6%; top:67%;  width:23%; height:16%}
 .m-total   {left:5%;  top:67%;  width:21%; height:16%}
 /* Estados de seleção da região */
-.info.dim{opacity:.22;filter:grayscale(.4)}
+.info.dim{opacity:.25}
 .info.active{
-  filter:drop-shadow(0 0 10px currentColor) drop-shadow(0 0 18px currentColor);
-  transform:scale(1.04);
+  opacity:1;
+  text-shadow:0 0 6px currentColor, 0 0 14px currentColor, 0 0 22px currentColor;
 }
 .i-sudeste{left:6.2%;top:14.4%;width:18%;text-align:right;color:#5b18e8}
 .i-sul{right:8%;top:15.2%;width:20%;color:#ff1596}
@@ -154,7 +154,6 @@ body{
   z-index:6;
   border-radius:50%;
   cursor:pointer;
-  transition:box-shadow .3s, transform .3s, background .3s;
 }
 .h-sudeste{left:34%;top:28%;width:15%;height:18%}
 .h-sul{left:45%;top:25%;width:15%;height:21%}
@@ -162,16 +161,6 @@ body{
 .h-nordeste{left:56%;top:28%;width:15%;height:25%}
 .h-centro{left:55%;top:54%;width:17%;height:17%}
 .h-total{left:40%;top:59%;width:16%;height:17%}
-.hotspot.active{
-  background:radial-gradient(circle, color-mix(in srgb, var(--c,#f6c756) 55%, transparent) 0%, transparent 70%);
-  box-shadow:0 0 30px 10px var(--c,#f6c756), 0 0 60px 20px color-mix(in srgb, var(--c,#f6c756) 50%, transparent);
-  transform:scale(1.08);
-  animation:pulseGlow 1.6s ease-in-out infinite;
-}
-@keyframes pulseGlow{
-  0%,100%{box-shadow:0 0 30px 10px var(--c,#f6c756), 0 0 60px 20px color-mix(in srgb, var(--c,#f6c756) 50%, transparent)}
-  50%   {box-shadow:0 0 45px 16px var(--c,#f6c756), 0 0 90px 30px color-mix(in srgb, var(--c,#f6c756) 60%, transparent)}
-}
 .tooltip{
   position:fixed;
   display:none;
@@ -282,13 +271,6 @@ const regioes = [
 let selected = 0;
 
 const infoClasses = ["i-sudeste","i-sul","i-norte","i-nordeste","i-centro","i-total"];
-const hotspotClasses = ["h-sudeste","h-sul","h-norte","h-nordeste","h-centro","h-total"];
-
-// aplica a cor da região como variável CSS em cada hotspot
-hotspotClasses.forEach((cls,i)=>{
-  const el = document.querySelector("."+cls);
-  if(el) el.style.setProperty("--c", regioes[i].cor);
-});
 
 function renderMenu(){
   document.getElementById("menu").innerHTML = regioes.map((r,i)=>`
@@ -298,12 +280,7 @@ function renderMenu(){
   `).join("");
 }
 
-function updateActiveHotspot(){
-  document.querySelectorAll(".hotspot").forEach(h => h.classList.remove("active"));
-  const active = document.querySelector(`.hotspot[data-index="${selected}"]`);
-  if(active) active.classList.add("active");
-
-  // destaca apenas a região selecionada na descrição lateral
+function updateActive(){
   infoClasses.forEach((cls,i)=>{
     const el = document.querySelector("."+cls);
     if(!el) return;
@@ -319,7 +296,7 @@ function selectRegion(i){
   document.getElementById("dot").style.background = regioes[i].cor;
   document.getElementById("select").classList.remove("open");
   renderMenu();
-  updateActiveHotspot();
+  updateActive();
 }
 
 function toggleMenu(){
@@ -346,7 +323,7 @@ function hideTip(){
 }
 
 renderMenu();
-updateActiveHotspot();
+updateActive();
 </script>
 </body>
 </html>

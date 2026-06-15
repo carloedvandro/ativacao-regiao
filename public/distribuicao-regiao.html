@@ -180,17 +180,32 @@ body{
   body{padding:8px}
   .preview{border-radius:8px}
   .titleBox{position:relative;left:auto;top:auto;margin:10px 10px 0;padding:6px 10px}
-  .titleBox h2{font-size:clamp(14px,4.5vw,22px)}
+  .titleBox h2{font-size:clamp(15px,4.5vw,22px)}
   .titleBox p{font-size:clamp(10px,3vw,12px)}
   .select{position:relative;right:auto;top:auto;margin:10px}
   .select button{height:40px;min-width:auto;width:100%;font-size:clamp(12px,3.5vw,14px)}
   .menu{left:0;right:0;width:100%}
-  .info{font-size:clamp(9px,2.2vw,11px)}
-  .info b{font-size:clamp(13px,3.5vw,16px)}
+  /* Em telas pequenas, empilha os textos abaixo da arte e mantém a proporção */
+  .art{aspect-ratio:auto;width:100%}
+  .art img{position:relative;width:100%;height:auto;aspect-ratio:800/500}
+  .info{
+    position:relative;
+    left:auto!important;right:auto!important;top:auto!important;
+    width:100%!important;
+    text-align:left!important;
+    background:transparent;
+    padding:10px 14px;
+    border-top:1px solid #e1eff2;
+    font-size:clamp(11px,3vw,13px);
+    line-height:1.25;
+  }
+  .info b{font-size:clamp(13px,3.8vw,16px);margin-bottom:4px}
+  .hotspot{display:none}
   .tooltip{min-width:180px;padding:10px 12px}
   .tooltip b{font-size:14px}
   .tooltip .big{font-size:18px}
   .footer{font-size:clamp(11px,3vw,14px);padding:10px 12px}
+  .footer .pill{padding:5px 9px;font-size:clamp(10px,2.8vw,12px)}
 }
 </style>
 </head>

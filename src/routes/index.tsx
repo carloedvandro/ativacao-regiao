@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
+import distribuicaoImg from "@/assets/distribuicao-regiao.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -14,10 +14,6 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  useEffect(() => {
-    window.location.replace("/distribuicao-regiao.html");
-  }, []);
-
   return (
     <main
       style={{
@@ -26,16 +22,18 @@ function Index() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#f7f0fb",
-        padding: "20px",
+        background: "#ffffff",
+        padding: "24px",
       }}
     >
       <h1 style={{ position: "absolute", left: "-9999px" }}>
         Distribuição por Região — SmartVoz
       </h1>
-      <p style={{ color: "#21004B", fontFamily: "Inter, Arial, sans-serif" }}>
-        Carregando…
-      </p>
+      <img
+        src={distribuicaoImg.url}
+        alt="Distribuição por Região — Ativações SmartVoz por região (Norte 7%, Centro-Oeste 10%, Nordeste 14%, Outros/Exterior 16%, Sudeste 25%, Sul 28%). Total de ativações: 46.782."
+        style={{ maxWidth: "100%", height: "auto", display: "block" }}
+      />
     </main>
   );
 }

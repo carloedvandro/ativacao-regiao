@@ -137,10 +137,10 @@ body{
 .m-centro  {right:6%; top:67%;  width:23%; height:16%}
 .m-total   {left:5%;  top:67%;  width:21%; height:16%}
 /* Estados de seleção da região */
-.info.dim{opacity:.22;filter:grayscale(.4)}
+.info.dim{opacity:.25}
 .info.active{
-  filter:drop-shadow(0 0 10px currentColor) drop-shadow(0 0 18px currentColor);
-  transform:scale(1.04);
+  opacity:1;
+  text-shadow:0 0 8px currentColor, 0 0 16px currentColor;
 }
 .i-sudeste{left:6.2%;top:14.4%;width:18%;text-align:right;color:#5b18e8}
 .i-sul{right:8%;top:15.2%;width:20%;color:#ff1596}
@@ -154,23 +154,6 @@ body{
   z-index:6;
   border-radius:50%;
   cursor:pointer;
-  transition:box-shadow .3s, transform .3s, background .3s;
-}
-.h-sudeste{left:34%;top:28%;width:15%;height:18%}
-.h-sul{left:45%;top:25%;width:15%;height:21%}
-.h-norte{left:31%;top:45%;width:15%;height:19%}
-.h-nordeste{left:56%;top:28%;width:15%;height:25%}
-.h-centro{left:55%;top:54%;width:17%;height:17%}
-.h-total{left:40%;top:59%;width:16%;height:17%}
-.hotspot.active{
-  background:radial-gradient(circle, color-mix(in srgb, var(--c,#f6c756) 55%, transparent) 0%, transparent 70%);
-  box-shadow:0 0 30px 10px var(--c,#f6c756), 0 0 60px 20px color-mix(in srgb, var(--c,#f6c756) 50%, transparent);
-  transform:scale(1.08);
-  animation:pulseGlow 1.6s ease-in-out infinite;
-}
-@keyframes pulseGlow{
-  0%,100%{box-shadow:0 0 30px 10px var(--c,#f6c756), 0 0 60px 20px color-mix(in srgb, var(--c,#f6c756) 50%, transparent)}
-  50%   {box-shadow:0 0 45px 16px var(--c,#f6c756), 0 0 90px 30px color-mix(in srgb, var(--c,#f6c756) 60%, transparent)}
 }
 .tooltip{
   position:fixed;

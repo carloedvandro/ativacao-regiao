@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import rawHtml from "../../public/distribuicao-regiao.html?raw";
 
 export default function DistribuicaoRegiao() {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -7,31 +8,19 @@ export default function DistribuicaoRegiao() {
     const host = hostRef.current;
     if (!host || host.shadowRoot) return;
 
-    fetch("/distribuicao-regiao.html")
-      .then((res) => res.text())
-      .then((html) => {
-        const shadow = host.attachShadow({ mode: "open" });
-        shadow.innerHTML = html;
+    const shadow = host.attachShadow({ mode: "open" });
+    shadow.innerHTML = rawHtml;
 
-        // Re-executa scripts inline que foram inseridos via innerHTML
-        const scripts = shadow.querySelectorAll("script");
-        scripts.forEach((oldScript) => {
-          const newScript = document.createElement("script");
-          Array.from(oldScript.attributes).forEach((attr) =>
-            newScript.setAttribute(attr.name, attr.value)
-          );
-          newScript.appendChild(
-            document.createTextNode(oldScript.innerHTML)
-          );
-          oldScript.parentNode?.replaceChild(newScript, oldScript);
-        });
-      })
-      .catch(() => {
-        if (host.shadowRoot) {
-          host.shadowRoot.innerHTML =
-            '<p style="padding:20px;color:#21004B">Erro ao carregar o conteúdo.</p>';
-        }
-      });
+    // Re-executa scripts inline que foram inseridos via innerHTML
+    const scripts = shadow.querySelectorAll("script");
+    scripts.forEach((oldScript) => {
+      const newScript = document.createElement("script");
+      Array.from(oldScript.attributes).forEach((attr) =>
+        newScript.setAttribute(attr.name, attr.value)
+      );
+      newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+      oldScript.parentNode?.replaceChild(newScript, oldScript);
+    });
   }, []);
 
   return (

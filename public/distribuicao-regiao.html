@@ -12,7 +12,10 @@ html,body{
   font-family:Inter,Arial,sans-serif;
   color:#111;
   overflow-x:hidden;
+  overflow-y:hidden;
+  scrollbar-width:none;
 }
+html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
 .preview{
   width:min(1080px,100%);
   margin:auto;
@@ -131,8 +134,10 @@ html,body{
 .m-sul     {right:6%; top:13%;  width:23%; height:16%}
 .m-norte   {left:5%;  top:41%;  width:21%; height:16%}
 .m-nordeste{right:6%; top:39%;  width:23%; height:16%}
-.m-centro  {right:6%; top:67%;  width:23%; height:16%}
+.m-centro  {right:6%; top:62%;  width:23%; height:22%}
 .m-total   {left:5%;  top:67%;  width:21%; height:16%}
+.m-sul-extra{right:4%; top:30%; width:18%; height:8%}
+.m-centro-extra{right:4%; top:60%; width:22%; height:6%}
 /* Estados de seleção da região */
 .info.dim{opacity:.35}
 .info.active{opacity:1;}
@@ -188,16 +193,17 @@ html,body{
   font-weight:800;
   background:#FAF7FF;
 }
-.arrow-svg{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
-.arrow-svg path{fill:none;stroke-width:.8;stroke-linecap:round}
 @media(max-width:760px){
   html,body{padding:0}
-  .titleBox{position:relative;left:auto;top:auto;margin:12px 12px 0}
-  .select{position:relative;right:auto;top:auto;margin:12px}
+  .preview{display:flex;flex-direction:column}
+  .titleBox{position:relative;left:auto;top:auto;margin:10px 12px 0;order:0}
+  .art{order:1}
+  .select{position:relative;right:auto;top:auto;margin:12px;order:2}
   .select button{width:100%}
-  .menu{left:0;right:0;width:100%}
-  .info{font-size:8px}
-  .info b{font-size:10px}
+  .menu{left:0;right:0;width:100%;position:relative;top:6px}
+  .info{font-size:7px;padding:2px 4px}
+  .info b{font-size:9px;margin-bottom:1px}
+  .info strong{font-size:8px}
 }
 </style>
 </head>

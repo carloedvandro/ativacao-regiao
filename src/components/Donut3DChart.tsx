@@ -107,6 +107,12 @@ export default function Donut3DChart({ regioes, size = 620 }: Props) {
       style={{ display: "block", overflow: "visible" }}
     >
       <defs>
+        <clipPath id="outer-clip">
+          <rect x={0} y={cy} width={size} height={size} />
+        </clipPath>
+        <clipPath id="inner-clip">
+          <rect x={0} y={0} width={size} height={cy} />
+        </clipPath>
         {slices.map((s) => (
           <linearGradient
             key={`top-${s.nome}`}
@@ -160,19 +166,20 @@ export default function Donut3DChart({ regioes, size = 620 }: Props) {
         {slices.map((s) => {
           const isHover = hover === s.nome;
           const yOffset = isHover ? -8 : 0;
-          // Outer wall: only the arc segment that's on the lower half (facing camera)
-          // Render full ribbon but clip via z-order using bottom-half check is complex; instead
-          // render the entire outer ribbon and let the top face cover the upper portion via stacking.
           return (
             <g key={`walls-${s.nome}`} style={{ transition: "transform 0.2s" }} transform={`translate(0 ${yOffset})`}>
-              <path
-                d={outerWall(cx, cy, rOuter, depth, s.start, s.end)}
-                fill={`url(#side-${s.nome})`}
-              />
-              <path
-                d={innerWall(cx, cy, rInner, depth, s.start, s.end)}
-                fill={darken(s.cor, 0.55)}
-              />
+              <g clipPath="url(#outer-clip)">
+                <path
+                  d={outerWall(cx, cy, rOuter, depth, s.start, s.end)}
+                  fill={`url(#side-${s.nome})`}
+                />
+              </g>
+              <g clipPath="url(#inner-clip)">
+                <path
+                  d={innerWall(cx, cy, rInner, depth, s.start, s.end)}
+                  fill={darken(s.cor, 0.55)}
+                />
+              </g>
               <path
                 d={radialSideWall(cx, cy, rOuter, rInner, depth, s.start)}
                 fill={darken(s.cor, 0.45)}

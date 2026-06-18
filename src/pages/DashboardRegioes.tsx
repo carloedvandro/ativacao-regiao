@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { BarChart3, ChevronDown, PieChart, RefreshCw } from "lucide-react";
 import Grafico3D from "@/components/Grafico3D";
 import EstadosPorRegiao from "@/components/EstadosPorRegiao";
+import EstadosDaRegiao from "@/components/EstadosDaRegiao";
 import TabelaTempoReal from "@/components/TabelaTempoReal";
 import { regioesBase, fmt } from "@/data/dados";
 
@@ -56,6 +57,7 @@ export default function DashboardRegioes() {
         </div>
 
         <EstadosPorRegiao />
+        <EstadosDaRegiao regiaoNome="Sudeste" />
         <TabelaTempoReal />
 
         <p className="text-center text-slate-500 mt-4">

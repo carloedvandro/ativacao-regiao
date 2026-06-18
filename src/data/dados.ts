@@ -25,6 +25,24 @@ export const regioesBase: Regiao[] = [
           { nome: "Ribeirão Preto", gb50: 312, gb80: 356, gb100: 398 },
         ],
       },
+      {
+        nome: "Minas Gerais",
+        cidades: [
+          { nome: "Belo Horizonte", gb50: 1320, gb80: 1540, gb100: 1390 },
+        ],
+      },
+      {
+        nome: "Rio de Janeiro",
+        cidades: [
+          { nome: "Rio de Janeiro", gb50: 980, gb80: 1120, gb100: 1000 },
+        ],
+      },
+      {
+        nome: "Espírito Santo",
+        cidades: [
+          { nome: "Vitória", gb50: 300, gb80: 336, gb100: 336 },
+        ],
+      },
     ],
   },
   {
@@ -40,6 +58,22 @@ export const regioesBase: Regiao[] = [
           { nome: "Curitiba", gb50: 1532, gb80: 1842, gb100: 2068 },
           { nome: "Londrina", gb50: 468, gb80: 552, gb100: 636 },
           { nome: "Maringá", gb50: 368, gb80: 420, gb100: 492 },
+        ],
+      },
+    ],
+  },
+  {
+    nome: "Outros/Exterior",
+    cor: "#f59e0b",
+    total: 7820,
+    percentual: 16.8,
+    hoje: 6,
+    estados: [
+      {
+        nome: "Exterior",
+        cidades: [
+          { nome: "Lisboa", gb50: 1200, gb80: 1400, gb100: 1500 },
+          { nome: "Miami", gb50: 1100, gb80: 1300, gb100: 1320 },
         ],
       },
     ],

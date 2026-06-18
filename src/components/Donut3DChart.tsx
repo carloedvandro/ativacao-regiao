@@ -184,7 +184,7 @@ export default function Donut3DChart({ regioes, size = 560 }: Props) {
               fontWeight={700}
               style={{ textShadow: "0 2px 6px rgba(0,0,0,0.5)" }}
             >
-              {s.percentual.toString().replace(".", ",")}%
+              {s.percentual.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
             </text>
           );
         })}

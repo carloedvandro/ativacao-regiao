@@ -2,11 +2,17 @@ import Donut3DChart from "@/components/Donut3DChart";
 import RegionCards from "@/components/RegionCards";
 import ProductionTable from "@/components/ProductionTable";
 import RealtimeBadge from "@/components/RealtimeBadge";
-import { regioes, totalAtivacoes } from "@/data/regioes";
+import { regioes } from "@/data/regioes";
 
 export default function DashboardRegioes() {
-  const left = regioes.filter((r) => ["Norte", "Centro-Oeste", "Nordeste"].includes(r.nome));
-  const right = regioes.filter((r) => ["Sudeste", "Sul"].includes(r.nome));
+  const order = ["Norte", "Centro-Oeste", "Nordeste"];
+  const left = order
+    .map((n) => regioes.find((r) => r.nome === n)!)
+    .filter(Boolean);
+  const right = ["Sudeste", "Sul"]
+    .map((n) => regioes.find((r) => r.nome === n)!)
+    .filter(Boolean);
+  const totalAtivacoes = 46782;
 
   return (
     <div className="min-h-screen bg-slate-50 px-6 py-8">

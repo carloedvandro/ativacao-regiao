@@ -27,7 +27,7 @@ export default function RegionCards({ regioes }: { regioes: Regiao[] }) {
               {r.total.toLocaleString("pt-BR")}
             </div>
             <div className="text-base font-semibold" style={{ color: r.cor }}>
-              {r.percentual.toString().replace(".", ",")}%
+              {r.percentual.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
             </div>
             <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
               <div

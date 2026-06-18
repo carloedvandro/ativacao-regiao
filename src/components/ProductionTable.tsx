@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactElement } from "react";
 import type { Regiao } from "@/types/dashboard";
 
 function Sparkline({ values, color }: { values: number[]; color: string }) {
@@ -121,7 +121,7 @@ function RegionRows({
   cidades: Array<{ estado: string; nome: string; planos: { gb50: number; gb80: number; gb100: number }; variacao?: number; tendencia?: number[] }>;
   open: boolean;
   onToggle: () => void;
-  Sparkline: (p: { values: number[]; color: string }) => JSX.Element;
+  Sparkline: (p: { values: number[]; color: string }) => ReactElement;
 }) {
   return (
     <>

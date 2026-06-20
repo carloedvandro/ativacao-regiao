@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
-import { regioesBase, fmt } from "@/data/dados";
+import { ChevronDown, Globe } from "lucide-react";
+import { regioesBase } from "@/data/dados";
 import MapaBrasil3D from "./MapaBrasil3D";
 import Bar3D from "./Bar3D";
 
@@ -18,24 +18,40 @@ export default function DistribuicaoPorRegiao() {
 
   return (
     <section
-      className="bg-white rounded-[32px] border border-[#E9DDF8] p-6 md:p-8 mt-8"
-      style={{ boxShadow: "0 25px 70px rgba(106,13,173,.12)" }}
+      className="rounded-[28px] p-6 md:p-7 mt-6"
+      style={{
+        background: "linear-gradient(180deg, #FFFFFF, #F6EFFB)",
+        border: "1.5px solid #F6C756",
+        boxShadow: "0 20px 50px rgba(106,13,173,.12)",
+      }}
     >
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl md:text-3xl font-black text-[#3A0068]">
-            Distribuição por Região
-          </h2>
-          <p className="text-slate-500">Visualização 3D e participação por estado</p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex items-start gap-4">
+          <div
+            className="shrink-0 w-14 h-14 rounded-full grid place-items-center"
+            style={{
+              background: "linear-gradient(180deg, #6A0DAD, #2A0050)",
+              border: "2px solid #F6C756",
+              boxShadow: "0 8px 18px rgba(74,0,117,.35)",
+            }}
+          >
+            <Globe className="w-6 h-6 text-[#F6C756]" />
+          </div>
+          <div>
+            <h2 className="text-xl md:text-2xl font-black tracking-wide text-[#3A0068] uppercase">
+              Distribuição por Região
+            </h2>
+            <p className="text-slate-500 text-sm">Selecione uma região para visualizar</p>
+          </div>
         </div>
         <div className="relative">
           <select
             value={sel}
             onChange={(e) => setSel(e.target.value)}
-            className="appearance-none pl-5 pr-12 py-3 rounded-xl font-bold text-white"
+            className="appearance-none pl-5 pr-12 py-2.5 rounded-xl font-bold text-white"
             style={{
               background: "linear-gradient(180deg, #8B2BE2, #4A0075)",
-              border: "2px solid #F6C756",
+              border: "1.5px solid #F6C756",
               boxShadow: "0 8px 18px rgba(106,13,173,.35)",
             }}
           >
@@ -49,38 +65,56 @@ export default function DistribuicaoPorRegiao() {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-[1.3fr_.9fr] gap-8 mt-6">
-        <div>
-          <MapaBrasil3D destaque={sel} onSelect={setSel} />
+      <div className="grid lg:grid-cols-[1fr_1.2fr] gap-6 mt-5">
+        {/* Map panel (dark purple) */}
+        <div
+          className="rounded-[24px] p-5 flex items-center gap-4"
+          style={{
+            background: "linear-gradient(160deg, #3A0068 0%, #1A0033 100%)",
+            border: "1.5px solid #F6C756",
+            boxShadow: "0 12px 30px rgba(26,0,51,.35)",
+          }}
+        >
+          <div className="flex-1">
+            <MapaBrasil3D destaque={sel} onSelect={setSel} />
+          </div>
+          <div className="text-center min-w-[150px]">
+            <p className="text-[#F6C756] text-3xl font-black">{regiao.nome}</p>
+            <p className="text-white text-5xl font-black my-1">
+              {regiao.hoje.toString().padStart(2, "0")}
+            </p>
+            <p className="text-white/70 text-sm">ativações registradas</p>
+            <div
+              className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-xl"
+              style={{
+                background: "rgba(0,0,0,.25)",
+                border: "1.5px solid #F6C756",
+              }}
+            >
+              <span className="text-[#F6C756] font-black">
+                {regiao.percentual.toFixed(1).replace(".", ",")}%
+              </span>
+              <span className="text-white/80 text-xs">do total geral</span>
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-col">
-          <div
-            className="rounded-2xl p-5 mb-4 text-white"
-            style={{
-              background: "linear-gradient(180deg, #8B2BE2, #4A0075)",
-              border: "2px solid #F6C756",
-            }}
-          >
-            <p className="uppercase tracking-widest text-xs opacity-80">
-              Região selecionada
-            </p>
-            <h3 className="text-3xl font-black">{regiao.nome}</h3>
-            <p className="text-[#F6C756] text-2xl font-black mt-1">
-              {fmt(regiao.total)} ativações · {regiao.percentual.toFixed(1).replace(".", ",")}%
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            {estados.map((e) => (
-              <div key={e.nome}>
-                <Bar3D label={e.sigla} value={e.total} max={max} />
-                <p className="text-xs text-slate-500 ml-12 mt-1">
-                  {e.nome} · {((e.total / totalReg) * 100).toFixed(1).replace(".", ",")}%
-                </p>
-              </div>
-            ))}
-          </div>
+        {/* Estados list */}
+        <div className="flex flex-col gap-3">
+          {estados.map((e, i) => (
+            <div key={e.nome} className="grid grid-cols-[minmax(0,1fr)] gap-1">
+              <p className="text-sm text-[#3A0068] font-semibold pl-[88px]">
+                {e.nome}
+              </p>
+              <Bar3D
+                rank={i + 1}
+                label={e.sigla}
+                value={e.total}
+                max={max}
+                trailing={`${((e.total / totalReg) * 100).toFixed(1).replace(".", ",")}%`}
+              />
+            </div>
+          ))}
         </div>
       </div>
     </section>

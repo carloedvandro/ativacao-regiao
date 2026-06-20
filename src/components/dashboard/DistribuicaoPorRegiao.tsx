@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronDown, Globe } from "lucide-react";
-import { regioesBase } from "@/data/dados";
+import { regioesBase, siglaDe } from "@/data/dados";
 import MapaBrasil3D from "./MapaBrasil3D";
 import Bar3D from "./Bar3D";
 
@@ -10,7 +10,7 @@ export default function DistribuicaoPorRegiao() {
 
   const estados = regiao.estados.map((e) => ({
     nome: e.nome,
-    sigla: e.nome.slice(0, 2).toUpperCase(),
+    sigla: siglaDe(e.nome),
     total: e.cidades.reduce((s, c) => s + c.gb50 + c.gb80 + c.gb100, 0),
   }));
   const totalReg = estados.reduce((s, e) => s + e.total, 0) || 1;

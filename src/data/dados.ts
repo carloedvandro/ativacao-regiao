@@ -151,3 +151,22 @@ export const regioesBase: Regiao[] = [
 export function fmt(n: number) {
   return n.toLocaleString("pt-BR");
 }
+
+export const SIGLAS: Record<string, string> = {
+  "São Paulo": "SP",
+  "Minas Gerais": "MG",
+  "Rio de Janeiro": "RJ",
+  "Espírito Santo": "ES",
+  "Paraná": "PR",
+  "Rio Grande do Sul": "RS",
+  "Santa Catarina": "SC",
+  "Mato Grosso do Sul": "MS",
+  "Bahia": "BA",
+  "Goiás": "GO",
+  "Pará": "PA",
+  "Exterior": "EX",
+};
+
+export function siglaDe(nome: string) {
+  return SIGLAS[nome] ?? nome.slice(0, 2).toUpperCase();
+}

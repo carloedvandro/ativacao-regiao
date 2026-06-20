@@ -1,20 +1,8 @@
 import { useMemo, useState } from "react";
 import { BarChart3, Signal } from "lucide-react";
-import { regioesBase } from "@/data/dados";
+import { regioesBase, siglaDe } from "@/data/dados";
 import Bar3D from "./Bar3D";
 import DashboardStatusBar from "./DashboardHeader";
-
-const SIGLAS: Record<string, string> = {
-  "São Paulo": "SP",
-  "Minas Gerais": "MG",
-  "Rio de Janeiro": "RJ",
-  "Espírito Santo": "ES",
-  "Paraná": "PR",
-  "Bahia": "BA",
-  "Goiás": "GO",
-  "Pará": "PA",
-  "Exterior": "EX",
-};
 
 export default function AtivacoesPorEstado() {
   const estados = useMemo(() => {
@@ -23,7 +11,7 @@ export default function AtivacoesPorEstado() {
         const total = e.cidades.reduce((s, c) => s + c.gb50 + c.gb80 + c.gb100, 0);
         return {
           nome: e.nome,
-          sigla: SIGLAS[e.nome] ?? e.nome.slice(0, 2).toUpperCase(),
+          sigla: siglaDe(e.nome),
           regiao: r.nome,
           regiaoCor: r.cor,
           hoje: Math.max(2, Math.round(total / 600)),

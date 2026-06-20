@@ -1,17 +1,19 @@
 import { regioesBase } from "@/data/dados";
 
 // Stylized Brazil regions on a 400x460 viewBox
+// Stylized Brazil regions on a 400x460 viewBox.
+// Paths are simplified silhouettes that together compose a recognizable Brazil shape.
 const REGION_PATHS: Record<string, string> = {
   Norte:
-    "M40 70 L120 50 L220 45 L260 95 L295 160 L255 205 L155 215 L75 175 L45 125 Z",
+    "M 45 75 C 70 45, 160 35, 235 55 L 285 90 L 300 145 L 285 175 L 245 195 L 165 205 L 95 185 L 55 145 Z",
   Nordeste:
-    "M220 45 L300 60 L355 110 L370 175 L355 235 L305 255 L270 215 L255 205 L295 160 L260 95 Z",
+    "M 235 55 C 290 60, 340 95, 360 140 L 365 200 L 340 240 L 295 250 L 270 220 L 255 195 L 245 195 L 285 175 L 300 145 L 285 90 Z",
   "Centro-Oeste":
-    "M120 200 L255 205 L270 215 L280 275 L235 315 L150 310 L110 260 Z",
+    "M 165 205 L 245 195 L 255 195 L 270 220 L 280 275 L 240 305 L 165 305 L 130 265 L 130 220 Z",
   Sudeste:
-    "M270 215 L305 255 L340 280 L355 325 L305 345 L255 330 L235 315 L280 275 Z",
+    "M 270 220 L 295 250 L 335 270 L 350 315 L 320 345 L 270 345 L 240 320 L 240 305 L 280 275 Z",
   Sul:
-    "M150 310 L235 315 L255 330 L240 380 L185 415 L130 385 L115 345 Z",
+    "M 165 305 L 240 305 L 240 320 L 235 360 L 200 405 L 150 385 L 125 345 L 130 320 Z",
   "Outros/Exterior": "",
 };
 

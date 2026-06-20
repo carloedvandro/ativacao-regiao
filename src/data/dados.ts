@@ -60,6 +60,26 @@ export const regioesBase: Regiao[] = [
           { nome: "Maringá", gb50: 368, gb80: 420, gb100: 492 },
         ],
       },
+      {
+        nome: "Rio Grande do Sul",
+        cidades: [
+          { nome: "Porto Alegre", gb50: 1820, gb80: 2080, gb100: 2240 },
+          { nome: "Caxias do Sul", gb50: 540, gb80: 620, gb100: 700 },
+        ],
+      },
+      {
+        nome: "Santa Catarina",
+        cidades: [
+          { nome: "Florianópolis", gb50: 760, gb80: 880, gb100: 960 },
+          { nome: "Joinville", gb50: 420, gb80: 488, gb100: 540 },
+        ],
+      },
+      {
+        nome: "Mato Grosso do Sul",
+        cidades: [
+          { nome: "Campo Grande", gb50: 0, gb80: 0, gb100: 0 },
+        ],
+      },
     ],
   },
   {

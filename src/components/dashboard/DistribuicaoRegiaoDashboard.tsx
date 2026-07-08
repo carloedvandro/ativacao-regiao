@@ -327,7 +327,7 @@ export default function DistribuicaoRegiaoDashboard() {
   );
 }
 
-function RegionLabel({
+const RegionLabel = memo(function RegionLabel({
   regiao,
   align,
 }: {
@@ -352,8 +352,8 @@ function RegionLabel({
           background: `${regiao.cor}12`,
         }}
       >
-        {fmt(regiao.total)}
+        <CountUp value={regiao.total} format={fmt} />
       </span>
     </div>
   );
-}
+});

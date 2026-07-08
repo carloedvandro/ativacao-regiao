@@ -11,6 +11,7 @@ import {
 import Donut3DChart from "@/components/Donut3DChart";
 import { regioesBase, fmt } from "@/data/dados";
 import type { Regiao } from "@/types/dashboard";
+import CountUp from "@/components/CountUp";
 
 function useNow() {
   const [now, setNow] = useState(new Date());
@@ -169,9 +170,12 @@ export default function DistribuicaoRegiaoDashboard() {
               <BarChart3 className="w-5 h-5 text-white" />
             </div>
             <p className="font-bold text-slate-600">Total de ativações</p>
-            <p className="text-2xl md:text-3xl font-black text-[#1A0033] tabular-nums">
-              {fmt(totalGeral)}
-            </p>
+            <CountUp
+              key="total-geral"
+              value={totalGeral}
+              format={fmt}
+              className="text-2xl md:text-3xl font-black text-[#1A0033] tabular-nums bump-in"
+            />
           </div>
           <p className="text-xs text-slate-500 flex items-center gap-2">
             <RefreshCcw className="w-3.5 h-3.5" /> Atualizado agora há poucos segundos
@@ -200,9 +204,11 @@ export default function DistribuicaoRegiaoDashboard() {
               <p className="font-black text-sm" style={{ color: r.cor }}>
                 {r.nome}
               </p>
-              <p className="text-2xl font-black text-[#1A0033] tabular-nums">
-                {fmt(r.total)}
-              </p>
+              <CountUp
+                value={r.total}
+                format={fmt}
+                className="text-2xl font-black text-[#1A0033] tabular-nums"
+              />
               <p className="font-black" style={{ color: r.cor }}>
                 {r.percentual.toFixed(1).replace(".", ",")}%
               </p>
@@ -216,7 +222,8 @@ export default function DistribuicaoRegiaoDashboard() {
                 />
               </div>
               <p className="text-sm text-green-600 font-bold mt-2 flex items-center gap-1">
-                <TrendingUp className="w-4 h-4" /> {r.hoje} hoje
+                <TrendingUp className="w-4 h-4" />
+                <CountUp key={`hoje-${r.nome}`} value={r.hoje} className="bump-in" /> hoje
               </p>
               <p className="text-xs text-slate-500">Atualizado agora</p>
             </div>
@@ -271,21 +278,29 @@ export default function DistribuicaoRegiaoDashboard() {
                     {tick === 0 ? "—" : `${((now.getTime() % 3000) / 1000).toFixed(0)}s atrás`}
                   </td>
                   <td className="py-3 text-center font-bold text-green-600">
-                    +{r.novas}
+                    <span key={`nv-${r.nome}-${tick}`} className="inline-block px-2 py-0.5 flash-cell bump-in">
+                      +{r.novas}
+                    </span>
                   </td>
                   <td className="py-3 text-right font-black text-[#1A0033] tabular-nums">
-                    {fmt(r.total)}
+                    <CountUp value={r.total} format={fmt} />
                   </td>
                   <td className="py-3 text-center font-bold text-green-600">
-                    +{r.hoje} hoje
+                    <span key={`var-${r.nome}-${tick}`} className="inline-block px-2 py-0.5 flash-cell">
+                      +<CountUp value={r.hoje} /> hoje
+                    </span>
                   </td>
                   <td className="py-3 text-right">
                     <span className="inline-flex items-end gap-0.5 h-5">
                       {[3, 5, 4, 7, 6].map((h, k) => (
                         <span
-                          key={k}
-                          className="w-1 rounded-sm"
-                          style={{ height: `${h * 2}px`, background: r.cor }}
+                          key={`${tick}-${k}`}
+                          className="w-1 rounded-sm trend-bar"
+                          style={{
+                            height: `${h * 2}px`,
+                            background: r.cor,
+                            animationDelay: `${k * 60}ms`,
+                          }}
                         />
                       ))}
                     </span>

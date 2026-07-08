@@ -275,7 +275,7 @@ export default function DistribuicaoRegiaoDashboard() {
                     </span>
                   </td>
                   <td className="py-3 text-slate-500">
-                    {tick === 0 ? "—" : `${((now.getTime() % 3000) / 1000).toFixed(0)}s atrás`}
+                    {tick === 0 ? "—" : "Agora"}
                   </td>
                   <td className="py-3 text-center font-bold text-green-600">
                     <span key={`nv-${r.nome}-${tick}`} className="inline-block px-2 py-0.5 flash-cell bump-in">
@@ -319,8 +319,8 @@ export default function DistribuicaoRegiaoDashboard() {
         </div>
 
         <p className="text-center text-xs text-slate-400 mt-4">
-          ⓘ Os dados são atualizados automaticamente em tempo real. Última atualização: {dataStr}{" "}
-          às {hora}
+          ⓘ Os dados são atualizados automaticamente em tempo real. Última atualização:{" "}
+          <LiveClock />
         </p>
       </section>
     </div>

@@ -60,10 +60,10 @@ export default function DistribuicaoRegiaoDashboard() {
   return (
     <div className="flex flex-col gap-6">
       {/* Header */}
-      <header className="flex flex-wrap items-start justify-between gap-4">
-        <div className="flex items-start gap-4">
+      <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 sm:flex sm:flex-wrap sm:items-start sm:justify-between">
+        <div className="flex min-w-0 items-start gap-4">
           <div
-            className="w-14 h-14 rounded-2xl grid place-items-center"
+            className="w-14 h-14 shrink-0 rounded-2xl grid place-items-center"
             style={{
               background: "linear-gradient(160deg, #8B2BE2, #4A0075)",
               boxShadow: "0 10px 24px rgba(106,13,173,.35), inset 0 2px 3px rgba(255,255,255,.25)",
@@ -71,19 +71,20 @@ export default function DistribuicaoRegiaoDashboard() {
           >
             <PieChart className="w-7 h-7 text-white" />
           </div>
-          <div>
-            <h1 className="text-3xl md:text-4xl font-black text-[#1A0033]">
+          <div className="min-w-0">
+            <h1 className="truncate text-2xl sm:text-3xl md:text-4xl font-black text-[#1A0033]">
               Distribuição por Região
             </h1>
-            <p className="text-slate-500">Ativações SmartVoz por região</p>
+            <p className="truncate text-slate-500">Ativações SmartVoz por região</p>
           </div>
         </div>
-        <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-white border border-slate-200 shadow-sm">
-          <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
-          <div className="leading-tight">
+        <div className="flex shrink-0 items-center gap-3 px-4 py-2 rounded-xl bg-white border border-slate-200 shadow-sm">
+          <span className="w-2.5 h-2.5 shrink-0 rounded-full bg-green-500 animate-pulse" />
+          <div className="leading-tight hidden sm:block">
             <p className="font-black text-slate-800 text-sm">Em tempo real</p>
             <p className="text-xs text-slate-500">Atualizando a cada 3s</p>
           </div>
+          <span className="sm:hidden text-xs font-bold text-slate-700">Ao vivo</span>
         </div>
       </header>
 

@@ -89,8 +89,7 @@ function Donut3DChart({ regioes, size = 620 }: Props) {
     <svg
       viewBox={`0 0 ${size} ${size * 0.75}`}
       width="100%"
-      height="auto"
-      style={{ display: "block", overflow: "visible" }}
+      style={{ display: "block", overflow: "visible", height: "auto" }}
     >
       <defs>
         <clipPath id="front-clip">

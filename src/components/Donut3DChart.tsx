@@ -6,57 +6,43 @@ type Props = {
   size?: number;
 };
 
-function polar(cx: number, cy: number, r: number, angle: number) {
+// Isometric tilted pie: top face is an ellipse (rx > ry), with a vertical
+// extrusion (depth) that forms the visible "crust" on the front half.
+function polar(cx: number, cy: number, rx: number, ry: number, angle: number) {
   const a = (angle - 90) * (Math.PI / 180);
-  return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
+  return { x: cx + rx * Math.cos(a), y: cy + ry * Math.sin(a) };
 }
 
-function donutTop(
+// Top pie slice (ellipse sector, no hole => real pie, not donut)
+function pieTop(
   cx: number,
   cy: number,
-  rOuter: number,
-  rInner: number,
+  rx: number,
+  ry: number,
   a1: number,
   a2: number,
 ) {
   const large = a2 - a1 > 180 ? 1 : 0;
-  const o1 = polar(cx, cy, rOuter, a1);
-  const o2 = polar(cx, cy, rOuter, a2);
-  const i2 = polar(cx, cy, rInner, a2);
-  const i1 = polar(cx, cy, rInner, a1);
-  return `M ${o1.x} ${o1.y} A ${rOuter} ${rOuter} 0 ${large} 1 ${o2.x} ${o2.y} L ${i2.x} ${i2.y} A ${rInner} ${rInner} 0 ${large} 0 ${i1.x} ${i1.y} Z`;
+  const p1 = polar(cx, cy, rx, ry, a1);
+  const p2 = polar(cx, cy, rx, ry, a2);
+  return `M ${cx} ${cy} L ${p1.x} ${p1.y} A ${rx} ${ry} 0 ${large} 1 ${p2.x} ${p2.y} Z`;
 }
 
-// Outer wall ribbon (visible only on bottom half / where outer arc faces viewer)
-function outerWall(cx: number, cy: number, r: number, depth: number, a1: number, a2: number) {
-  const large = a2 - a1 > 180 ? 1 : 0;
-  const p1 = polar(cx, cy, r, a1);
-  const p2 = polar(cx, cy, r, a2);
-  return `M ${p1.x} ${p1.y} A ${r} ${r} 0 ${large} 1 ${p2.x} ${p2.y} L ${p2.x} ${p2.y + depth} A ${r} ${r} 0 ${large} 0 ${p1.x} ${p1.y + depth} Z`;
-}
-
-// Inner wall ribbon (visible on top half / where inner arc faces viewer-down)
-function innerWall(cx: number, cy: number, r: number, depth: number, a1: number, a2: number) {
-  const large = a2 - a1 > 180 ? 1 : 0;
-  const p1 = polar(cx, cy, r, a1);
-  const p2 = polar(cx, cy, r, a2);
-  return `M ${p1.x} ${p1.y} A ${r} ${r} 0 ${large} 1 ${p2.x} ${p2.y} L ${p2.x} ${p2.y + depth} A ${r} ${r} 0 ${large} 0 ${p1.x} ${p1.y + depth} Z`;
-}
-
-// Radial side wall at a given angle (the cut edge of a slice) — a quad
-function radialSideWall(
+// Outer front wall (crust) for the portion of the slice arc that is on the
+// front (lower) half of the ellipse. Clipped in SVG to y > cy.
+function outerWall(
   cx: number,
   cy: number,
-  rOuter: number,
-  rInner: number,
+  rx: number,
+  ry: number,
   depth: number,
-  angle: number,
+  a1: number,
+  a2: number,
 ) {
-  const outerT = polar(cx, cy, rOuter, angle);
-  const innerT = polar(cx, cy, rInner, angle);
-  const outerB = { x: outerT.x, y: outerT.y + depth };
-  const innerB = { x: innerT.x, y: innerT.y + depth };
-  return `M ${outerT.x} ${outerT.y} L ${innerT.x} ${innerT.y} L ${innerB.x} ${innerB.y} L ${outerB.x} ${outerB.y} Z`;
+  const large = a2 - a1 > 180 ? 1 : 0;
+  const p1 = polar(cx, cy, rx, ry, a1);
+  const p2 = polar(cx, cy, rx, ry, a2);
+  return `M ${p1.x} ${p1.y} A ${rx} ${ry} 0 ${large} 1 ${p2.x} ${p2.y} L ${p2.x} ${p2.y + depth} A ${rx} ${ry} 0 ${large} 0 ${p1.x} ${p1.y + depth} Z`;
 }
 
 function darken(hex: string, amount: number) {
@@ -81,8 +67,8 @@ export default function Donut3DChart({ regioes, size = 620 }: Props) {
 
   const slices = useMemo(() => {
     const sum = regioes.reduce((s, r) => s + r.total, 0);
-    const gap = 1.2; // degrees between slices
-    let acc = -90; // start at top
+    const gap = 0.6;
+    let acc = -90;
     return regioes.map((r) => {
       const sweep = (r.total / sum) * 360;
       const start = acc + gap / 2;
@@ -94,24 +80,21 @@ export default function Donut3DChart({ regioes, size = 620 }: Props) {
   }, [regioes]);
 
   const cx = size / 2;
-  const cy = size / 2 - 18;
-  const rOuter = size * 0.4;
-  const rInner = size * 0.22;
-  const depth = 46;
+  const cy = size / 2 - 30;
+  const rx = size * 0.44;
+  const ry = size * 0.24; // squashed => isometric tilt
+  const depth = 70;
 
   return (
     <svg
-      viewBox={`0 0 ${size} ${size + 20}`}
+      viewBox={`0 0 ${size} ${size * 0.75}`}
       width="100%"
       height="auto"
       style={{ display: "block", overflow: "visible" }}
     >
       <defs>
-        <clipPath id="outer-clip">
+        <clipPath id="front-clip">
           <rect x={0} y={cy} width={size} height={size} />
-        </clipPath>
-        <clipPath id="inner-clip">
-          <rect x={0} y={0} width={size} height={cy} />
         </clipPath>
         {slices.map((s) => (
           <linearGradient
@@ -122,9 +105,9 @@ export default function Donut3DChart({ regioes, size = 620 }: Props) {
             x2="0%"
             y2="100%"
           >
-            <stop offset="0%" stopColor={lighten(s.cor, 0.35)} />
-            <stop offset="55%" stopColor={s.cor} />
-            <stop offset="100%" stopColor={darken(s.cor, 0.15)} />
+            <stop offset="0%" stopColor={lighten(s.cor, 0.45)} />
+            <stop offset="45%" stopColor={lighten(s.cor, 0.1)} />
+            <stop offset="100%" stopColor={darken(s.cor, 0.1)} />
           </linearGradient>
         ))}
         {slices.map((s) => (
@@ -136,76 +119,81 @@ export default function Donut3DChart({ regioes, size = 620 }: Props) {
             x2="0%"
             y2="100%"
           >
-            <stop offset="0%" stopColor={darken(s.cor, 0.25)} />
-            <stop offset="100%" stopColor={darken(s.cor, 0.65)} />
+            <stop offset="0%" stopColor={darken(s.cor, 0.15)} />
+            <stop offset="55%" stopColor={darken(s.cor, 0.45)} />
+            <stop offset="100%" stopColor={darken(s.cor, 0.7)} />
           </linearGradient>
         ))}
         <radialGradient id="ground" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="rgba(0,0,0,0.55)" />
-          <stop offset="70%" stopColor="rgba(0,0,0,0.15)" />
-          <stop offset="100%" stopColor="rgba(0,0,0,0)" />
+          <stop offset="0%" stopColor="rgba(20,0,68,0.55)" />
+          <stop offset="70%" stopColor="rgba(20,0,68,0.12)" />
+          <stop offset="100%" stopColor="rgba(20,0,68,0)" />
         </radialGradient>
-        <radialGradient id="topshine" cx="50%" cy="15%" r="65%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.55" />
-          <stop offset="55%" stopColor="#ffffff" stopOpacity="0.05" />
+        <radialGradient id="topshine" cx="35%" cy="10%" r="75%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.75" />
+          <stop offset="45%" stopColor="#ffffff" stopOpacity="0.1" />
           <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
         </radialGradient>
+        <linearGradient id="rimshade" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="rgba(0,0,0,0)" />
+          <stop offset="100%" stopColor="rgba(0,0,0,0.35)" />
+        </linearGradient>
       </defs>
 
       {/* Ground shadow */}
       <ellipse
         cx={cx}
-        cy={cy + rOuter + depth + 14}
-        rx={rOuter * 1.05}
-        ry={depth * 0.55}
+        cy={cy + depth + ry + 10}
+        rx={rx * 1.05}
+        ry={ry * 0.55}
         fill="url(#ground)"
       />
 
-      {/* Side walls per slice (drawn before top) */}
-      <g>
-        {slices.map((s) => {
-          const isHover = hover === s.nome;
-          const yOffset = isHover ? -8 : 0;
-          return (
-            <g key={`walls-${s.nome}`} style={{ transition: "transform 0.2s" }} transform={`translate(0 ${yOffset})`}>
-              <g clipPath="url(#outer-clip)">
-                <path
-                  d={outerWall(cx, cy, rOuter, depth, s.start, s.end)}
-                  fill={`url(#side-${s.nome})`}
-                />
-              </g>
-              <g clipPath="url(#inner-clip)">
-                <path
-                  d={innerWall(cx, cy, rInner, depth, s.start, s.end)}
-                  fill={darken(s.cor, 0.55)}
-                />
-              </g>
-              <path
-                d={radialSideWall(cx, cy, rOuter, rInner, depth, s.start)}
-                fill={darken(s.cor, 0.45)}
-              />
-              <path
-                d={radialSideWall(cx, cy, rOuter, rInner, depth, s.end)}
-                fill={darken(s.cor, 0.35)}
-              />
-            </g>
-          );
-        })}
+      {/* Base ellipse (bottom of the pie, fully dark) */}
+      <ellipse
+        cx={cx}
+        cy={cy + depth}
+        rx={rx}
+        ry={ry}
+        fill="#1a0033"
+        opacity={0.35}
+      />
+
+      {/* Front crust (walls) — only the visible front half of each slice */}
+      <g clipPath="url(#front-clip)">
+        {slices.map((s) => (
+          <path
+            key={`wall-${s.nome}`}
+            d={outerWall(cx, cy, rx, ry, depth, s.start, s.end)}
+            fill={`url(#side-${s.nome})`}
+            stroke={darken(s.cor, 0.55)}
+            strokeWidth={0.6}
+          />
+        ))}
+        {/* subtle bottom shade on the crust */}
+        <path
+          d={`M ${cx - rx} ${cy} A ${rx} ${ry} 0 0 0 ${cx + rx} ${cy} L ${cx + rx} ${cy + depth} A ${rx} ${ry} 0 0 1 ${cx - rx} ${cy + depth} Z`}
+          fill="url(#rimshade)"
+          pointerEvents="none"
+        />
       </g>
 
       {/* Top faces */}
       <g>
         {slices.map((s) => {
           const isHover = hover === s.nome;
-          const yOffset = isHover ? -8 : 0;
+          const mid = polar(cx, cy, 1, 1, s.mid);
+          const dx = isHover ? mid.x - cx : 0;
+          const dy = isHover ? mid.y - cy : 0;
+          const k = isHover ? 0.08 : 0;
           return (
             <path
-              key={`top-face-${s.nome}`}
-              d={donutTop(cx, cy + yOffset, rOuter, rInner, s.start, s.end)}
+              key={`top-${s.nome}`}
+              d={pieTop(cx + dx * k * rx, cy + dy * k * ry, rx, ry, s.start, s.end)}
               fill={`url(#top-${s.nome})`}
-              stroke={darken(s.cor, 0.3)}
-              strokeWidth={0.5}
-              style={{ cursor: "pointer", transition: "all 0.2s ease" }}
+              stroke={darken(s.cor, 0.35)}
+              strokeWidth={0.75}
+              style={{ cursor: "pointer", transition: "d 0.2s ease" }}
               onMouseEnter={() => setHover(s.nome)}
               onMouseLeave={() => setHover(null)}
             />
@@ -213,21 +201,21 @@ export default function Donut3DChart({ regioes, size = 620 }: Props) {
         })}
       </g>
 
-      {/* Top highlight ring */}
+      {/* Glossy top highlight */}
       <ellipse
         cx={cx}
-        cy={cy - rOuter * 0.05}
-        rx={rOuter}
-        ry={rOuter}
+        cy={cy}
+        rx={rx}
+        ry={ry}
         fill="url(#topshine)"
         pointerEvents="none"
       />
 
-      {/* Percent labels */}
+      {/* Percent labels on top face */}
       <g pointerEvents="none">
         {slices.map((s) => {
-          const rMid = (rOuter + rInner) / 2;
-          const p = polar(cx, cy, rMid, s.mid);
+          const p = polar(cx, cy, rx * 0.62, ry * 0.62, s.mid);
+          if (s.percentual < 3) return null;
           return (
             <text
               key={`lbl-${s.nome}`}
@@ -236,9 +224,9 @@ export default function Donut3DChart({ regioes, size = 620 }: Props) {
               textAnchor="middle"
               dominantBaseline="central"
               fill="#fff"
-              fontSize={size * 0.05}
-              fontWeight={800}
-              style={{ textShadow: "0 2px 6px rgba(0,0,0,0.55)" }}
+              fontSize={Math.max(11, size * 0.028)}
+              fontWeight={900}
+              style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}
             >
               {s.percentual.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
             </text>

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   BarChart3,
   ChevronDown,
@@ -30,23 +30,60 @@ function useTick(ms: number) {
   return n;
 }
 
-type LiveRegiao = Regiao & { hoje: number; ultima: number };
+type LiveRegiao = Regiao & { hoje: number; ultima: number; novas: number };
 
 export default function DistribuicaoRegiaoDashboard() {
   const now = useNow();
   const tick = useTick(3000);
 
-  // Live-ish data: seed from regioesBase and increment "hoje" over time
-  const regioes = useMemo<LiveRegiao[]>(() => {
-    return regioesBase.map((r, i) => ({
+  // Live state: each tick adds new activations proportional to base share
+  const [state, setState] = useState<LiveRegiao[]>(() =>
+    regioesBase.map((r) => ({
       nome: r.nome,
       cor: r.cor,
-      total: r.total + tick * (i === 0 ? 1 : 0),
+      total: r.total,
       percentual: r.percentual,
-      hoje: r.hoje,
-      ultima: (i * 3 + (tick % 5)) as number,
-    }));
+      hoje: r.hoje ?? 0,
+      ultima: 0,
+      novas: 0,
+    })),
+  );
+  const lastTick = useRef(0);
+
+  useEffect(() => {
+    if (tick === 0 || tick === lastTick.current) return;
+    lastTick.current = tick;
+    setState((prev) => {
+      const totalBase = prev.reduce((s, r) => s + r.total, 0);
+      return prev.map((r) => {
+        // Weighted random: bigger regions get more new activations
+        const share = r.total / totalBase;
+        const base = Math.max(1, Math.round(share * 8));
+        const jitter = Math.floor(Math.random() * 3); // 0..2
+        const novas = base + jitter;
+        return {
+          ...r,
+          total: r.total + novas,
+          hoje: r.hoje + novas,
+          novas,
+          ultima: 0,
+        };
+      });
+    });
   }, [tick]);
+
+  // Recompute percentuals from live totals
+  const regioes = useMemo<LiveRegiao[]>(() => {
+    const total = state.reduce((s, r) => s + r.total, 0) || 1;
+    return state.map((r) => ({ ...r, percentual: (r.total / total) * 100 }));
+  }, [state]);
+
+  // Age of "última atualização" in seconds, ticking every second via `now`
+  const secondsSinceTick = Math.min(
+    3,
+    Math.floor((Date.now() - (lastTick.current ? Date.now() - (Date.now() % 3000) : Date.now())) / 1000),
+  );
+  void secondsSinceTick; // reserved
 
   const totalGeral = regioes.reduce((s, r) => s + r.total, 0);
   const cardsOrdenados = [...regioes].sort((a, b) => b.total - a.total);
@@ -222,7 +259,7 @@ export default function DistribuicaoRegiaoDashboard() {
               </tr>
             </thead>
             <tbody>
-              {cardsOrdenados.map((r, i) => (
+              {cardsOrdenados.map((r) => (
                 <tr key={r.nome} className="border-b border-slate-100 last:border-0">
                   <td className="py-3 font-black text-[#1A0033]">
                     <span className="inline-flex items-center gap-2">
@@ -231,10 +268,10 @@ export default function DistribuicaoRegiaoDashboard() {
                     </span>
                   </td>
                   <td className="py-3 text-slate-500">
-                    {i === 0 ? "Agora" : `${i * 3}s atrás`}
+                    {tick === 0 ? "—" : `${((now.getTime() % 3000) / 1000).toFixed(0)}s atrás`}
                   </td>
                   <td className="py-3 text-center font-bold text-green-600">
-                    +{Math.max(1, Math.round(r.hoje / 6))}
+                    +{r.novas}
                   </td>
                   <td className="py-3 text-right font-black text-[#1A0033] tabular-nums">
                     {fmt(r.total)}

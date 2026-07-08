@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   BarChart3,
   ChevronDown,
@@ -13,15 +13,6 @@ import { regioesBase, fmt } from "@/data/dados";
 import type { Regiao } from "@/types/dashboard";
 import CountUp from "@/components/CountUp";
 
-function useNow() {
-  const [now, setNow] = useState(new Date());
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(t);
-  }, []);
-  return now;
-}
-
 function useTick(ms: number) {
   const [n, setN] = useState(0);
   useEffect(() => {
@@ -31,10 +22,24 @@ function useTick(ms: number) {
   return n;
 }
 
+// Isolated clock so 1s updates don't re-render the whole dashboard tree.
+const LiveClock = memo(function LiveClock() {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <>
+      {now.toLocaleDateString("pt-BR")} às{" "}
+      {now.toLocaleTimeString("pt-BR", { hour12: false })}
+    </>
+  );
+});
+
 type LiveRegiao = Regiao & { hoje: number; ultima: number; novas: number };
 
 export default function DistribuicaoRegiaoDashboard() {
-  const now = useNow();
   const tick = useTick(3000);
 
   // Live state: each tick adds new activations proportional to base share
@@ -73,27 +78,22 @@ export default function DistribuicaoRegiaoDashboard() {
     });
   }, [tick]);
 
-  // Recompute percentuals from live totals
-  const regioes = useMemo<LiveRegiao[]>(() => {
+  // Derived data — only recomputes when `state` changes (per 3s tick).
+  const { regioes, totalGeral, cardsOrdenados, left, right } = useMemo(() => {
     const total = state.reduce((s, r) => s + r.total, 0) || 1;
-    return state.map((r) => ({ ...r, percentual: (r.total / total) * 100 }));
+    const regioes: LiveRegiao[] = state.map((r) => ({
+      ...r,
+      percentual: (r.total / total) * 100,
+    }));
+    const cardsOrdenados = [...regioes].sort((a, b) => b.total - a.total);
+    return {
+      regioes,
+      totalGeral: total,
+      cardsOrdenados,
+      left: cardsOrdenados.filter((_, i) => i % 2 === 0),
+      right: cardsOrdenados.filter((_, i) => i % 2 === 1),
+    };
   }, [state]);
-
-  // Age of "última atualização" in seconds, ticking every second via `now`
-  const secondsSinceTick = Math.min(
-    3,
-    Math.floor((Date.now() - (lastTick.current ? Date.now() - (Date.now() % 3000) : Date.now())) / 1000),
-  );
-  void secondsSinceTick; // reserved
-
-  const totalGeral = regioes.reduce((s, r) => s + r.total, 0);
-  const cardsOrdenados = [...regioes].sort((a, b) => b.total - a.total);
-
-  const left = cardsOrdenados.filter((_, i) => [0, 2, 4].includes(i)); // esquerda
-  const right = cardsOrdenados.filter((_, i) => [1, 3, 5].includes(i)); // direita
-
-  const hora = now.toLocaleTimeString("pt-BR", { hour12: false });
-  const dataStr = now.toLocaleDateString("pt-BR");
 
   return (
     <div className="flex flex-col gap-6">

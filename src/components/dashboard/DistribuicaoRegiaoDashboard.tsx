@@ -24,16 +24,18 @@ function useTick(ms: number) {
 
 // Isolated clock so 1s updates don't re-render the whole dashboard tree.
 const LiveClock = memo(function LiveClock() {
-  const [now, setNow] = useState(() => new Date());
+  const [now, setNow] = useState<Date | null>(null);
   useEffect(() => {
+    setNow(new Date());
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
+  if (!now) return <span suppressHydrationWarning>—</span>;
   return (
-    <>
+    <span suppressHydrationWarning>
       {now.toLocaleDateString("pt-BR")} às{" "}
       {now.toLocaleTimeString("pt-BR", { hour12: false })}
-    </>
+    </span>
   );
 });
 

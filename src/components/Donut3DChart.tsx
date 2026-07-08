@@ -211,25 +211,75 @@ export default function Donut3DChart({ regioes, size = 620 }: Props) {
         pointerEvents="none"
       />
 
-      {/* Percent labels on top face */}
-      <g pointerEvents="none">
+      {/* Percent labels — pill on big slices, leader line on small ones */}
+      <g pointerEvents="none" fontFamily="inherit">
         {slices.map((s) => {
-          const p = polar(cx, cy, rx * 0.62, ry * 0.62, s.mid);
-          if (s.percentual < 3) return null;
+          const txt = `${s.percentual.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
+          const fontSize = Math.max(13, size * 0.032);
+          const padX = 10;
+          const padY = 5;
+          const w = txt.length * fontSize * 0.58 + padX * 2;
+          const h = fontSize + padY * 2;
+          const inside = s.percentual >= 6;
+
+          if (inside) {
+            // Pill sitting on the top face, along the slice's mid ray
+            const p = polar(cx, cy, rx * 0.6, ry * 0.6, s.mid);
+            return (
+              <g key={`lbl-${s.nome}`}>
+                <rect
+                  x={p.x - w / 2}
+                  y={p.y - h / 2}
+                  width={w}
+                  height={h}
+                  rx={h / 2}
+                  fill="rgba(20,0,45,0.72)"
+                  stroke="rgba(255,255,255,0.35)"
+                  strokeWidth={0.75}
+                />
+                <text
+                  x={p.x}
+                  y={p.y}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fill="#fff"
+                  fontSize={fontSize}
+                  fontWeight={900}
+                >
+                  {txt}
+                </text>
+              </g>
+            );
+          }
+
+          // Leader-line label for small slices
+          const anchor = polar(cx, cy, rx * 0.95, ry * 0.95, s.mid);
+          const bend = polar(cx, cy, rx * 1.1, ry * 1.35, s.mid);
+          const right = bend.x >= cx;
+          const endX = right ? bend.x + 26 : bend.x - 26;
+          const textX = right ? endX + 6 : endX - 6;
+          const align = right ? "start" : "end";
           return (
-            <text
-              key={`lbl-${s.nome}`}
-              x={p.x}
-              y={p.y}
-              textAnchor="middle"
-              dominantBaseline="central"
-              fill="#fff"
-              fontSize={Math.max(11, size * 0.028)}
-              fontWeight={900}
-              style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}
-            >
-              {s.percentual.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
-            </text>
+            <g key={`lbl-${s.nome}`}>
+              <polyline
+                points={`${anchor.x},${anchor.y} ${bend.x},${bend.y} ${endX},${bend.y}`}
+                fill="none"
+                stroke={darken(s.cor, 0.15)}
+                strokeWidth={1.25}
+              />
+              <circle cx={anchor.x} cy={anchor.y} r={2.5} fill={darken(s.cor, 0.15)} />
+              <text
+                x={textX}
+                y={bend.y}
+                textAnchor={align}
+                dominantBaseline="central"
+                fill="#1A0033"
+                fontSize={fontSize}
+                fontWeight={900}
+              >
+                {txt}
+              </text>
+            </g>
           );
         })}
       </g>

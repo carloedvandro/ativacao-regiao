@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import type { Regiao } from "@/types/dashboard";
 
 type Props = {
@@ -62,7 +62,7 @@ function lighten(hex: string, amount: number) {
   return `rgb(${f(r)}, ${f(g)}, ${f(b)})`;
 }
 
-export default function Donut3DChart({ regioes, size = 620 }: Props) {
+function Donut3DChart({ regioes, size = 620 }: Props) {
   const [hover, setHover] = useState<string | null>(null);
 
   const slices = useMemo(() => {
@@ -286,3 +286,14 @@ export default function Donut3DChart({ regioes, size = 620 }: Props) {
     </svg>
   );
 }
+
+export default memo(Donut3DChart, (prev, next) => {
+  if (prev.size !== next.size) return false;
+  if (prev.regioes.length !== next.regioes.length) return false;
+  for (let i = 0; i < prev.regioes.length; i++) {
+    const a = prev.regioes[i];
+    const b = next.regioes[i];
+    if (a.nome !== b.nome || a.total !== b.total || a.cor !== b.cor) return false;
+  }
+  return true;
+});

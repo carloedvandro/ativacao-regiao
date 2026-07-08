@@ -259,7 +259,7 @@ export default function DistribuicaoRegiaoDashboard() {
               </tr>
             </thead>
             <tbody>
-              {cardsOrdenados.map((r, i) => (
+              {cardsOrdenados.map((r) => (
                 <tr key={r.nome} className="border-b border-slate-100 last:border-0">
                   <td className="py-3 font-black text-[#1A0033]">
                     <span className="inline-flex items-center gap-2">

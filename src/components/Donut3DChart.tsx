@@ -132,18 +132,18 @@ function Donut3DChart({
 
   const cx = size / 2;
   const cy = size * 0.56; // baseline (top of plate)
-  const rx = size * 0.37;
-  const ry = size * 0.215;
+  const rx = size * 0.34;
+  const ry = size * 0.2;
   const irx = rx * innerRatio;
   const iry = ry * innerRatio;
 
   const heightByName: Record<string, number> = {
-    Sudeste: size * 0.205,
-    Sul: size * 0.215,
-    "Outros/Exterior": size * 0.112,
-    Nordeste: size * 0.105,
-    "Centro-Oeste": size * 0.126,
-    Norte: size * 0.145,
+    Sudeste: size * 0.245,
+    Sul: size * 0.255,
+    "Outros/Exterior": size * 0.14,
+    Nordeste: size * 0.125,
+    "Centro-Oeste": size * 0.165,
+    Norte: size * 0.19,
   };
   const heightFor = (nome: string, pct: number) =>
     heightByName[nome] ?? size * (0.09 + pct / 260);
@@ -161,8 +161,8 @@ function Donut3DChart({
   );
 
   // Plate dimensions (flat base ring/oval under the donut)
-  const plateRx = rx * 1.22;
-  const plateRy = ry * 1.28;
+  const plateRx = rx * 1.35;
+  const plateRy = ry * 1.36;
   const plateY = cy + 6;
 
   return (

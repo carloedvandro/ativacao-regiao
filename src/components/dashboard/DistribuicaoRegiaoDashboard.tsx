@@ -38,21 +38,21 @@ const CALLOUTS: Record<
     label: "Norte",
     colorFallback: "#5717f3",
     x: "6.4%",
-    y: "20.8%",
+    y: "20.1%",
     align: "right",
     width: "16.5%",
-    line: { x: "19.8%", y: "21.35%", w: "18.2%" },
-    arrow: { x: "37.3%", y: "25.0%", rotate: "0deg" },
+    line: { x: "22.0%", y: "21.35%", w: "16.3%" },
+    arrow: { x: "37.4%", y: "27.0%", rotate: "0deg" },
   },
   "Centro-Oeste": {
     label: "Centro-Oeste",
     colorFallback: "#16b7b5",
-    x: "5.1%",
+    x: "6.4%",
     y: "45.7%",
     align: "right",
-    width: "17.6%",
-    line: { x: "21.0%", y: "46.9%", w: "9.6%" },
-    arrow: { x: "29.4%", y: "45.55%", rotate: "-90deg" },
+    width: "16.8%",
+    line: { x: "23.9%", y: "46.9%", w: "8.8%" },
+    arrow: { x: "31.5%", y: "45.55%", rotate: "-90deg" },
   },
   Nordeste: {
     label: "Nordeste",
@@ -61,18 +61,18 @@ const CALLOUTS: Record<
     y: "72.7%",
     align: "right",
     width: "15.9%",
-    line: { x: "20.9%", y: "74.2%", w: "17.0%" },
+    line: { x: "22.2%", y: "74.2%", w: "15.7%" },
     arrow: { x: "36.7%", y: "72.8%", rotate: "-90deg" },
   },
   Sudeste: {
     label: "Sudeste",
     colorFallback: "#ff0b86",
     x: "82.2%",
-    y: "20.7%",
+    y: "20.1%",
     align: "left",
     width: "16.7%",
-    line: { x: "61.2%", y: "21.1%", w: "18.2%" },
-    arrow: { x: "60.4%", y: "22.9%", rotate: "0deg" },
+    line: { x: "62.1%", y: "21.1%", w: "17.3%" },
+    arrow: { x: "61.2%", y: "25.9%", rotate: "0deg" },
   },
   Sul: {
     label: "Sul",
@@ -81,8 +81,8 @@ const CALLOUTS: Record<
     y: "45.7%",
     align: "left",
     width: "16.7%",
-    line: { x: "73.7%", y: "46.8%", w: "8.1%" },
-    arrow: { x: "72.5%", y: "45.45%", rotate: "90deg" },
+    line: { x: "72.8%", y: "46.8%", w: "8.9%" },
+    arrow: { x: "71.5%", y: "45.45%", rotate: "90deg" },
   },
   "Outros/Exterior": {
     label: "Outros / Exterior",
@@ -91,8 +91,8 @@ const CALLOUTS: Record<
     y: "72.9%",
     align: "left",
     width: "17.3%",
-    line: { x: "68.3%", y: "74.1%", w: "12.2%" },
-    arrow: { x: "67.4%", y: "72.8%", rotate: "90deg" },
+    line: { x: "68.6%", y: "74.1%", w: "12.0%" },
+    arrow: { x: "67.5%", y: "72.8%", rotate: "90deg" },
   },
 };
 
@@ -193,6 +193,17 @@ export default function DistribuicaoRegiaoDashboard() {
             transformOrigin: "center",
           }}
         />
+        {(region === "Norte" || region === "Sudeste") && (
+          <span
+            className="absolute block w-[0.38%] rounded-full"
+            style={{
+              left: region === "Norte" ? "38.02%" : "61.55%",
+              top: region === "Norte" ? "21.35%" : "21.1%",
+              height: region === "Norte" ? "6.2%" : "5.3%",
+              backgroundColor: color,
+            }}
+          />
+        )}
         <span
           className="absolute block h-0 w-0 border-x-[clamp(7px,0.78vw,12px)] border-t-[clamp(18px,2.08vw,32px)] border-x-transparent"
           style={{
@@ -267,7 +278,7 @@ export default function DistribuicaoRegiaoDashboard() {
       {REGIAO_ORDER.map(renderArrow)}
       {REGIAO_ORDER.map(renderCallout)}
 
-      <div className="absolute left-1/2 top-[20.3%] z-0 w-[52.3%] -translate-x-1/2">
+      <div className="absolute left-1/2 top-[18.7%] z-0 w-[55.0%] -translate-x-1/2">
         <Donut3DChart
           regioes={donutRegioes}
           selectedName={selected}
@@ -275,7 +286,7 @@ export default function DistribuicaoRegiaoDashboard() {
         />
       </div>
 
-      <div className="absolute left-1/2 top-[88.8%] z-30 flex h-[7.2%] w-[28.4%] -translate-x-1/2 items-center justify-center gap-[4.7%] rounded-[9px] border border-[#c7cfda] bg-white px-[2.1%] shadow-[0_1px_5px_rgba(15,23,42,0.08)]">
+      <div className="absolute left-1/2 top-[88.4%] z-30 flex h-[7.2%] w-[28.4%] -translate-x-1/2 items-center justify-center gap-[4.7%] rounded-[9px] border border-[#c7cfda] bg-white px-[2.1%] shadow-[0_1px_5px_rgba(15,23,42,0.08)]">
         <BarChart3 className="h-[44%] w-[8.3%] fill-[#5517ea] text-[#5517ea]" strokeWidth={3} />
         <span className="whitespace-nowrap text-[clamp(15px,1.56vw,24px)] font-medium leading-none text-[#4f5060]">
           Total de ativações

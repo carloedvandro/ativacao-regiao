@@ -41,6 +41,17 @@ export default function DistribuicaoRegiaoDashboard() {
     [],
   );
 
+  const donutRegioes = useMemo(
+    () =>
+      regioesBase.map((r) => ({
+        nome: r.nome,
+        cor: r.cor,
+        total: r.total,
+        percentual: r.percentual,
+      })),
+    [],
+  );
+
   useEffect(() => {
     if (!open) return;
     const onDoc = (e: MouseEvent) => {
@@ -175,7 +186,7 @@ export default function DistribuicaoRegiaoDashboard() {
         <div className="flex flex-col gap-4">{LEFT_CARDS.map(renderCard)}</div>
 
         <div className="relative flex items-center justify-center">
-          <Donut3DChart regioes={regioesBase} />
+          <Donut3DChart regioes={donutRegioes} />
           {sel && (
             <div
               className="pointer-events-none absolute inset-0 flex items-center justify-center"

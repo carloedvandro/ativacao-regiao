@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import referenciaPizzaRegioes from "@/assets/referencia-pizza-regioes.png";
 import { regioesBase, fmt } from "@/data/dados";
+import Donut3DChart from "@/components/Donut3DChart";
+import CountUp from "@/components/CountUp";
 
 type RegionKey =
   | "Sudeste"
@@ -10,20 +11,6 @@ type RegionKey =
   | "Nordeste"
   | "Centro-Oeste"
   | "Norte";
-
-// Approximate positions (percent of image box) of each slice center and
-// each side-callout card, taken from the reference artwork.
-const REGION_MAP: Record<
-  RegionKey,
-  { slice: { x: number; y: number }; card: { x: number; y: number; w: number; h: number } }
-> = {
-  Sudeste: { slice: { x: 60, y: 32 }, card: { x: 78, y: 22, w: 22, h: 22 } },
-  Sul: { slice: { x: 68, y: 48 }, card: { x: 78, y: 46, w: 22, h: 22 } },
-  "Outros/Exterior": { slice: { x: 62, y: 68 }, card: { x: 78, y: 72, w: 22, h: 24 } },
-  Nordeste: { slice: { x: 44, y: 68 }, card: { x: 0, y: 72, w: 22, h: 24 } },
-  "Centro-Oeste": { slice: { x: 32, y: 52 }, card: { x: 0, y: 46, w: 22, h: 22 } },
-  Norte: { slice: { x: 38, y: 34 }, card: { x: 0, y: 22, w: 22, h: 22 } },
-};
 
 const REGIAO_ORDER: RegionKey[] = [
   "Sudeste",
@@ -34,8 +21,12 @@ const REGIAO_ORDER: RegionKey[] = [
   "Norte",
 ];
 
+// Left column: Norte, Centro-Oeste, Nordeste. Right column: Sudeste, Sul, Outros/Exterior.
+const LEFT_CARDS: RegionKey[] = ["Norte", "Centro-Oeste", "Nordeste"];
+const RIGHT_CARDS: RegionKey[] = ["Sudeste", "Sul", "Outros/Exterior"];
+
 export default function DistribuicaoRegiaoDashboard() {
-  const [selected, setSelected] = useState<RegionKey>("Sudeste");
+  const [selected, setSelected] = useState<RegionKey | null>("Sudeste");
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -44,6 +35,22 @@ export default function DistribuicaoRegiaoDashboard() {
     regioesBase.forEach((r) => m.set(r.nome, r));
     return m;
   }, []);
+
+  const totalGeral = useMemo(
+    () => regioesBase.reduce((s, r) => s + r.total, 0),
+    [],
+  );
+
+  const donutRegioes = useMemo(
+    () =>
+      regioesBase.map((r) => ({
+        nome: r.nome,
+        cor: r.cor,
+        total: r.total,
+        percentual: r.percentual,
+      })),
+    [],
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -54,34 +61,84 @@ export default function DistribuicaoRegiaoDashboard() {
     return () => document.removeEventListener("mousedown", onDoc);
   }, [open]);
 
-  const sel = regionByName.get(selected);
-  const pos = REGION_MAP[selected];
+  const sel = selected ? regionByName.get(selected) : undefined;
+
+  const renderCard = (r: RegionKey) => {
+    const reg = regionByName.get(r);
+    if (!reg) return null;
+    const active = selected === r;
+    return (
+      <button
+        key={r}
+        type="button"
+        onClick={() => setSelected(active ? null : r)}
+        className={`group relative w-full rounded-2xl border bg-white p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md ${
+          active ? "ring-2" : "border-gray-200"
+        }`}
+        style={
+          active
+            ? { borderColor: reg.cor, boxShadow: `0 8px 24px -8px ${reg.cor}66` }
+            : undefined
+        }
+      >
+        <div className="flex items-center gap-2">
+          <span
+            className="inline-block h-3 w-3 rounded-full"
+            style={{ backgroundColor: reg.cor }}
+          />
+          <span className="text-sm font-bold" style={{ color: reg.cor }}>
+            {reg.nome}
+          </span>
+          <span
+            className="ml-auto rounded-full px-2 py-0.5 text-[11px] font-black text-white"
+            style={{ backgroundColor: reg.cor }}
+          >
+            {reg.percentual.toFixed(0)}%
+          </span>
+        </div>
+        <div className="mt-2 text-2xl font-black text-[#140044]">
+          {fmt(reg.total)}
+        </div>
+        <div className="mt-1 flex items-center justify-between text-xs text-gray-500">
+          <span>{reg.estados.length} estados</span>
+          <span className="font-bold text-emerald-600">+{reg.hoje} hoje</span>
+        </div>
+      </button>
+    );
+  };
 
   return (
-    <section className="relative mx-auto w-full max-w-[1184px] overflow-hidden bg-white">
-      <div className="relative">
-        <img
-          src={referenciaPizzaRegioes}
-          alt="Distribuição por Região com gráfico donut 3D e chamadas laterais"
-          className="block h-auto w-full select-none"
-          draggable={false}
-        />
+    <section className="relative mx-auto w-full max-w-[1184px] rounded-3xl bg-white p-6 md:p-8">
+      {/* Header: title + dropdown */}
+      <header className="mb-6 flex flex-col items-center gap-3 text-center">
+        <h1 className="text-3xl font-black tracking-tight text-[#140044] md:text-4xl">
+          Distribuição por Região
+        </h1>
+        <p className="text-sm text-gray-500">
+          Selecione uma região para ver os detalhes
+        </p>
 
-        {/* Real dropdown overlaid on top of the image dropdown */}
         <div
           ref={dropdownRef}
-          className="absolute z-20"
-          style={{ left: "38%", top: "13.5%", width: "24%" }}
+          className="relative mt-1 w-full max-w-xs"
         >
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-haspopup="listbox"
             aria-expanded={open}
-            className="flex w-full items-center justify-between rounded-lg border border-gray-300 bg-white px-4 py-2 text-left text-[15px] font-medium text-[#140044] shadow-sm transition hover:border-gray-400"
-            style={{ color: sel?.cor }}
+            className="flex w-full items-center justify-between rounded-lg border border-gray-300 bg-white px-4 py-2 text-left text-[15px] font-semibold shadow-sm transition hover:border-gray-400"
+            style={{ color: sel?.cor ?? "#140044" }}
           >
-            <span>{selected}</span>
+            <span className="flex items-center gap-2">
+              {sel && (
+                <span
+                  className="inline-block h-3 w-3 rounded-full"
+                  style={{ backgroundColor: sel.cor }}
+                />
+              )}
+              {selected ?? "Todas as regiões"}
+            </span>
             <ChevronDown
               className={`h-4 w-4 text-gray-500 transition-transform ${open ? "rotate-180" : ""}`}
             />
@@ -112,7 +169,7 @@ export default function DistribuicaoRegiaoDashboard() {
                         className="inline-block h-3 w-3 rounded-full"
                         style={{ backgroundColor: cor }}
                       />
-                      <span className="font-medium" style={{ color: cor }}>
+                      <span className="font-semibold" style={{ color: cor }}>
                         {r}
                       </span>
                     </button>
@@ -122,67 +179,50 @@ export default function DistribuicaoRegiaoDashboard() {
             </ul>
           )}
         </div>
+      </header>
 
-        {/* Clickable hotspots over each slice */}
-        {REGIAO_ORDER.map((r) => {
-          const p = REGION_MAP[r].slice;
-          return (
-            <button
-              key={`slice-${r}`}
-              type="button"
-              aria-label={`Selecionar ${r}`}
-              onClick={() => setSelected(r)}
-              className="absolute z-10 -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full"
-              style={{
-                left: `${p.x}%`,
-                top: `${p.y}%`,
-                width: "11%",
-                height: "18%",
-              }}
-            />
-          );
-        })}
+      {/* Grid: left cards | donut | right cards */}
+      <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-[minmax(180px,1fr)_minmax(320px,2fr)_minmax(180px,1fr)]">
+        <div className="flex flex-col gap-4">{LEFT_CARDS.map(renderCard)}</div>
 
-        {/* Clickable hotspots over each side callout card */}
-        {REGIAO_ORDER.map((r) => {
-          const c = REGION_MAP[r].card;
-          return (
-            <button
-              key={`card-${r}`}
-              type="button"
-              aria-label={`Selecionar ${r}`}
-              onClick={() => setSelected(r)}
-              className="absolute z-10 cursor-pointer rounded-lg transition hover:bg-black/[0.03]"
-              style={{
-                left: `${c.x}%`,
-                top: `${c.y}%`,
-                width: `${c.w}%`,
-                height: `${c.h}%`,
-              }}
-            />
-          );
-        })}
+        <div className="relative flex items-center justify-center">
+          <Donut3DChart regioes={donutRegioes} />
+          {sel && (
+            <div
+              className="pointer-events-none absolute inset-0 flex items-center justify-center"
+              aria-hidden
+            >
+              <div
+                className="rounded-full"
+                style={{
+                  width: "58%",
+                  aspectRatio: "1 / 1",
+                  boxShadow: `0 0 0 3px ${sel.cor}, 0 0 40px 6px ${sel.cor}55`,
+                  animation: "pulseRing 1.8s ease-in-out infinite",
+                }}
+              />
+            </div>
+          )}
+        </div>
 
-        {/* Highlight ring on the selected slice */}
-        {sel && (
-          <div
-            className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-1/2 rounded-full"
-            style={{
-              left: `${pos.slice.x}%`,
-              top: `${pos.slice.y}%`,
-              width: "13%",
-              aspectRatio: "1 / 1",
-              border: `3px solid ${sel.cor}`,
-              boxShadow: `0 0 0 6px ${sel.cor}22, 0 0 28px 6px ${sel.cor}66`,
-              animation: "pulseRing 1.6s ease-in-out infinite",
-            }}
-          />
-        )}
+        <div className="flex flex-col gap-4">{RIGHT_CARDS.map(renderCard)}</div>
       </div>
 
-      {/* Detail card for the selected region */}
+      {/* Total counter */}
+      <div className="mt-8 flex flex-col items-center gap-1">
+        <span className="text-xs font-semibold uppercase tracking-widest text-gray-500">
+          Total de ativações
+        </span>
+        <CountUp
+          value={totalGeral}
+          className="text-4xl font-black text-[#140044] md:text-5xl"
+          format={(n) => fmt(n)}
+        />
+      </div>
+
+      {/* Detail panel for the selected region */}
       {sel && (
-        <div className="mx-auto mt-4 flex w-full max-w-[720px] flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+        <div className="mx-auto mt-8 flex w-full max-w-[720px] flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span
@@ -240,8 +280,8 @@ export default function DistribuicaoRegiaoDashboard() {
 
       <style>{`
         @keyframes pulseRing {
-          0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-          50% { transform: translate(-50%, -50%) scale(1.06); opacity: 0.85; }
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.04); opacity: 0.85; }
         }
       `}</style>
     </section>

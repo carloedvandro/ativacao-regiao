@@ -4,6 +4,7 @@ import type { Regiao } from "@/types/dashboard";
 type Props = {
   regioes: Regiao[];
   size?: number;
+  innerRatio?: number;
 };
 
 // Isometric tilted pie: top face is an ellipse (rx > ry), with a vertical
@@ -13,7 +14,7 @@ function polar(cx: number, cy: number, rx: number, ry: number, angle: number) {
   return { x: cx + rx * Math.cos(a), y: cy + ry * Math.sin(a) };
 }
 
-// Top pie slice (ellipse sector, no hole => real pie, not donut)
+// Top slice: either a filled pie slice (no hole) or a ring segment (donut).
 function pieTop(
   cx: number,
   cy: number,
@@ -21,10 +22,18 @@ function pieTop(
   ry: number,
   a1: number,
   a2: number,
+  innerRatio = 0,
 ) {
   const large = a2 - a1 > 180 ? 1 : 0;
   const p1 = polar(cx, cy, rx, ry, a1);
   const p2 = polar(cx, cy, rx, ry, a2);
+  if (innerRatio > 0) {
+    const irx = rx * innerRatio;
+    const iry = ry * innerRatio;
+    const q1 = polar(cx, cy, irx, iry, a1);
+    const q2 = polar(cx, cy, irx, iry, a2);
+    return `M ${p1.x} ${p1.y} A ${rx} ${ry} 0 ${large} 1 ${p2.x} ${p2.y} L ${q2.x} ${q2.y} A ${irx} ${iry} 0 ${large} 0 ${q1.x} ${q1.y} Z`;
+  }
   return `M ${cx} ${cy} L ${p1.x} ${p1.y} A ${rx} ${ry} 0 ${large} 1 ${p2.x} ${p2.y} Z`;
 }
 
@@ -62,7 +71,7 @@ function lighten(hex: string, amount: number) {
   return `rgb(${f(r)}, ${f(g)}, ${f(b)})`;
 }
 
-function Donut3DChart({ regioes, size = 620 }: Props) {
+function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
   const [hover, setHover] = useState<string | null>(null);
 
   const slices = useMemo(() => {
@@ -84,6 +93,8 @@ function Donut3DChart({ regioes, size = 620 }: Props) {
   const rx = size * 0.44;
   const ry = size * 0.24; // squashed => isometric tilt
   const depth = 70;
+  const irx = rx * innerRatio;
+  const iry = ry * innerRatio;
 
   return (
     <svg
@@ -188,7 +199,7 @@ function Donut3DChart({ regioes, size = 620 }: Props) {
           return (
             <path
               key={`top-${s.nome}`}
-              d={pieTop(cx + dx * k * rx, cy + dy * k * ry, rx, ry, s.start, s.end)}
+              d={pieTop(cx + dx * k * rx, cy + dy * k * ry, rx, ry, s.start, s.end, innerRatio)}
               fill={`url(#top-${s.nome})`}
               stroke={darken(s.cor, 0.35)}
               strokeWidth={0.75}
@@ -200,6 +211,18 @@ function Donut3DChart({ regioes, size = 620 }: Props) {
         })}
       </g>
 
+      {/* Inner hole — page bg + subtle inner shading */}
+      {innerRatio > 0 && (
+        <g pointerEvents="none">
+          <ellipse cx={cx} cy={cy} rx={irx} ry={iry} fill="#F7F5FB" />
+          {/* subtle darker crescent at the back of the hole for depth */}
+          <path
+            d={`M ${cx - irx} ${cy} A ${irx} ${iry} 0 0 1 ${cx + irx} ${cy} A ${irx * 0.95} ${iry * 0.85} 0 0 0 ${cx - irx} ${cy} Z`}
+            fill="rgba(20,0,68,0.08)"
+          />
+        </g>
+      )}
+
       {/* Glossy top highlight */}
       <ellipse
         cx={cx}
@@ -208,6 +231,7 @@ function Donut3DChart({ regioes, size = 620 }: Props) {
         ry={ry}
         fill="url(#topshine)"
         pointerEvents="none"
+        style={{ mixBlendMode: "screen" }}
       />
 
       {/* Percent labels — pill on big slices, leader line on small ones */}
@@ -215,70 +239,23 @@ function Donut3DChart({ regioes, size = 620 }: Props) {
         {slices.map((s) => {
           const txt = `${s.percentual.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
           const fontSize = Math.max(13, size * 0.032);
-          const padX = 10;
-          const padY = 5;
-          const w = txt.length * fontSize * 0.58 + padX * 2;
-          const h = fontSize + padY * 2;
-          const inside = s.percentual >= 6;
-
-          if (inside) {
-            // Pill sitting on the top face, along the slice's mid ray
-            const p = polar(cx, cy, rx * 0.6, ry * 0.6, s.mid);
-            return (
-              <g key={`lbl-${s.nome}`}>
-                <rect
-                  x={p.x - w / 2}
-                  y={p.y - h / 2}
-                  width={w}
-                  height={h}
-                  rx={h / 2}
-                  fill="rgba(20,0,45,0.72)"
-                  stroke="rgba(255,255,255,0.35)"
-                  strokeWidth={0.75}
-                />
-                <text
-                  x={p.x}
-                  y={p.y}
-                  textAnchor="middle"
-                  dominantBaseline="central"
-                  fill="#fff"
-                  fontSize={fontSize}
-                  fontWeight={900}
-                >
-                  {txt}
-                </text>
-              </g>
-            );
-          }
-
-          // Leader-line label for small slices
-          const anchor = polar(cx, cy, rx * 0.95, ry * 0.95, s.mid);
-          const bend = polar(cx, cy, rx * 1.1, ry * 1.35, s.mid);
-          const right = bend.x >= cx;
-          const endX = right ? bend.x + 26 : bend.x - 26;
-          const textX = right ? endX + 6 : endX - 6;
-          const align = right ? "start" : "end";
+          // Ring-centered label on top face
+          const mid = (innerRatio + 1) / 2;
+          const p = polar(cx, cy, rx * mid, ry * mid, s.mid);
           return (
-            <g key={`lbl-${s.nome}`}>
-              <polyline
-                points={`${anchor.x},${anchor.y} ${bend.x},${bend.y} ${endX},${bend.y}`}
-                fill="none"
-                stroke={darken(s.cor, 0.15)}
-                strokeWidth={1.25}
-              />
-              <circle cx={anchor.x} cy={anchor.y} r={2.5} fill={darken(s.cor, 0.15)} />
-              <text
-                x={textX}
-                y={bend.y}
-                textAnchor={align}
-                dominantBaseline="central"
-                fill="#1A0033"
-                fontSize={fontSize}
-                fontWeight={900}
-              >
-                {txt}
-              </text>
-            </g>
+            <text
+              key={`lbl-${s.nome}`}
+              x={p.x}
+              y={p.y}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fill="#fff"
+              fontSize={fontSize}
+              fontWeight={900}
+              style={{ paintOrder: "stroke", stroke: "rgba(0,0,0,0.35)", strokeWidth: 2 }}
+            >
+              {txt}
+            </text>
           );
         })}
       </g>

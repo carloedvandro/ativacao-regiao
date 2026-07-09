@@ -5,6 +5,8 @@ type Props = {
   regioes: Regiao[];
   size?: number;
   innerRatio?: number;
+  onSelect?: (nome: string) => void;
+  selectedName?: string | null;
 };
 
 function polar(cx: number, cy: number, rx: number, ry: number, angle: number) {
@@ -106,7 +108,13 @@ function sideRadialWall(
   return `M ${outT.x} ${outT.y} L ${inT.x} ${inT.y} L ${inB.x} ${inB.y} L ${outB.x} ${outB.y} Z`;
 }
 
-function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
+function Donut3DChart({
+  regioes,
+  size = 620,
+  innerRatio = 0.5,
+  onSelect,
+  selectedName,
+}: Props) {
   const slices = useMemo(() => {
     const sum = regioes.reduce((s, r) => s + r.total, 0);
     const gap = 0.18;
@@ -124,18 +132,18 @@ function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
 
   const cx = size / 2;
   const cy = size * 0.56; // baseline (top of plate)
-  const rx = size * 0.37;
-  const ry = size * 0.215;
+  const rx = size * 0.34;
+  const ry = size * 0.2;
   const irx = rx * innerRatio;
   const iry = ry * innerRatio;
 
   const heightByName: Record<string, number> = {
-    Sudeste: size * 0.205,
-    Sul: size * 0.215,
-    "Outros/Exterior": size * 0.112,
-    Nordeste: size * 0.105,
-    "Centro-Oeste": size * 0.126,
-    Norte: size * 0.145,
+    Sudeste: size * 0.245,
+    Sul: size * 0.255,
+    "Outros/Exterior": size * 0.14,
+    Nordeste: size * 0.125,
+    "Centro-Oeste": size * 0.165,
+    Norte: size * 0.19,
   };
   const heightFor = (nome: string, pct: number) =>
     heightByName[nome] ?? size * (0.09 + pct / 260);
@@ -153,8 +161,8 @@ function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
   );
 
   // Plate dimensions (flat base ring/oval under the donut)
-  const plateRx = rx * 1.22;
-  const plateRy = ry * 1.28;
+  const plateRx = rx * 1.35;
+  const plateRy = ry * 1.36;
   const plateY = cy + 6;
 
   return (
@@ -244,9 +252,30 @@ function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
         const h = heightFor(s.nome, s.percentual);
         const topY = cy - h;
         const tY = topY;
+        const isSelected = selectedName === s.nome;
 
         return (
-          <g key={`slice-${s.nome}`}>
+          <g
+            key={`slice-${s.nome}`}
+            role={onSelect ? "button" : undefined}
+            aria-label={onSelect ? `Selecionar ${s.nome}` : undefined}
+            tabIndex={onSelect ? 0 : undefined}
+            onClick={onSelect ? () => onSelect(s.nome) : undefined}
+            onKeyDown={
+              onSelect
+                ? (event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      onSelect(s.nome);
+                    }
+                  }
+                : undefined
+            }
+            style={{
+              cursor: onSelect ? "pointer" : "default",
+              filter: isSelected ? `drop-shadow(0 0 11px ${s.cor}88)` : undefined,
+            }}
+          >
             {/* Inner wall visible through the hole — back half of inner ellipse */}
             <g clipPath="url(#back-clip-inner)">
               <path
@@ -286,7 +315,7 @@ function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
               d={ringTop(cx, tY, rx, ry, irx, iry, s.start, s.end)}
               fill={`url(#top-${s.nome})`}
               stroke={darken(s.cor, 0.35)}
-              strokeWidth={0.75}
+              strokeWidth={isSelected ? 1.8 : 0.75}
             />
           </g>
         );
@@ -331,6 +360,8 @@ function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
 export default memo(Donut3DChart, (prev, next) => {
   if (prev.size !== next.size) return false;
   if ((prev.innerRatio ?? 0.5) !== (next.innerRatio ?? 0.5)) return false;
+  if (prev.selectedName !== next.selectedName) return false;
+  if (prev.onSelect !== next.onSelect) return false;
   if (prev.regioes.length !== next.regioes.length) return false;
   for (let i = 0; i < prev.regioes.length; i++) {
     const a = prev.regioes[i];

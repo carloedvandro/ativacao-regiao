@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
-import { regioesBase, fmt } from "@/data/dados";
-import Donut3DChart from "@/components/Donut3DChart";
+import { BarChart3, ChevronDown } from "lucide-react";
 import CountUp from "@/components/CountUp";
+import Donut3DChart from "@/components/Donut3DChart";
+import { fmt, regioesBase } from "@/data/dados";
 
 type RegionKey =
   | "Sudeste"
@@ -21,12 +21,91 @@ const REGIAO_ORDER: RegionKey[] = [
   "Norte",
 ];
 
-// Left column: Norte, Centro-Oeste, Nordeste. Right column: Sudeste, Sul, Outros/Exterior.
-const LEFT_CARDS: RegionKey[] = ["Norte", "Centro-Oeste", "Nordeste"];
-const RIGHT_CARDS: RegionKey[] = ["Sudeste", "Sul", "Outros/Exterior"];
+const CALLOUTS: Record<
+  RegionKey,
+  {
+    label: string;
+    colorFallback: string;
+    x: string;
+    y: string;
+    align: "left" | "right";
+    width: string;
+    line: { x: string; y: string; w: string; rotate?: string };
+    arrow: { x: string; y: string; rotate: string };
+  }
+> = {
+  Norte: {
+    label: "Norte",
+    colorFallback: "#5717f3",
+    x: "6.0%",
+    y: "20.8%",
+    align: "right",
+    width: "16.5%",
+    line: { x: "22.8%", y: "21.55%", w: "13.8%" },
+    arrow: { x: "35.7%", y: "29.2%", rotate: "0deg" },
+  },
+  "Centro-Oeste": {
+    label: "Centro-Oeste",
+    colorFallback: "#16b7b5",
+    x: "4.2%",
+    y: "45.0%",
+    align: "right",
+    width: "16.8%",
+    line: { x: "22.7%", y: "46.8%", w: "7.8%" },
+    arrow: { x: "29.3%", y: "45.45%", rotate: "-90deg" },
+  },
+  Nordeste: {
+    label: "Nordeste",
+    colorFallback: "#a42cff",
+    x: "5.8%",
+    y: "72.8%",
+    align: "right",
+    width: "15.9%",
+    line: { x: "22.5%", y: "74.2%", w: "13.8%" },
+    arrow: { x: "35.1%", y: "72.8%", rotate: "-90deg" },
+  },
+  Sudeste: {
+    label: "Sudeste",
+    colorFallback: "#ff0b86",
+    x: "82.4%",
+    y: "20.8%",
+    align: "left",
+    width: "16.7%",
+    line: { x: "62.0%", y: "21.35%", w: "17.4%" },
+    arrow: { x: "61.2%", y: "26.8%", rotate: "0deg" },
+  },
+  Sul: {
+    label: "Sul",
+    colorFallback: "#8a5426",
+    x: "82.5%",
+    y: "45.1%",
+    align: "left",
+    width: "16.7%",
+    line: { x: "73.2%", y: "46.8%", w: "7.8%" },
+    arrow: { x: "72.0%", y: "45.45%", rotate: "90deg" },
+  },
+  "Outros/Exterior": {
+    label: "Outros / Exterior",
+    colorFallback: "#ff8300",
+    x: "82.6%",
+    y: "72.8%",
+    align: "left",
+    width: "17.3%",
+    line: { x: "69.0%", y: "74.1%", w: "12.0%" },
+    arrow: { x: "67.9%", y: "72.8%", rotate: "90deg" },
+  },
+};
+
+function descriptionFor(region: RegionKey) {
+  if (region === "Outros/Exterior") {
+    return "Total de ativações realizadas em Outras regiões ou Exterior no período selecionado.";
+  }
+
+  return `Total de ativações realizadas na região ${region} no período selecionado.`;
+}
 
 export default function DistribuicaoRegiaoDashboard() {
-  const [selected, setSelected] = useState<RegionKey | null>("Sudeste");
+  const [selected, setSelected] = useState<RegionKey>("Sudeste");
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -37,140 +116,155 @@ export default function DistribuicaoRegiaoDashboard() {
   }, []);
 
   const totalGeral = useMemo(
-    () => regioesBase.reduce((s, r) => s + r.total, 0),
+    () => regioesBase.reduce((sum, region) => sum + region.total, 0),
     [],
   );
 
   const donutRegioes = useMemo(
     () =>
-      regioesBase.map((r) => ({
-        nome: r.nome,
-        cor: r.cor,
-        total: r.total,
-        percentual: r.percentual,
+      regioesBase.map((region) => ({
+        nome: region.nome,
+        cor: region.cor,
+        total: region.total,
+        percentual: region.percentual,
       })),
     [],
   );
 
   useEffect(() => {
     if (!open) return;
-    const onDoc = (e: MouseEvent) => {
-      if (!dropdownRef.current?.contains(e.target as Node)) setOpen(false);
+
+    const onDoc = (event: MouseEvent) => {
+      if (!dropdownRef.current?.contains(event.target as Node)) setOpen(false);
     };
+
     document.addEventListener("mousedown", onDoc);
     return () => document.removeEventListener("mousedown", onDoc);
   }, [open]);
 
-  const sel = selected ? regionByName.get(selected) : undefined;
+  const renderCallout = (region: RegionKey) => {
+    const config = CALLOUTS[region];
+    const regiao = regionByName.get(region);
+    const color = regiao?.cor ?? config.colorFallback;
+    const isActive = selected === region;
 
-  const renderCard = (r: RegionKey) => {
-    const reg = regionByName.get(r);
-    if (!reg) return null;
-    const active = selected === r;
     return (
       <button
-        key={r}
+        key={region}
         type="button"
-        onClick={() => setSelected(active ? null : r)}
-        className={`group relative w-full rounded-2xl border bg-white p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md ${
-          active ? "ring-2" : "border-gray-200"
-        }`}
-        style={
-          active
-            ? { borderColor: reg.cor, boxShadow: `0 8px 24px -8px ${reg.cor}66` }
-            : undefined
-        }
+        onClick={() => setSelected(region)}
+        className={`absolute z-20 hidden transition focus:outline-none md:block ${
+          config.align === "right" ? "text-right" : "text-left"
+        } ${isActive ? "scale-[1.025]" : "hover:scale-[1.015]"}`}
+        style={{
+          left: config.x,
+          top: config.y,
+          width: config.width,
+          transformOrigin: config.align === "right" ? "right center" : "left center",
+        }}
       >
-        <div className="flex items-center gap-2">
-          <span
-            className="inline-block h-3 w-3 rounded-full"
-            style={{ backgroundColor: reg.cor }}
-          />
-          <span className="text-sm font-bold" style={{ color: reg.cor }}>
-            {reg.nome}
-          </span>
-          <span
-            className="ml-auto rounded-full px-2 py-0.5 text-[11px] font-black text-white"
-            style={{ backgroundColor: reg.cor }}
-          >
-            {reg.percentual.toFixed(0)}%
-          </span>
-        </div>
-        <div className="mt-2 text-2xl font-black text-[#140044]">
-          {fmt(reg.total)}
-        </div>
-        <div className="mt-1 flex items-center justify-between text-xs text-gray-500">
-          <span>{reg.estados.length} estados</span>
-          <span className="font-bold text-emerald-600">+{reg.hoje} hoje</span>
-        </div>
+        <span
+          className="block text-[clamp(17px,2vw,31px)] font-black leading-none tracking-normal"
+          style={{ color }}
+        >
+          {config.label}
+        </span>
+        <span className="mt-[1.1%] block text-[clamp(11px,1.18vw,18px)] font-medium leading-[1.25] text-black">
+          {descriptionFor(region)}
+        </span>
       </button>
     );
   };
 
+  const renderArrow = (region: RegionKey) => {
+    const config = CALLOUTS[region];
+    const color = regionByName.get(region)?.cor ?? config.colorFallback;
+
+    return (
+      <div key={`arrow-${region}`} className="pointer-events-none absolute inset-0 z-10 hidden md:block">
+        <span
+          className="absolute block h-[0.38%] rounded-full"
+          style={{
+            left: config.line.x,
+            top: config.line.y,
+            width: config.line.w,
+            backgroundColor: color,
+            transform: config.line.rotate ? `rotate(${config.line.rotate})` : undefined,
+            transformOrigin: "center",
+          }}
+        />
+        {(region === "Norte" || region === "Sudeste") && (
+          <span
+            className="absolute block w-[0.38%] rounded-full"
+            style={{
+              left: region === "Norte" ? "36.35%" : "61.55%",
+              top: region === "Norte" ? "21.55%" : "21.35%",
+              height: region === "Norte" ? "7.8%" : "5.7%",
+              backgroundColor: color,
+            }}
+          />
+        )}
+        <span
+          className="absolute block h-0 w-0 border-x-[clamp(7px,0.78vw,12px)] border-t-[clamp(18px,2.08vw,32px)] border-x-transparent"
+          style={{
+            left: config.arrow.x,
+            top: config.arrow.y,
+            borderTopColor: color,
+            transform: `rotate(${config.arrow.rotate})`,
+          }}
+        />
+      </div>
+    );
+  };
+
   return (
-    <section className="relative mx-auto w-full max-w-[1184px] rounded-3xl bg-white p-6 md:p-8">
-      {/* Header: title + dropdown */}
-      <header className="mb-6 flex flex-col items-center gap-3 text-center">
-        <h1 className="text-3xl font-black tracking-tight text-[#140044] md:text-4xl">
+    <section className="relative mx-auto aspect-[3/2] w-full max-w-[1536px] overflow-hidden bg-white text-[#06144e]">
+      <header className="absolute left-1/2 top-[1.6%] z-30 flex -translate-x-1/2 flex-col items-center text-center">
+        <h1 className="whitespace-nowrap text-[clamp(27px,3vw,46px)] font-black leading-none tracking-normal">
           Distribuição por Região
         </h1>
-        <p className="text-sm text-gray-500">
-          Selecione uma região para ver os detalhes
+        <p className="mt-[2.2%] whitespace-nowrap text-[clamp(15px,1.5vw,23px)] font-medium text-[#414455]">
+          Ativações SmartVoz por região
         </p>
 
-        <div
-          ref={dropdownRef}
-          className="relative mt-1 w-full max-w-xs"
-        >
+        <div ref={dropdownRef} className="relative mt-[4.4%] w-[clamp(186px,19.1vw,294px)]">
           <button
             type="button"
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => setOpen((value) => !value)}
             aria-haspopup="listbox"
             aria-expanded={open}
-            className="flex w-full items-center justify-between rounded-lg border border-gray-300 bg-white px-4 py-2 text-left text-[15px] font-semibold shadow-sm transition hover:border-gray-400"
-            style={{ color: sel?.cor ?? "#140044" }}
+            className="flex h-[clamp(38px,3.78vw,58px)] w-full items-center justify-between rounded-[10px] border border-[#bfc5cf] bg-white px-[7.8%] text-left text-[clamp(16px,1.62vw,25px)] font-medium text-black shadow-[0_1px_4px_rgba(15,23,42,0.06)] transition hover:border-[#8e96a3]"
           >
-            <span className="flex items-center gap-2">
-              {sel && (
-                <span
-                  className="inline-block h-3 w-3 rounded-full"
-                  style={{ backgroundColor: sel.cor }}
-                />
-              )}
-              {selected ?? "Todas as regiões"}
-            </span>
-            <ChevronDown
-              className={`h-4 w-4 text-gray-500 transition-transform ${open ? "rotate-180" : ""}`}
-            />
+            <span>{selected}</span>
+            <ChevronDown className="h-[1em] w-[1em] text-black" />
           </button>
+
           {open && (
             <ul
               role="listbox"
-              className="absolute left-0 right-0 z-30 mt-1 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-xl"
+              className="absolute left-0 right-0 z-40 mt-1 overflow-hidden rounded-[10px] border border-[#bfc5cf] bg-white shadow-xl"
             >
-              {REGIAO_ORDER.map((r) => {
-                const cor = regionByName.get(r)?.cor ?? "#140044";
-                const active = r === selected;
+              {REGIAO_ORDER.map((region) => {
+                const color = regionByName.get(region)?.cor ?? CALLOUTS[region].colorFallback;
+                const active = selected === region;
+
                 return (
-                  <li key={r}>
+                  <li key={region}>
                     <button
                       type="button"
                       role="option"
                       aria-selected={active}
                       onClick={() => {
-                        setSelected(r);
+                        setSelected(region);
                         setOpen(false);
                       }}
-                      className={`flex w-full items-center gap-3 px-4 py-2 text-left text-sm transition ${
+                      className={`flex w-full items-center gap-3 px-5 py-3 text-left text-[clamp(14px,1.18vw,18px)] transition ${
                         active ? "bg-gray-100" : "hover:bg-gray-50"
                       }`}
                     >
-                      <span
-                        className="inline-block h-3 w-3 rounded-full"
-                        style={{ backgroundColor: cor }}
-                      />
-                      <span className="font-semibold" style={{ color: cor }}>
-                        {r}
+                      <span className="h-3 w-3 rounded-full" style={{ backgroundColor: color }} />
+                      <span className="font-semibold" style={{ color }}>
+                        {CALLOUTS[region].label}
                       </span>
                     </button>
                   </li>
@@ -181,109 +275,51 @@ export default function DistribuicaoRegiaoDashboard() {
         </div>
       </header>
 
-      {/* Grid: left cards | donut | right cards */}
-      <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-[minmax(180px,1fr)_minmax(320px,2fr)_minmax(180px,1fr)]">
-        <div className="flex flex-col gap-4">{LEFT_CARDS.map(renderCard)}</div>
+      {REGIAO_ORDER.map(renderArrow)}
+      {REGIAO_ORDER.map(renderCallout)}
 
-        <div className="relative flex items-center justify-center">
-          <Donut3DChart regioes={donutRegioes} />
-          {sel && (
-            <div
-              className="pointer-events-none absolute inset-0 flex items-center justify-center"
-              aria-hidden
-            >
-              <div
-                className="rounded-full"
-                style={{
-                  width: "58%",
-                  aspectRatio: "1 / 1",
-                  boxShadow: `0 0 0 3px ${sel.cor}, 0 0 40px 6px ${sel.cor}55`,
-                  animation: "pulseRing 1.8s ease-in-out infinite",
-                }}
-              />
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-4">{RIGHT_CARDS.map(renderCard)}</div>
+      <div className="absolute left-1/2 top-[16.8%] z-0 w-[56.4%] -translate-x-1/2">
+        <Donut3DChart
+          regioes={donutRegioes}
+          selectedName={selected}
+          onSelect={(name) => setSelected(name as RegionKey)}
+        />
       </div>
 
-      {/* Total counter */}
-      <div className="mt-8 flex flex-col items-center gap-1">
-        <span className="text-xs font-semibold uppercase tracking-widest text-gray-500">
+      <div className="absolute left-1/2 top-[87.0%] z-30 flex h-[7.2%] w-[28.4%] -translate-x-1/2 items-center justify-center gap-[4.7%] rounded-[9px] border border-[#c7cfda] bg-white px-[2.1%] shadow-[0_1px_5px_rgba(15,23,42,0.08)]">
+        <BarChart3 className="h-[44%] w-[8.3%] fill-[#5517ea] text-[#5517ea]" strokeWidth={3} />
+        <span className="whitespace-nowrap text-[clamp(15px,1.56vw,24px)] font-medium leading-none text-[#4f5060]">
           Total de ativações
         </span>
         <CountUp
           value={totalGeral}
-          className="text-4xl font-black text-[#140044] md:text-5xl"
-          format={(n) => fmt(n)}
+          className="whitespace-nowrap text-[clamp(20px,1.96vw,30px)] font-black leading-none text-[#5517ea]"
+          format={(value) => fmt(value)}
         />
       </div>
 
-      {/* Detail panel for the selected region */}
-      {sel && (
-        <div className="mx-auto mt-8 flex w-full max-w-[720px] flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span
-                className="inline-block h-4 w-4 rounded-full"
-                style={{ backgroundColor: sel.cor }}
-              />
-              <h3 className="text-xl font-black" style={{ color: sel.cor }}>
-                {sel.nome}
-              </h3>
-            </div>
-            <span
-              className="rounded-full px-3 py-1 text-sm font-bold text-white"
-              style={{ backgroundColor: sel.cor }}
-            >
-              {sel.percentual.toFixed(0)}%
-            </span>
-          </div>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-            <div className="rounded-xl bg-gray-50 p-3">
-              <div className="text-xs uppercase tracking-wide text-gray-500">Total</div>
-              <div className="text-lg font-black text-[#140044]">{fmt(sel.total)}</div>
-            </div>
-            <div className="rounded-xl bg-gray-50 p-3">
-              <div className="text-xs uppercase tracking-wide text-gray-500">Hoje</div>
-              <div className="text-lg font-black text-[#140044]">+{sel.hoje}</div>
-            </div>
-            <div className="rounded-xl bg-gray-50 p-3">
-              <div className="text-xs uppercase tracking-wide text-gray-500">Estados</div>
-              <div className="text-lg font-black text-[#140044]">{sel.estados.length}</div>
-            </div>
-          </div>
-          <div>
-            <div className="mb-2 text-sm font-semibold text-gray-600">
-              Estados da região
-            </div>
-            <ul className="divide-y divide-gray-100">
-              {sel.estados.map((e) => {
-                const total = e.cidades.reduce(
-                  (s, c) => s + c.gb50 + c.gb80 + c.gb100,
-                  0,
-                );
-                return (
-                  <li key={e.nome} className="flex items-center justify-between py-2">
-                    <span className="text-sm font-medium text-[#140044]">{e.nome}</span>
-                    <span className="text-sm font-black" style={{ color: sel.cor }}>
-                      {fmt(total)}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </div>
-      )}
+      <div className="absolute left-[4%] right-[4%] top-[77%] z-30 grid gap-2 md:hidden">
+        {REGIAO_ORDER.map((region) => {
+          const regiao = regionByName.get(region);
+          if (!regiao) return null;
 
-      <style>{`
-        @keyframes pulseRing {
-          0%, 100% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.04); opacity: 0.85; }
-        }
-      `}</style>
+          return (
+            <button
+              key={region}
+              type="button"
+              onClick={() => setSelected(region)}
+              className="rounded-lg border border-[#d9dee7] bg-white p-3 text-left"
+            >
+              <span className="text-lg font-black" style={{ color: regiao.cor }}>
+                {CALLOUTS[region].label}
+              </span>
+              <span className="ml-3 text-sm font-black text-black">
+                {regiao.percentual.toFixed(0)}% · {fmt(regiao.total)}
+              </span>
+            </button>
+          );
+        })}
+      </div>
     </section>
   );
 }

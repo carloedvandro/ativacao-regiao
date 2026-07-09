@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from "react";
+import { memo, useMemo } from "react";
 import type { Regiao } from "@/types/dashboard";
 
 type Props = {
@@ -107,11 +107,9 @@ function sideRadialWall(
 }
 
 function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
-  const [hover, setHover] = useState<string | null>(null);
-
   const slices = useMemo(() => {
     const sum = regioes.reduce((s, r) => s + r.total, 0);
-    const gap = 0.6;
+    const gap = 0.18;
     let acc = -90;
     const sl = regioes.map((r) => {
       const sweep = (r.total / sum) * 360;
@@ -125,18 +123,22 @@ function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
   }, [regioes]);
 
   const cx = size / 2;
-  const cy = size / 2 + 20; // baseline (top of plate)
-  const rx = size * 0.36;
-  const ry = size * 0.2;
+  const cy = size * 0.56; // baseline (top of plate)
+  const rx = size * 0.37;
+  const ry = size * 0.215;
   const irx = rx * innerRatio;
   const iry = ry * innerRatio;
 
-  // Slice height range (px)
-  const H_MIN = 40;
-  const H_MAX = 130;
-  const maxPct = Math.max(...slices.map((s) => s.percentual));
-  const heightFor = (pct: number) =>
-    H_MIN + ((pct / maxPct) * (H_MAX - H_MIN));
+  const heightByName: Record<string, number> = {
+    Sudeste: size * 0.205,
+    Sul: size * 0.215,
+    "Outros/Exterior": size * 0.112,
+    Nordeste: size * 0.105,
+    "Centro-Oeste": size * 0.126,
+    Norte: size * 0.145,
+  };
+  const heightFor = (nome: string, pct: number) =>
+    heightByName[nome] ?? size * (0.09 + pct / 260);
 
   // Painter's order for top faces + walls: back-to-front by mid-angle sin.
   // Back slices (mid closer to top / y<cy) drawn first.
@@ -157,7 +159,7 @@ function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
 
   return (
     <svg
-      viewBox={`0 0 ${size} ${size * 0.78}`}
+      viewBox={`0 0 ${size} ${size * 0.82}`}
       width="100%"
       style={{ display: "block", overflow: "visible", height: "auto" }}
     >
@@ -218,6 +220,10 @@ function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
           <stop offset="0%" stopColor="#f1eef5" />
           <stop offset="100%" stopColor="#d9d4e0" />
         </radialGradient>
+        <filter id="label-pop" x="-40%" y="-40%" width="180%" height="180%">
+          <feDropShadow dx="-7" dy="7" stdDeviation="0" floodColor="#06020b" floodOpacity="0.98" />
+          <feDropShadow dx="1" dy="2" stdDeviation="1.2" floodColor="#000" floodOpacity="0.4" />
+        </filter>
       </defs>
 
       {/* Ground shadow */}
@@ -235,19 +241,12 @@ function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
 
       {/* Draw slices back-to-front */}
       {drawOrder.map(({ s }) => {
-        const h = heightFor(s.percentual);
+        const h = heightFor(s.nome, s.percentual);
         const topY = cy - h;
-        const isHover = hover === s.nome;
-        const lift = isHover ? 6 : 0;
-        const tY = topY - lift;
+        const tY = topY;
 
         return (
-          <g
-            key={`slice-${s.nome}`}
-            onMouseEnter={() => setHover(s.nome)}
-            onMouseLeave={() => setHover(null)}
-            style={{ cursor: "pointer", transition: "transform 0.2s ease" }}
-          >
+          <g key={`slice-${s.nome}`}>
             {/* Inner wall visible through the hole — back half of inner ellipse */}
             <g clipPath="url(#back-clip-inner)">
               <path
@@ -296,12 +295,12 @@ function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
       {/* Percent labels on top of each slice */}
       <g pointerEvents="none" fontFamily="inherit">
         {slices.map((s) => {
-          const h = heightFor(s.percentual);
+          const h = heightFor(s.nome, s.percentual);
           const topY = cy - h;
           const mid = (innerRatio + 1) / 2;
           const p = polar(cx, topY, rx * mid, ry * mid, s.mid);
           const txt = `${Math.round(s.percentual)}%`;
-          const fontSize = Math.max(16, size * 0.036);
+          const fontSize = Math.max(17, size * 0.044);
           return (
             <text
               key={`lbl-${s.nome}`}
@@ -312,10 +311,12 @@ function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
               fill="#fff"
               fontSize={fontSize}
               fontWeight={900}
+              filter="url(#label-pop)"
+              transform={`rotate(-12 ${p.x} ${p.y})`}
               style={{
                 paintOrder: "stroke",
-                stroke: "rgba(0,0,0,0.55)",
-                strokeWidth: 3,
+                stroke: "rgba(0,0,0,0.18)",
+                strokeWidth: 1.1,
               }}
             >
               ✓{txt}

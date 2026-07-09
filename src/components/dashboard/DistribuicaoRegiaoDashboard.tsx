@@ -34,42 +34,42 @@ const CALLOUTS: Record<
   Norte: {
     side: "left",
     top: "23%",
-    lineWidth: "272px",
+    lineWidth: "235px",
     arrow: "down",
     label: "Norte",
   },
   "Centro-Oeste": {
     side: "left",
     top: "50%",
-    lineWidth: "162px",
+    lineWidth: "145px",
     arrow: "right",
     label: "Centro-Oeste",
   },
   Nordeste: {
     side: "left",
     top: "76%",
-    lineWidth: "255px",
+    lineWidth: "220px",
     arrow: "right",
     label: "Nordeste",
   },
   Sudeste: {
     side: "right",
     top: "23%",
-    lineWidth: "276px",
+    lineWidth: "205px",
     arrow: "down",
     label: "Sudeste",
   },
   Sul: {
     side: "right",
     top: "50%",
-    lineWidth: "150px",
+    lineWidth: "120px",
     arrow: "left",
     label: "Sul",
   },
   "Outros/Exterior": {
     side: "right",
     top: "76%",
-    lineWidth: "205px",
+    lineWidth: "145px",
     arrow: "left",
     label: "Outros / Exterior",
   },
@@ -116,8 +116,6 @@ export default function DistribuicaoRegiaoDashboard() {
     return () => document.removeEventListener("mousedown", onDoc);
   }, [open]);
 
-  const sel = selected ? regionByName.get(selected) : undefined;
-
   const renderCallout = (r: RegionKey) => {
     const reg = regionByName.get(r);
     if (!reg) return null;
@@ -131,14 +129,14 @@ export default function DistribuicaoRegiaoDashboard() {
         key={r}
         type="button"
         onClick={() => setSelected(active ? null : r)}
-        className={`absolute z-10 hidden w-[205px] -translate-y-1/2 transition duration-200 hover:scale-[1.02] focus:outline-none md:block ${
+        className={`absolute z-10 hidden w-[220px] -translate-y-1/2 transition duration-200 hover:scale-[1.02] focus:outline-none md:block ${
           callout.side === "left" ? "left-0 text-right" : "right-0 text-left"
         } ${active ? "scale-[1.025]" : ""}`}
         style={{ top: callout.top }}
       >
         <span className="relative block">
           <span
-            className="block text-[30px] font-black leading-none tracking-normal md:text-[31px]"
+            className="block whitespace-nowrap text-[30px] font-black leading-none tracking-normal md:text-[31px]"
             style={{ color: reg.cor }}
           >
             {callout.label}
@@ -186,23 +184,23 @@ export default function DistribuicaoRegiaoDashboard() {
   };
 
   return (
-    <section className="relative mx-auto w-full max-w-[1536px] overflow-hidden bg-white px-4 pb-10 pt-5 md:px-[92px] md:pt-4">
+    <section className="relative mx-auto w-full max-w-[1536px] overflow-hidden bg-white px-4 pb-10 pt-1 md:px-[76px] md:pt-0">
       {/* Header: title + dropdown */}
       <header className="relative z-20 mb-0 flex flex-col items-center text-center">
-        <h1 className="text-[34px] font-black leading-tight tracking-normal text-[#06144e] md:text-[46px]">
+        <h1 className="text-[34px] font-black leading-tight tracking-normal text-[#06144e] md:text-[40px]">
           Distribuição por Região
         </h1>
-        <p className="mt-1 text-[18px] font-medium text-[#414455] md:text-[23px]">
+        <p className="mt-1 text-[18px] font-medium text-[#414455] md:text-[20px]">
           Ativações SmartVoz por região
         </p>
 
-        <div ref={dropdownRef} className="relative mt-5 w-[288px] max-w-full md:w-[294px]">
+        <div ref={dropdownRef} className="relative mt-3 w-[288px] max-w-full md:w-[294px]">
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-haspopup="listbox"
             aria-expanded={open}
-            className="flex h-[58px] w-full items-center justify-between rounded-[10px] border border-[#bfc5cf] bg-white px-6 text-left text-[25px] font-medium text-black shadow-[0_1px_4px_rgba(15,23,42,0.06)] transition hover:border-[#8e96a3]"
+            className="flex h-[56px] w-full items-center justify-between rounded-[10px] border border-[#bfc5cf] bg-white px-6 text-left text-[25px] font-medium text-black shadow-[0_1px_4px_rgba(15,23,42,0.06)] transition hover:border-[#8e96a3]"
           >
             <span>{selected ?? "Todas"}</span>
             <ChevronDown className={`h-6 w-6 text-black transition-transform ${open ? "rotate-180" : ""}`} />
@@ -245,10 +243,10 @@ export default function DistribuicaoRegiaoDashboard() {
         </div>
       </header>
 
-      <div className="relative mx-auto mt-0 min-h-[645px] max-w-[1320px] md:mt-0">
+      <div className="relative mx-auto mt-0 min-h-[655px] max-w-[1320px] md:mt-0">
         {REGIAO_ORDER.map(renderCallout)}
 
-        <div className="relative z-0 mx-auto flex w-full max-w-[720px] items-center justify-center pt-16 md:pt-16">
+        <div className="relative z-0 mx-auto flex w-full max-w-[815px] items-center justify-center pt-10 md:pt-10">
           <Donut3DChart
             regioes={donutRegioes}
             size={760}
@@ -259,7 +257,7 @@ export default function DistribuicaoRegiaoDashboard() {
       </div>
 
       {/* Total counter */}
-      <div className="relative z-20 mx-auto -mt-[52px] flex h-[73px] w-full max-w-[438px] items-center justify-center gap-5 rounded-[9px] border border-[#c7cfda] bg-white px-6 shadow-[0_1px_5px_rgba(15,23,42,0.08)]">
+      <div className="relative z-20 mx-auto -mt-[64px] flex h-[73px] w-full max-w-[438px] items-center justify-center gap-5 rounded-[9px] border border-[#c7cfda] bg-white px-6 shadow-[0_1px_5px_rgba(15,23,42,0.08)]">
         <BarChart3 className="h-9 w-9 fill-[#5517ea] text-[#5517ea]" strokeWidth={3} />
         <span className="text-[24px] font-medium leading-none text-[#4f5060]">
           Total de ativações

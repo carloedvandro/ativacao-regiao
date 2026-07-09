@@ -7,51 +7,9 @@ type Props = {
   innerRatio?: number;
 };
 
-// Isometric tilted pie: top face is an ellipse (rx > ry), with a vertical
-// extrusion (depth) that forms the visible "crust" on the front half.
 function polar(cx: number, cy: number, rx: number, ry: number, angle: number) {
   const a = (angle - 90) * (Math.PI / 180);
   return { x: cx + rx * Math.cos(a), y: cy + ry * Math.sin(a) };
-}
-
-// Top slice: either a filled pie slice (no hole) or a ring segment (donut).
-function pieTop(
-  cx: number,
-  cy: number,
-  rx: number,
-  ry: number,
-  a1: number,
-  a2: number,
-  innerRatio = 0,
-) {
-  const large = a2 - a1 > 180 ? 1 : 0;
-  const p1 = polar(cx, cy, rx, ry, a1);
-  const p2 = polar(cx, cy, rx, ry, a2);
-  if (innerRatio > 0) {
-    const irx = rx * innerRatio;
-    const iry = ry * innerRatio;
-    const q1 = polar(cx, cy, irx, iry, a1);
-    const q2 = polar(cx, cy, irx, iry, a2);
-    return `M ${p1.x} ${p1.y} A ${rx} ${ry} 0 ${large} 1 ${p2.x} ${p2.y} L ${q2.x} ${q2.y} A ${irx} ${iry} 0 ${large} 0 ${q1.x} ${q1.y} Z`;
-  }
-  return `M ${cx} ${cy} L ${p1.x} ${p1.y} A ${rx} ${ry} 0 ${large} 1 ${p2.x} ${p2.y} Z`;
-}
-
-// Outer front wall (crust) for the portion of the slice arc that is on the
-// front (lower) half of the ellipse. Clipped in SVG to y > cy.
-function outerWall(
-  cx: number,
-  cy: number,
-  rx: number,
-  ry: number,
-  depth: number,
-  a1: number,
-  a2: number,
-) {
-  const large = a2 - a1 > 180 ? 1 : 0;
-  const p1 = polar(cx, cy, rx, ry, a1);
-  const p2 = polar(cx, cy, rx, ry, a2);
-  return `M ${p1.x} ${p1.y} A ${rx} ${ry} 0 ${large} 1 ${p2.x} ${p2.y} L ${p2.x} ${p2.y + depth} A ${rx} ${ry} 0 ${large} 0 ${p1.x} ${p1.y + depth} Z`;
 }
 
 function darken(hex: string, amount: number) {
@@ -71,6 +29,83 @@ function lighten(hex: string, amount: number) {
   return `rgb(${f(r)}, ${f(g)}, ${f(b)})`;
 }
 
+// Ring segment top face at vertical offset `topY` (relative to base cy).
+function ringTop(
+  cx: number,
+  topY: number,
+  rx: number,
+  ry: number,
+  irx: number,
+  iry: number,
+  a1: number,
+  a2: number,
+) {
+  const large = a2 - a1 > 180 ? 1 : 0;
+  const p1 = polar(cx, topY, rx, ry, a1);
+  const p2 = polar(cx, topY, rx, ry, a2);
+  const q1 = polar(cx, topY, irx, iry, a1);
+  const q2 = polar(cx, topY, irx, iry, a2);
+  return `M ${p1.x} ${p1.y} A ${rx} ${ry} 0 ${large} 1 ${p2.x} ${p2.y} L ${q2.x} ${q2.y} A ${irx} ${iry} 0 ${large} 0 ${q1.x} ${q1.y} Z`;
+}
+
+// Outer wall: from top face (topY) down to baseline (baseY) on outer ellipse arc.
+function outerWall(
+  cx: number,
+  topY: number,
+  baseY: number,
+  rx: number,
+  ry: number,
+  a1: number,
+  a2: number,
+) {
+  const large = a2 - a1 > 180 ? 1 : 0;
+  const t1 = polar(cx, topY, rx, ry, a1);
+  const t2 = polar(cx, topY, rx, ry, a2);
+  const b1 = polar(cx, baseY, rx, ry, a1);
+  const b2 = polar(cx, baseY, rx, ry, a2);
+  return `M ${t1.x} ${t1.y} A ${rx} ${ry} 0 ${large} 1 ${t2.x} ${t2.y} L ${b2.x} ${b2.y} A ${rx} ${ry} 0 ${large} 0 ${b1.x} ${b1.y} Z`;
+}
+
+// Inner wall of the hole.
+function innerWall(
+  cx: number,
+  topY: number,
+  baseY: number,
+  irx: number,
+  iry: number,
+  a1: number,
+  a2: number,
+) {
+  const large = a2 - a1 > 180 ? 1 : 0;
+  const t1 = polar(cx, topY, irx, iry, a1);
+  const t2 = polar(cx, topY, irx, iry, a2);
+  const b1 = polar(cx, baseY, irx, iry, a1);
+  const b2 = polar(cx, baseY, irx, iry, a2);
+  return `M ${t1.x} ${t1.y} A ${irx} ${iry} 0 ${large} 1 ${t2.x} ${t2.y} L ${b2.x} ${b2.y} A ${irx} ${iry} 0 ${large} 0 ${b1.x} ${b1.y} Z`;
+}
+
+// Radial side wall between two adjacent slices (at angle a) — visible between
+// slices when heights differ.
+function sideRadialWall(
+  cx: number,
+  topA: number,
+  topB: number,
+  baseY: number,
+  rx: number,
+  ry: number,
+  irx: number,
+  iry: number,
+  a: number,
+) {
+  const outT = polar(cx, topA, rx, ry, a);
+  const inT = polar(cx, topA, irx, iry, a);
+  const outB = polar(cx, topB, rx, ry, a);
+  const inB = polar(cx, topB, irx, iry, a);
+  // Only the vertical strip between the two top levels; if topB above topA (smaller y),
+  // that face belongs to the neighbor slice — we still render both, order handles occlusion.
+  return `M ${outT.x} ${outT.y} L ${inT.x} ${inT.y} L ${inB.x} ${inB.y} L ${outB.x} ${outB.y} Z`;
+}
+
 function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
   const [hover, setHover] = useState<string | null>(null);
 
@@ -78,7 +113,7 @@ function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
     const sum = regioes.reduce((s, r) => s + r.total, 0);
     const gap = 0.6;
     let acc = -90;
-    return regioes.map((r) => {
+    const sl = regioes.map((r) => {
       const sweep = (r.total / sum) * 360;
       const start = acc + gap / 2;
       const end = acc + sweep - gap / 2;
@@ -86,25 +121,52 @@ function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
       const mid = (start + end) / 2;
       return { ...r, start, end, mid };
     });
+    return sl;
   }, [regioes]);
 
   const cx = size / 2;
-  const cy = size / 2 - 30;
-  const rx = size * 0.44;
-  const ry = size * 0.24; // squashed => isometric tilt
-  const depth = 70;
+  const cy = size / 2 + 20; // baseline (top of plate)
+  const rx = size * 0.36;
+  const ry = size * 0.2;
   const irx = rx * innerRatio;
   const iry = ry * innerRatio;
 
+  // Slice height range (px)
+  const H_MIN = 40;
+  const H_MAX = 130;
+  const maxPct = Math.max(...slices.map((s) => s.percentual));
+  const heightFor = (pct: number) =>
+    H_MIN + ((pct / maxPct) * (H_MAX - H_MIN));
+
+  // Painter's order for top faces + walls: back-to-front by mid-angle sin.
+  // Back slices (mid closer to top / y<cy) drawn first.
+  const drawOrder = useMemo(
+    () =>
+      [...slices.map((s, i) => ({ s, i }))].sort((a, b) => {
+        const pa = polar(0, 0, 1, 1, a.s.mid).y;
+        const pb = polar(0, 0, 1, 1, b.s.mid).y;
+        return pa - pb; // negative (back) first
+      }),
+    [slices],
+  );
+
+  // Plate dimensions (flat base ring/oval under the donut)
+  const plateRx = rx * 1.22;
+  const plateRy = ry * 1.28;
+  const plateY = cy + 6;
+
   return (
     <svg
-      viewBox={`0 0 ${size} ${size * 0.75}`}
+      viewBox={`0 0 ${size} ${size * 0.78}`}
       width="100%"
       style={{ display: "block", overflow: "visible", height: "auto" }}
     >
       <defs>
-        <clipPath id="front-clip">
+        <clipPath id="front-clip-outer">
           <rect x={0} y={cy} width={size} height={size} />
+        </clipPath>
+        <clipPath id="back-clip-inner">
+          <rect x={0} y={0} width={size} height={cy} />
         </clipPath>
         {slices.map((s) => (
           <linearGradient
@@ -115,9 +177,9 @@ function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
             x2="0%"
             y2="100%"
           >
-            <stop offset="0%" stopColor={lighten(s.cor, 0.45)} />
-            <stop offset="45%" stopColor={lighten(s.cor, 0.1)} />
-            <stop offset="100%" stopColor={darken(s.cor, 0.1)} />
+            <stop offset="0%" stopColor={lighten(s.cor, 0.35)} />
+            <stop offset="55%" stopColor={s.cor} />
+            <stop offset="100%" stopColor={darken(s.cor, 0.12)} />
           </linearGradient>
         ))}
         {slices.map((s) => (
@@ -129,119 +191,117 @@ function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
             x2="0%"
             y2="100%"
           >
-            <stop offset="0%" stopColor={darken(s.cor, 0.15)} />
-            <stop offset="55%" stopColor={darken(s.cor, 0.45)} />
-            <stop offset="100%" stopColor={darken(s.cor, 0.7)} />
+            <stop offset="0%" stopColor={s.cor} />
+            <stop offset="60%" stopColor={darken(s.cor, 0.28)} />
+            <stop offset="100%" stopColor={darken(s.cor, 0.55)} />
           </linearGradient>
         ))}
-        <radialGradient id="ground" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="rgba(20,0,68,0.55)" />
-          <stop offset="70%" stopColor="rgba(20,0,68,0.12)" />
+        {slices.map((s) => (
+          <linearGradient
+            key={`inner-${s.nome}`}
+            id={`inner-${s.nome}`}
+            x1="0%"
+            y1="0%"
+            x2="0%"
+            y2="100%"
+          >
+            <stop offset="0%" stopColor={darken(s.cor, 0.45)} />
+            <stop offset="100%" stopColor={darken(s.cor, 0.15)} />
+          </linearGradient>
+        ))}
+        <radialGradient id="ground-shadow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="rgba(20,0,68,0.35)" />
+          <stop offset="70%" stopColor="rgba(20,0,68,0.1)" />
           <stop offset="100%" stopColor="rgba(20,0,68,0)" />
         </radialGradient>
-        <radialGradient id="topshine" cx="35%" cy="10%" r="75%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.75" />
-          <stop offset="45%" stopColor="#ffffff" stopOpacity="0.1" />
-          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        <radialGradient id="plate-fill" cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stopColor="#f1eef5" />
+          <stop offset="100%" stopColor="#d9d4e0" />
         </radialGradient>
-        <linearGradient id="rimshade" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="rgba(0,0,0,0)" />
-          <stop offset="100%" stopColor="rgba(0,0,0,0.35)" />
-        </linearGradient>
       </defs>
 
       {/* Ground shadow */}
       <ellipse
         cx={cx}
-        cy={cy + depth + ry + 10}
-        rx={rx * 1.05}
-        ry={ry * 0.55}
-        fill="url(#ground)"
+        cy={plateY + plateRy + 8}
+        rx={plateRx * 1.05}
+        ry={plateRy * 0.55}
+        fill="url(#ground-shadow)"
       />
 
-      {/* Base ellipse (bottom of the pie, fully dark) */}
-      <ellipse
-        cx={cx}
-        cy={cy + depth}
-        rx={rx}
-        ry={ry}
-        fill="#1a0033"
-        opacity={0.35}
-      />
+      {/* Plate (flat base ring under the donut) */}
+      <ellipse cx={cx} cy={plateY + 4} rx={plateRx} ry={plateRy} fill="rgba(20,0,68,0.12)" />
+      <ellipse cx={cx} cy={plateY} rx={plateRx} ry={plateRy} fill="url(#plate-fill)" />
 
-      {/* Front crust (walls) — only the visible front half of each slice */}
-      <g clipPath="url(#front-clip)">
-        {slices.map((s) => (
-          <path
-            key={`wall-${s.nome}`}
-            d={outerWall(cx, cy, rx, ry, depth, s.start, s.end)}
-            fill={`url(#side-${s.nome})`}
-            stroke={darken(s.cor, 0.55)}
-            strokeWidth={0.6}
-          />
-        ))}
-        {/* subtle bottom shade on the crust */}
-        <path
-          d={`M ${cx - rx} ${cy} A ${rx} ${ry} 0 0 0 ${cx + rx} ${cy} L ${cx + rx} ${cy + depth} A ${rx} ${ry} 0 0 1 ${cx - rx} ${cy + depth} Z`}
-          fill="url(#rimshade)"
-          pointerEvents="none"
-        />
-      </g>
+      {/* Draw slices back-to-front */}
+      {drawOrder.map(({ s }) => {
+        const h = heightFor(s.percentual);
+        const topY = cy - h;
+        const isHover = hover === s.nome;
+        const lift = isHover ? 6 : 0;
+        const tY = topY - lift;
 
-      {/* Top faces */}
-      <g>
-        {slices.map((s) => {
-          const isHover = hover === s.nome;
-          const mid = polar(cx, cy, 1, 1, s.mid);
-          const dx = isHover ? mid.x - cx : 0;
-          const dy = isHover ? mid.y - cy : 0;
-          const k = isHover ? 0.08 : 0;
-          return (
+        return (
+          <g
+            key={`slice-${s.nome}`}
+            onMouseEnter={() => setHover(s.nome)}
+            onMouseLeave={() => setHover(null)}
+            style={{ cursor: "pointer", transition: "transform 0.2s ease" }}
+          >
+            {/* Inner wall visible through the hole — back half of inner ellipse */}
+            <g clipPath="url(#back-clip-inner)">
+              <path
+                d={innerWall(cx, tY, cy, irx, iry, s.start, s.end)}
+                fill={`url(#inner-${s.nome})`}
+                stroke={darken(s.cor, 0.5)}
+                strokeWidth={0.5}
+              />
+            </g>
+
+            {/* Outer wall — front half */}
+            <g clipPath="url(#front-clip-outer)">
+              <path
+                d={outerWall(cx, tY, cy, rx, ry, s.start, s.end)}
+                fill={`url(#side-${s.nome})`}
+                stroke={darken(s.cor, 0.5)}
+                strokeWidth={0.6}
+              />
+            </g>
+
+            {/* Radial side walls (visible where neighbor is shorter) */}
+            {/* start edge */}
             <path
-              key={`top-${s.nome}`}
-              d={pieTop(cx + dx * k * rx, cy + dy * k * ry, rx, ry, s.start, s.end, innerRatio)}
+              d={`M ${polar(cx, tY, rx, ry, s.start).x} ${polar(cx, tY, rx, ry, s.start).y} L ${polar(cx, tY, irx, iry, s.start).x} ${polar(cx, tY, irx, iry, s.start).y} L ${polar(cx, cy, irx, iry, s.start).x} ${polar(cx, cy, irx, iry, s.start).y} L ${polar(cx, cy, rx, ry, s.start).x} ${polar(cx, cy, rx, ry, s.start).y} Z`}
+              fill={darken(s.cor, 0.22)}
+              opacity={0.9}
+            />
+            {/* end edge */}
+            <path
+              d={`M ${polar(cx, tY, rx, ry, s.end).x} ${polar(cx, tY, rx, ry, s.end).y} L ${polar(cx, tY, irx, iry, s.end).x} ${polar(cx, tY, irx, iry, s.end).y} L ${polar(cx, cy, irx, iry, s.end).x} ${polar(cx, cy, irx, iry, s.end).y} L ${polar(cx, cy, rx, ry, s.end).x} ${polar(cx, cy, rx, ry, s.end).y} Z`}
+              fill={darken(s.cor, 0.35)}
+              opacity={0.9}
+            />
+
+            {/* Top face */}
+            <path
+              d={ringTop(cx, tY, rx, ry, irx, iry, s.start, s.end)}
               fill={`url(#top-${s.nome})`}
               stroke={darken(s.cor, 0.35)}
               strokeWidth={0.75}
-              style={{ cursor: "pointer", transition: "d 0.2s ease" }}
-              onMouseEnter={() => setHover(s.nome)}
-              onMouseLeave={() => setHover(null)}
             />
-          );
-        })}
-      </g>
+          </g>
+        );
+      })}
 
-      {/* Inner hole — page bg + subtle inner shading */}
-      {innerRatio > 0 && (
-        <g pointerEvents="none">
-          <ellipse cx={cx} cy={cy} rx={irx} ry={iry} fill="#F7F5FB" />
-          {/* subtle darker crescent at the back of the hole for depth */}
-          <path
-            d={`M ${cx - irx} ${cy} A ${irx} ${iry} 0 0 1 ${cx + irx} ${cy} A ${irx * 0.95} ${iry * 0.85} 0 0 0 ${cx - irx} ${cy} Z`}
-            fill="rgba(20,0,68,0.08)"
-          />
-        </g>
-      )}
-
-      {/* Glossy top highlight */}
-      <ellipse
-        cx={cx}
-        cy={cy}
-        rx={rx}
-        ry={ry}
-        fill="url(#topshine)"
-        pointerEvents="none"
-        style={{ mixBlendMode: "screen" }}
-      />
-
-      {/* Percent labels — pill on big slices, leader line on small ones */}
+      {/* Percent labels on top of each slice */}
       <g pointerEvents="none" fontFamily="inherit">
         {slices.map((s) => {
-          const txt = `${s.percentual.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
-          const fontSize = Math.max(13, size * 0.032);
-          // Ring-centered label on top face
+          const h = heightFor(s.percentual);
+          const topY = cy - h;
           const mid = (innerRatio + 1) / 2;
-          const p = polar(cx, cy, rx * mid, ry * mid, s.mid);
+          const p = polar(cx, topY, rx * mid, ry * mid, s.mid);
+          const txt = `${Math.round(s.percentual)}%`;
+          const fontSize = Math.max(16, size * 0.036);
           return (
             <text
               key={`lbl-${s.nome}`}
@@ -252,9 +312,13 @@ function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
               fill="#fff"
               fontSize={fontSize}
               fontWeight={900}
-              style={{ paintOrder: "stroke", stroke: "rgba(0,0,0,0.35)", strokeWidth: 2 }}
+              style={{
+                paintOrder: "stroke",
+                stroke: "rgba(0,0,0,0.55)",
+                strokeWidth: 3,
+              }}
             >
-              {txt}
+              ✓{txt}
             </text>
           );
         })}
@@ -265,6 +329,7 @@ function Donut3DChart({ regioes, size = 620, innerRatio = 0.5 }: Props) {
 
 export default memo(Donut3DChart, (prev, next) => {
   if (prev.size !== next.size) return false;
+  if ((prev.innerRatio ?? 0.5) !== (next.innerRatio ?? 0.5)) return false;
   if (prev.regioes.length !== next.regioes.length) return false;
   for (let i = 0; i < prev.regioes.length; i++) {
     const a = prev.regioes[i];

@@ -133,7 +133,7 @@ export default function DistribuicaoRegiaoDashboard() {
           >
             <span className="flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-[#6A0DAD]" />
-              Todas as regiões
+              Sudeste
             </span>
             <ChevronDown className="w-4 h-4 text-slate-500" />
           </button>

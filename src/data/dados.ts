@@ -12,9 +12,9 @@ export type Regiao = {
 export const regioesBase: Regiao[] = [
   {
     nome: "Sudeste",
-    cor: "#16a34a",
-    total: 14212,
-    percentual: 30.4,
+    cor: "#ec1677",
+    total: 11696,
+    percentual: 25.0,
     hoje: 8,
     estados: [
       {
@@ -45,9 +45,9 @@ export const regioesBase: Regiao[] = [
   },
   {
     nome: "Sul",
-    cor: "#ec4899",
-    total: 13225,
-    percentual: 28.3,
+    cor: "#16a34a",
+    total: 13099,
+    percentual: 28.0,
     hoje: 9,
     estados: [
       {
@@ -83,9 +83,9 @@ export const regioesBase: Regiao[] = [
   {
     nome: "Outros/Exterior",
     cor: "#f97316",
-    total: 3075,
-    percentual: 6.5,
-    hoje: 3,
+    total: 7485,
+    percentual: 16.0,
+    hoje: 5,
     estados: [
       {
         nome: "Exterior",
@@ -98,9 +98,9 @@ export const regioesBase: Regiao[] = [
   },
   {
     nome: "Nordeste",
-    cor: "#a21caf",
-    total: 4058,
-    percentual: 8.7,
+    cor: "#a855f7",
+    total: 6549,
+    percentual: 14.0,
     hoje: 4,
     estados: [
       {
@@ -115,8 +115,8 @@ export const regioesBase: Regiao[] = [
   {
     nome: "Centro-Oeste",
     cor: "#14b8a6",
-    total: 5098,
-    percentual: 10.9,
+    total: 4678,
+    percentual: 10.0,
     hoje: 5,
     estados: [
       {
@@ -131,9 +131,9 @@ export const regioesBase: Regiao[] = [
   {
     nome: "Norte",
     cor: "#7c3aed",
-    total: 7114,
-    percentual: 15.2,
-    hoje: 6,
+    total: 3275,
+    percentual: 7.0,
+    hoje: 3,
     estados: [
       {
         nome: "Pará",

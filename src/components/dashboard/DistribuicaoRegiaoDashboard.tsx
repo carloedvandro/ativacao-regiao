@@ -37,62 +37,62 @@ const CALLOUTS: Record<
   Norte: {
     label: "Norte",
     colorFallback: "#5717f3",
-    x: "6.4%",
-    y: "20.1%",
+    x: "6.0%",
+    y: "20.8%",
     align: "right",
     width: "16.5%",
-    line: { x: "22.0%", y: "21.35%", w: "16.3%" },
-    arrow: { x: "37.4%", y: "27.0%", rotate: "0deg" },
+    line: { x: "19.6%", y: "21.55%", w: "17.0%" },
+    arrow: { x: "35.7%", y: "29.2%", rotate: "0deg" },
   },
   "Centro-Oeste": {
     label: "Centro-Oeste",
     colorFallback: "#16b7b5",
-    x: "6.4%",
-    y: "45.7%",
+    x: "4.2%",
+    y: "45.0%",
     align: "right",
     width: "16.8%",
-    line: { x: "23.9%", y: "46.9%", w: "8.8%" },
-    arrow: { x: "31.5%", y: "45.55%", rotate: "-90deg" },
+    line: { x: "18.8%", y: "46.8%", w: "9.8%" },
+    arrow: { x: "27.2%", y: "45.45%", rotate: "-90deg" },
   },
   Nordeste: {
     label: "Nordeste",
     colorFallback: "#a42cff",
-    x: "6.9%",
-    y: "72.7%",
+    x: "5.8%",
+    y: "72.8%",
     align: "right",
     width: "15.9%",
-    line: { x: "22.2%", y: "74.2%", w: "15.7%" },
-    arrow: { x: "36.7%", y: "72.8%", rotate: "-90deg" },
+    line: { x: "19.2%", y: "74.2%", w: "16.2%" },
+    arrow: { x: "34.2%", y: "72.8%", rotate: "-90deg" },
   },
   Sudeste: {
     label: "Sudeste",
     colorFallback: "#ff0b86",
-    x: "82.2%",
-    y: "20.1%",
+    x: "82.4%",
+    y: "20.8%",
     align: "left",
     width: "16.7%",
-    line: { x: "62.1%", y: "21.1%", w: "17.3%" },
-    arrow: { x: "61.2%", y: "25.9%", rotate: "0deg" },
+    line: { x: "62.0%", y: "21.35%", w: "17.4%" },
+    arrow: { x: "61.2%", y: "26.8%", rotate: "0deg" },
   },
   Sul: {
     label: "Sul",
     colorFallback: "#8a5426",
-    x: "82.1%",
-    y: "45.7%",
+    x: "82.5%",
+    y: "45.1%",
     align: "left",
     width: "16.7%",
-    line: { x: "72.8%", y: "46.8%", w: "8.9%" },
-    arrow: { x: "71.5%", y: "45.45%", rotate: "90deg" },
+    line: { x: "73.2%", y: "46.8%", w: "7.8%" },
+    arrow: { x: "72.0%", y: "45.45%", rotate: "90deg" },
   },
   "Outros/Exterior": {
     label: "Outros / Exterior",
     colorFallback: "#ff8300",
-    x: "82.1%",
-    y: "72.9%",
+    x: "82.6%",
+    y: "72.8%",
     align: "left",
     width: "17.3%",
-    line: { x: "68.6%", y: "74.1%", w: "12.0%" },
-    arrow: { x: "67.5%", y: "72.8%", rotate: "90deg" },
+    line: { x: "69.0%", y: "74.1%", w: "12.0%" },
+    arrow: { x: "67.9%", y: "72.8%", rotate: "90deg" },
   },
 };
 
@@ -197,9 +197,9 @@ export default function DistribuicaoRegiaoDashboard() {
           <span
             className="absolute block w-[0.38%] rounded-full"
             style={{
-              left: region === "Norte" ? "38.02%" : "61.55%",
-              top: region === "Norte" ? "21.35%" : "21.1%",
-              height: region === "Norte" ? "6.2%" : "5.3%",
+              left: region === "Norte" ? "36.35%" : "61.55%",
+              top: region === "Norte" ? "21.55%" : "21.35%",
+              height: region === "Norte" ? "7.8%" : "5.7%",
               backgroundColor: color,
             }}
           />
@@ -278,7 +278,7 @@ export default function DistribuicaoRegiaoDashboard() {
       {REGIAO_ORDER.map(renderArrow)}
       {REGIAO_ORDER.map(renderCallout)}
 
-      <div className="absolute left-1/2 top-[18.7%] z-0 w-[55.0%] -translate-x-1/2">
+      <div className="absolute left-1/2 top-[19.0%] z-0 w-[56.4%] -translate-x-1/2">
         <Donut3DChart
           regioes={donutRegioes}
           selectedName={selected}

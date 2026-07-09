@@ -41,7 +41,7 @@ const CALLOUTS: Record<
     y: "20.8%",
     align: "right",
     width: "16.5%",
-    line: { x: "19.6%", y: "21.55%", w: "17.0%" },
+    line: { x: "22.8%", y: "21.55%", w: "13.8%" },
     arrow: { x: "35.7%", y: "29.2%", rotate: "0deg" },
   },
   "Centro-Oeste": {
@@ -51,8 +51,8 @@ const CALLOUTS: Record<
     y: "45.0%",
     align: "right",
     width: "16.8%",
-    line: { x: "18.8%", y: "46.8%", w: "9.8%" },
-    arrow: { x: "27.2%", y: "45.45%", rotate: "-90deg" },
+    line: { x: "22.7%", y: "46.8%", w: "7.8%" },
+    arrow: { x: "29.3%", y: "45.45%", rotate: "-90deg" },
   },
   Nordeste: {
     label: "Nordeste",
@@ -61,8 +61,8 @@ const CALLOUTS: Record<
     y: "72.8%",
     align: "right",
     width: "15.9%",
-    line: { x: "19.2%", y: "74.2%", w: "16.2%" },
-    arrow: { x: "34.2%", y: "72.8%", rotate: "-90deg" },
+    line: { x: "22.5%", y: "74.2%", w: "13.8%" },
+    arrow: { x: "35.1%", y: "72.8%", rotate: "-90deg" },
   },
   Sudeste: {
     label: "Sudeste",
@@ -278,7 +278,7 @@ export default function DistribuicaoRegiaoDashboard() {
       {REGIAO_ORDER.map(renderArrow)}
       {REGIAO_ORDER.map(renderCallout)}
 
-      <div className="absolute left-1/2 top-[19.0%] z-0 w-[56.4%] -translate-x-1/2">
+      <div className="absolute left-1/2 top-[16.8%] z-0 w-[56.4%] -translate-x-1/2">
         <Donut3DChart
           regioes={donutRegioes}
           selectedName={selected}
@@ -286,7 +286,7 @@ export default function DistribuicaoRegiaoDashboard() {
         />
       </div>
 
-      <div className="absolute left-1/2 top-[88.4%] z-30 flex h-[7.2%] w-[28.4%] -translate-x-1/2 items-center justify-center gap-[4.7%] rounded-[9px] border border-[#c7cfda] bg-white px-[2.1%] shadow-[0_1px_5px_rgba(15,23,42,0.08)]">
+      <div className="absolute left-1/2 top-[87.0%] z-30 flex h-[7.2%] w-[28.4%] -translate-x-1/2 items-center justify-center gap-[4.7%] rounded-[9px] border border-[#c7cfda] bg-white px-[2.1%] shadow-[0_1px_5px_rgba(15,23,42,0.08)]">
         <BarChart3 className="h-[44%] w-[8.3%] fill-[#5517ea] text-[#5517ea]" strokeWidth={3} />
         <span className="whitespace-nowrap text-[clamp(15px,1.56vw,24px)] font-medium leading-none text-[#4f5060]">
           Total de ativações

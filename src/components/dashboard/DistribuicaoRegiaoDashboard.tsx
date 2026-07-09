@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { memo, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   BarChart3,
   ChevronDown,
@@ -9,7 +9,7 @@ import {
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
-import Donut3DChart from "@/components/Donut3DChart";
+import referenciaPizzaRegioes from "@/assets/referencia-pizza-regioes.png";
 import { regioesBase, fmt, siglaDe } from "@/data/dados";
 import type { Regiao } from "@/types/dashboard";
 import CountUp from "@/components/CountUp";
@@ -289,66 +289,16 @@ export default function DistribuicaoRegiaoDashboard() {
   );
 }
 
-function find(regioes: LiveRegiao[], nome: string): LiveRegiao {
-  return regioes.find((r) => r.nome === nome) ?? regioes[0];
-}
-
-function ReferenceArtwork({ regioes, totalGeral }: { regioes: LiveRegiao[]; totalGeral: number }) {
-  const norte = find(regioes, "Norte");
-  const centro = find(regioes, "Centro-Oeste");
-  const nordeste = find(regioes, "Nordeste");
-  const sudeste = find(regioes, "Sudeste");
-  const sul = find(regioes, "Sul");
-  const outros = find(regioes, "Outros/Exterior");
-
+function ReferenceArtwork({ totalGeral }: { regioes: LiveRegiao[]; totalGeral: number }) {
   return (
-    <section className="relative mx-auto w-full max-w-[1184px] aspect-[1184/650] min-h-[560px] overflow-hidden bg-white">
-      <div className="absolute left-1/2 top-[1.2%] -translate-x-1/2 text-center">
-        <h1 className="whitespace-nowrap text-[clamp(1.75rem,3vw,2.45rem)] font-black leading-tight text-[#06145E]">
-          Distribuição por Região
-        </h1>
-        <p className="mt-1 text-[clamp(0.95rem,1.45vw,1.25rem)] font-medium text-[#3f4353]">
-          Ativações SmartVoz por região
-        </p>
-      </div>
-
-      <button
-        type="button"
-        className="absolute left-1/2 top-[12.7%] z-20 flex h-[44px] w-[220px] -translate-x-1/2 items-center justify-between rounded-lg border border-[#cdd3de] bg-white px-4 text-[1.15rem] font-medium text-black shadow-sm"
-      >
-        <span>Sudeste</span>
-        <ChevronDown className="h-5 w-5" />
-      </button>
-
-      <svg className="pointer-events-none absolute inset-0 z-10 h-full w-full" viewBox="0 0 1184 650" preserveAspectRatio="none">
-        <defs>
-          <ArrowMarker id="arrow-norte" color={norte.cor} />
-          <ArrowMarker id="arrow-centro" color={centro.cor} />
-          <ArrowMarker id="arrow-nordeste" color={nordeste.cor} />
-          <ArrowMarker id="arrow-sudeste" color={sudeste.cor} />
-          <ArrowMarker id="arrow-sul" color="#8B572A" />
-          <ArrowMarker id="arrow-outros" color={outros.cor} />
-        </defs>
-        <path d="M 205 146 H 425 V 210" stroke={norte.cor} strokeWidth="3" fill="none" markerEnd="url(#arrow-norte)" />
-        <path d="M 212 335 H 318" stroke={centro.cor} strokeWidth="3" fill="none" markerEnd="url(#arrow-centro)" />
-        <path d="M 212 520 H 410" stroke={nordeste.cor} strokeWidth="3" fill="none" markerEnd="url(#arrow-nordeste)" />
-        <path d="M 928 144 H 708 V 180" stroke={sudeste.cor} strokeWidth="3" fill="none" markerEnd="url(#arrow-sudeste)" />
-        <path d="M 928 334 H 824" stroke="#8B572A" strokeWidth="3" fill="none" markerEnd="url(#arrow-sul)" />
-        <path d="M 928 518 H 790" stroke={outros.cor} strokeWidth="3" fill="none" markerEnd="url(#arrow-outros)" />
-      </svg>
-
-      <ReferenceLabel regiao={norte} className="left-[3.4%] top-[21.7%]" align="right" />
-      <ReferenceLabel regiao={centro} className="left-[3.4%] top-[50.5%]" align="right" />
-      <ReferenceLabel regiao={nordeste} className="left-[3.4%] top-[79%]" align="right" />
-      <ReferenceLabel regiao={sudeste} className="right-[3.4%] top-[21.7%]" align="left" />
-      <ReferenceLabel regiao={sul} className="right-[5.2%] top-[50.8%]" align="left" titleColor="#8B572A" />
-      <ReferenceLabel regiao={outros} className="right-[3.4%] top-[79%]" align="left" displayName="Outros / Exterior" />
-
-      <div className="absolute left-1/2 top-[20.3%] z-0 w-[52.5%] -translate-x-1/2">
-        <Donut3DChart regioes={regioes as unknown as Regiao[]} innerRatio={0.5} />
-      </div>
-
-      <div className="absolute bottom-[1.7%] left-1/2 z-20 flex -translate-x-1/2 items-center gap-4 rounded-lg border border-[#d5dbe7] bg-white px-5 py-3 shadow-sm">
+    <section className="relative mx-auto w-full max-w-[1184px] overflow-hidden bg-white">
+      <img
+        src={referenciaPizzaRegioes}
+        alt="Distribuição por Região com gráfico donut 3D e chamadas laterais"
+        className="block h-auto w-full select-none"
+        draggable={false}
+      />
+      <div className="pointer-events-none absolute bottom-[1.7%] left-1/2 flex -translate-x-1/2 items-center gap-4 rounded-lg border border-[#d5dbe7] bg-white px-5 py-3 shadow-sm">
         <BarChart3 className="h-6 w-6 text-[#4f10e8]" />
         <span className="whitespace-nowrap text-[clamp(0.95rem,1.6vw,1.25rem)] font-medium text-[#555566]">Total de ativações</span>
         <CountUp value={totalGeral} format={fmt} className="text-[clamp(1.25rem,2.4vw,1.8rem)] font-black text-[#4f10e8] tabular-nums" />
@@ -356,73 +306,6 @@ function ReferenceArtwork({ regioes, totalGeral }: { regioes: LiveRegiao[]; tota
     </section>
   );
 }
-
-function ArrowMarker({ id, color }: { id: string; color: string }) {
-  return (
-    <marker id={id} markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill={color} />
-    </marker>
-  );
-}
-
-function ReferenceLabel({
-  regiao,
-  className,
-  align,
-  titleColor,
-  displayName,
-}: {
-  regiao: LiveRegiao;
-  className: string;
-  align: "left" | "right";
-  titleColor?: string;
-  displayName?: string;
-}) {
-  const name = displayName ?? regiao.nome;
-  const regionText = regiao.nome === "Outros/Exterior" ? "Outras\nregiões ou Exterior" : regiao.nome;
-  return (
-    <div className={`absolute z-20 w-[170px] ${align === "right" ? "text-right" : "text-left"} ${className}`}>
-      <h2 className="text-[clamp(1rem,1.9vw,1.45rem)] font-black leading-none" style={{ color: titleColor ?? regiao.cor }}>
-        {name}
-      </h2>
-      <p className="mt-2 whitespace-pre-line text-[clamp(0.72rem,1.18vw,1rem)] font-medium leading-[1.25] text-black">
-        {`Total de ativações\nrealizadas na região\n${regionText} no período\nselecionado.`}
-      </p>
-    </div>
-  );
-}
-
-const RegionLabel = memo(function RegionLabel({
-  regiao,
-  align,
-  arrow,
-}: {
-  regiao: LiveRegiao;
-  align: "left" | "right";
-  arrow: "left" | "right";
-}) {
-  const rightAlign = align === "right";
-  const arrowStyle: CSSProperties = {
-    width: 0,
-    height: 0,
-    borderTop: "6px solid transparent",
-    borderBottom: "6px solid transparent",
-    ...(arrow === "right"
-      ? { borderLeft: `10px solid ${regiao.cor}` }
-      : { borderRight: `10px solid ${regiao.cor}` }),
-  };
-  return (
-    <div className={`flex flex-col ${rightAlign ? "items-end text-right" : "items-start text-left"}`}>
-      <div className={`flex items-center gap-2 ${rightAlign ? "flex-row" : "flex-row-reverse"}`}>
-        <p className="font-black text-lg" style={{ color: regiao.cor }}>{regiao.nome}</p>
-        <span aria-hidden style={arrowStyle} />
-      </div>
-      <p className="text-xs text-slate-500 max-w-[200px] leading-snug mt-1">
-        Total de ativações realizadas na região {regiao.nome} no período selecionado.
-      </p>
-    </div>
-  );
-});
 
 function KpiCard({
   icon,

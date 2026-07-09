@@ -12,21 +12,6 @@ function useTick(ms: number) {
   return n;
 }
 
-const LiveClock = memo(function LiveClock() {
-  const [now, setNow] = useState<Date | null>(null);
-  useEffect(() => {
-    setNow(new Date());
-    const t = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(t);
-  }, []);
-  if (!now) return <span suppressHydrationWarning className="tabular-nums">--:--:--</span>;
-  return (
-    <span suppressHydrationWarning className="tabular-nums">
-      {now.toLocaleTimeString("pt-BR", { hour12: false })}
-    </span>
-  );
-});
-
 type LiveRegiao = Regiao & { hoje: number; novas: number; variacao: number };
 
 const REGIAO_ORDER = ["Sudeste", "Sul", "Outros/Exterior", "Nordeste", "Centro-Oeste", "Norte"];

@@ -40,7 +40,7 @@ const LiveClock = memo(function LiveClock() {
 
 type LiveRegiao = Regiao & { hoje: number; novas: number; variacao: number };
 
-const REGIAO_ORDER = ["Sudeste", "Sul", "Norte", "Centro-Oeste", "Nordeste", "Outros/Exterior"];
+const REGIAO_ORDER = ["Sudeste", "Sul", "Outros/Exterior", "Nordeste", "Centro-Oeste", "Norte"];
 const VARIACOES: Record<string, number> = {
   "Sudeste": 8.7,
   "Sul": 11.3,
@@ -114,55 +114,7 @@ export default function DistribuicaoRegiaoDashboard() {
 
   return (
     <div className="flex flex-col gap-8">
-      <header className="flex flex-wrap items-start justify-between gap-4">
-        <div className="flex-1 text-center">
-          <h1 className="text-3xl md:text-4xl font-black text-[#1A0033]">Distribuição por Região</h1>
-          <p className="mt-1 text-slate-500">Ativações SmartVoz por região</p>
-        </div>
-        <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 shadow-sm">
-          <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-xs font-bold text-slate-700">Atualização em tempo real</span>
-        </div>
-      </header>
-
-      <section className="rounded-3xl bg-white border border-slate-200 shadow-[0_20px_60px_rgba(20,0,68,.06)] p-6 md:p-10">
-        <div className="flex justify-center mb-6">
-          <button
-            type="button"
-            className="flex items-center gap-3 px-5 py-3 rounded-xl bg-white border border-slate-200 shadow-sm text-[#1A0033] font-bold w-[280px] justify-between"
-          >
-            <span className="flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-[#6A0DAD]" />
-              Sudeste
-            </span>
-            <ChevronDown className="w-4 h-4 text-slate-500" />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(180px,220px)_minmax(0,1fr)_minmax(180px,220px)] gap-6 items-center">
-          <div className="flex flex-col gap-14 order-2 lg:order-1">
-            <RegionLabel regiao={find(regioes, "Norte")} align="right" arrow="right" />
-            <RegionLabel regiao={find(regioes, "Centro-Oeste")} align="right" arrow="right" />
-            <RegionLabel regiao={find(regioes, "Nordeste")} align="right" arrow="right" />
-          </div>
-          <div className="order-1 lg:order-2">
-            <Donut3DChart regioes={regioes as unknown as Regiao[]} innerRatio={0.5} />
-          </div>
-          <div className="flex flex-col gap-14 order-3">
-            <RegionLabel regiao={find(regioes, "Sudeste")} align="left" arrow="left" />
-            <RegionLabel regiao={find(regioes, "Sul")} align="left" arrow="left" />
-            <RegionLabel regiao={find(regioes, "Outros/Exterior")} align="left" arrow="left" />
-          </div>
-        </div>
-
-        <div className="flex justify-center mt-6">
-          <div className="flex items-center gap-3 px-5 py-3 rounded-xl border border-slate-200 bg-white shadow-sm">
-            <BarChart3 className="w-5 h-5 text-[#6A0DAD]" />
-            <span className="font-semibold text-slate-600">Total de ativações</span>
-            <CountUp value={totalGeral} format={fmt} className="text-2xl font-black text-[#1A0033] tabular-nums" />
-          </div>
-        </div>
-      </section>
+      <ReferenceArtwork regioes={regioes} totalGeral={totalGeral} />
 
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <KpiCard
@@ -339,6 +291,105 @@ export default function DistribuicaoRegiaoDashboard() {
 
 function find(regioes: LiveRegiao[], nome: string): LiveRegiao {
   return regioes.find((r) => r.nome === nome) ?? regioes[0];
+}
+
+function ReferenceArtwork({ regioes, totalGeral }: { regioes: LiveRegiao[]; totalGeral: number }) {
+  const norte = find(regioes, "Norte");
+  const centro = find(regioes, "Centro-Oeste");
+  const nordeste = find(regioes, "Nordeste");
+  const sudeste = find(regioes, "Sudeste");
+  const sul = find(regioes, "Sul");
+  const outros = find(regioes, "Outros/Exterior");
+
+  return (
+    <section className="relative mx-auto w-full max-w-[1184px] aspect-[1184/650] min-h-[560px] overflow-hidden bg-white">
+      <div className="absolute left-1/2 top-[1.2%] -translate-x-1/2 text-center">
+        <h1 className="whitespace-nowrap text-[clamp(1.75rem,3vw,2.45rem)] font-black leading-tight text-[#06145E]">
+          Distribuição por Região
+        </h1>
+        <p className="mt-1 text-[clamp(0.95rem,1.45vw,1.25rem)] font-medium text-[#3f4353]">
+          Ativações SmartVoz por região
+        </p>
+      </div>
+
+      <button
+        type="button"
+        className="absolute left-1/2 top-[12.7%] z-20 flex h-[44px] w-[220px] -translate-x-1/2 items-center justify-between rounded-lg border border-[#cdd3de] bg-white px-4 text-[1.15rem] font-medium text-black shadow-sm"
+      >
+        <span>Sudeste</span>
+        <ChevronDown className="h-5 w-5" />
+      </button>
+
+      <svg className="pointer-events-none absolute inset-0 z-10 h-full w-full" viewBox="0 0 1184 650" preserveAspectRatio="none">
+        <defs>
+          <ArrowMarker id="arrow-norte" color={norte.cor} />
+          <ArrowMarker id="arrow-centro" color={centro.cor} />
+          <ArrowMarker id="arrow-nordeste" color={nordeste.cor} />
+          <ArrowMarker id="arrow-sudeste" color={sudeste.cor} />
+          <ArrowMarker id="arrow-sul" color="#8B572A" />
+          <ArrowMarker id="arrow-outros" color={outros.cor} />
+        </defs>
+        <path d="M 205 146 H 425 V 210" stroke={norte.cor} strokeWidth="3" fill="none" markerEnd="url(#arrow-norte)" />
+        <path d="M 212 335 H 318" stroke={centro.cor} strokeWidth="3" fill="none" markerEnd="url(#arrow-centro)" />
+        <path d="M 212 520 H 410" stroke={nordeste.cor} strokeWidth="3" fill="none" markerEnd="url(#arrow-nordeste)" />
+        <path d="M 928 144 H 708 V 180" stroke={sudeste.cor} strokeWidth="3" fill="none" markerEnd="url(#arrow-sudeste)" />
+        <path d="M 928 334 H 824" stroke="#8B572A" strokeWidth="3" fill="none" markerEnd="url(#arrow-sul)" />
+        <path d="M 928 518 H 790" stroke={outros.cor} strokeWidth="3" fill="none" markerEnd="url(#arrow-outros)" />
+      </svg>
+
+      <ReferenceLabel regiao={norte} className="left-[3.4%] top-[21.7%]" align="right" />
+      <ReferenceLabel regiao={centro} className="left-[3.4%] top-[50.5%]" align="right" />
+      <ReferenceLabel regiao={nordeste} className="left-[3.4%] top-[79%]" align="right" />
+      <ReferenceLabel regiao={sudeste} className="right-[3.4%] top-[21.7%]" align="left" />
+      <ReferenceLabel regiao={sul} className="right-[5.2%] top-[50.8%]" align="left" titleColor="#8B572A" />
+      <ReferenceLabel regiao={outros} className="right-[3.4%] top-[79%]" align="left" displayName="Outros / Exterior" />
+
+      <div className="absolute left-1/2 top-[20.3%] z-0 w-[52.5%] -translate-x-1/2">
+        <Donut3DChart regioes={regioes as unknown as Regiao[]} innerRatio={0.5} />
+      </div>
+
+      <div className="absolute bottom-[1.7%] left-1/2 z-20 flex -translate-x-1/2 items-center gap-4 rounded-lg border border-[#d5dbe7] bg-white px-5 py-3 shadow-sm">
+        <BarChart3 className="h-6 w-6 text-[#4f10e8]" />
+        <span className="whitespace-nowrap text-[clamp(0.95rem,1.6vw,1.25rem)] font-medium text-[#555566]">Total de ativações</span>
+        <CountUp value={totalGeral} format={fmt} className="text-[clamp(1.25rem,2.4vw,1.8rem)] font-black text-[#4f10e8] tabular-nums" />
+      </div>
+    </section>
+  );
+}
+
+function ArrowMarker({ id, color }: { id: string; color: string }) {
+  return (
+    <marker id={id} markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill={color} />
+    </marker>
+  );
+}
+
+function ReferenceLabel({
+  regiao,
+  className,
+  align,
+  titleColor,
+  displayName,
+}: {
+  regiao: LiveRegiao;
+  className: string;
+  align: "left" | "right";
+  titleColor?: string;
+  displayName?: string;
+}) {
+  const name = displayName ?? regiao.nome;
+  const regionText = regiao.nome === "Outros/Exterior" ? "Outras\nregiões ou Exterior" : regiao.nome;
+  return (
+    <div className={`absolute z-20 w-[170px] ${align === "right" ? "text-right" : "text-left"} ${className}`}>
+      <h2 className="text-[clamp(1rem,1.9vw,1.45rem)] font-black leading-none" style={{ color: titleColor ?? regiao.cor }}>
+        {name}
+      </h2>
+      <p className="mt-2 whitespace-pre-line text-[clamp(0.72rem,1.18vw,1rem)] font-medium leading-[1.25] text-black">
+        {`Total de ativações\nrealizadas na região\n${regionText} no período\nselecionado.`}
+      </p>
+    </div>
+  );
 }
 
 const RegionLabel = memo(function RegionLabel({

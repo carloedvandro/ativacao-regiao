@@ -12,44 +12,42 @@ export type Regiao = {
 export const regioesBase: Regiao[] = [
   {
     nome: "Sudeste",
-    cor: "#ec1677",
-    total: 14142,
+    cor: "#16a34a",
+    total: 14212,
     percentual: 30.4,
-    hoje: 12,
+    hoje: 8,
     estados: [
       {
         nome: "São Paulo",
         cidades: [
-          { nome: "São Paulo", gb50: 1842, gb80: 2156, gb100: 2394 },
-          { nome: "Campinas", gb50: 612, gb80: 724, gb100: 812 },
-          { nome: "Ribeirão Preto", gb50: 312, gb80: 356, gb100: 398 },
+          { nome: "São Paulo", gb50: 2500, gb80: 2700, gb100: 2636 },
         ],
       },
       {
         nome: "Minas Gerais",
         cidades: [
-          { nome: "Belo Horizonte", gb50: 1320, gb80: 1540, gb100: 1390 },
+          { nome: "Belo Horizonte", gb50: 1000, gb80: 1100, gb100: 1025 },
         ],
       },
       {
         nome: "Rio de Janeiro",
         cidades: [
-          { nome: "Rio de Janeiro", gb50: 980, gb80: 1120, gb100: 1000 },
+          { nome: "Rio de Janeiro", gb50: 700, gb80: 734, gb100: 700 },
         ],
       },
       {
         nome: "Espírito Santo",
         cidades: [
-          { nome: "Vitória", gb50: 300, gb80: 336, gb100: 336 },
+          { nome: "Vitória", gb50: 370, gb80: 374, gb100: 373 },
         ],
       },
     ],
   },
   {
     nome: "Sul",
-    cor: "#049b16",
-    total: 13048,
-    percentual: 28.1,
+    cor: "#ec4899",
+    total: 13225,
+    percentual: 28.3,
     hoje: 9,
     estados: [
       {
@@ -84,10 +82,10 @@ export const regioesBase: Regiao[] = [
   },
   {
     nome: "Outros/Exterior",
-    cor: "#f59e0b",
-    total: 7820,
-    percentual: 16.8,
-    hoje: 6,
+    cor: "#f97316",
+    total: 3075,
+    percentual: 6.5,
+    hoje: 3,
     estados: [
       {
         nome: "Exterior",
@@ -100,10 +98,10 @@ export const regioesBase: Regiao[] = [
   },
   {
     nome: "Nordeste",
-    cor: "#8a18f5",
-    total: 6598,
-    percentual: 14.2,
-    hoje: 7,
+    cor: "#a21caf",
+    total: 4058,
+    percentual: 8.7,
+    hoje: 4,
     estados: [
       {
         nome: "Bahia",
@@ -116,10 +114,10 @@ export const regioesBase: Regiao[] = [
   },
   {
     nome: "Centro-Oeste",
-    cor: "#098da8",
-    total: 4655,
-    percentual: 10.0,
-    hoje: 4,
+    cor: "#14b8a6",
+    total: 5098,
+    percentual: 10.9,
+    hoje: 5,
     estados: [
       {
         nome: "Goiás",
@@ -132,10 +130,10 @@ export const regioesBase: Regiao[] = [
   },
   {
     nome: "Norte",
-    cor: "#4b13d6",
-    total: 3597,
-    percentual: 7.7,
-    hoje: 3,
+    cor: "#7c3aed",
+    total: 7114,
+    percentual: 15.2,
+    hoje: 6,
     estados: [
       {
         nome: "Pará",

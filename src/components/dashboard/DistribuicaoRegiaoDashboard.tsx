@@ -289,7 +289,7 @@ export default function DistribuicaoRegiaoDashboard() {
           regioes={donutRegioes}
           selectedName={selected}
           onSelect={(name) => setSelected(name as RegionKey)}
-          startAngle={-42}
+          startAngle={-72.6}
         />
       </div>
 

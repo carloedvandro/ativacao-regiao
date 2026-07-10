@@ -30,23 +30,24 @@ function Sparkline({ color, seed }: { color: string; seed: number }) {
       const x = Math.sin(seed * 37 + i * 91.7) * 10000;
       return Math.abs(x - Math.floor(x));
     };
-    return Array.from({ length: 7 }, (_, i) => 0.3 + rng(i) * 0.7);
+    return Array.from({ length: 5 }, (_, i) => 0.28 + rng(i) * 0.72);
   }, [seed]);
-  const w = 72;
-  const h = 22;
-  const bw = w / vals.length - 2;
+  const w = 60;
+  const h = 24;
+  const bw = 3;
+  const gap = (w - bw * vals.length) / (vals.length - 1);
   return (
-    <svg width={w} height={h}>
+    <svg width={w} height={h} aria-hidden>
       {vals.map((v, i) => (
         <rect
           key={i}
-          x={i * (bw + 2)}
+          x={i * (bw + gap)}
           y={h - v * h}
           width={bw}
-          height={v * h}
-          rx={1.5}
+          height={Math.max(2, v * h)}
+          rx={bw / 2}
           fill={color}
-          opacity={0.35 + (i / vals.length) * 0.65}
+          opacity={0.35 + (i / (vals.length - 1)) * 0.65}
         />
       ))}
     </svg>
@@ -289,7 +290,7 @@ function ProducaoTempoReal({
                   </span>
                 </td>
                 <td className="py-4 text-[#7b7591]">
-                  {isLast ? "Agora" : `${(idx + 1) * 3}s atrás`}
+                  {isLast ? "Agora" : `há ${(idx + 1) * 3} seg`}
                 </td>
                 <td className="py-4 text-center">
                   <span className="rounded-md bg-emerald-50 px-2 py-1 text-sm font-black text-emerald-600">

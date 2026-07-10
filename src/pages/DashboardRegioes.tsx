@@ -4,7 +4,6 @@ import {
   BarChart3,
   ChevronDown,
   Filter,
-  RefreshCw,
   Table2,
   TrendingUp,
   X,

@@ -75,8 +75,8 @@ export default function DashboardRegioes() {
   const activeRegion = drillRegion ? regioes.find((r) => r.nome === drillRegion) ?? null : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f6f4fb] to-[#eef1fb] text-[#140044]">
-      <main className="mx-auto w-full max-w-[1536px] px-6 py-8 space-y-8">
+    <div className="premium-surface min-h-screen text-white">
+      <main className="mx-auto w-full max-w-[1536px] px-6 py-10 space-y-8">
         <DetalhamentoRegioes
           regioes={regioes}
           onOpenTable={() => {
@@ -100,9 +100,9 @@ export default function DashboardRegioes() {
           totalGeral={totalGeral}
         />
 
-        <p className="text-center text-xs text-[#7b7591]">
-          Os dados são atualizados automaticamente em tempo real. Última atualização:{" "}
-          {new Date().toLocaleString("pt-BR")}
+        <p className="text-center text-xs tracking-wide text-white/50">
+          Dados atualizados em tempo real · Última sincronização:{" "}
+          <span className="gold-text font-bold">{new Date().toLocaleString("pt-BR")}</span>
         </p>
       </main>
 
@@ -129,61 +129,82 @@ function DetalhamentoRegioes({
   onCardClick: (nome: string) => void;
 }) {
   return (
-    <section className="rounded-[24px] border border-[#e7e3f0] bg-white p-6 shadow-sm">
+    <section className="premium-card rounded-[28px] p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-lg font-black text-[#140044]">
-          Detalhamento por Região{" "}
-          <span className="text-sm font-medium text-[#8b86a0]">(em tempo real)</span>
-        </h2>
+        <div>
+          <div className="text-[10px] font-black uppercase tracking-[0.35em] gold-text">
+            Premium Analytics
+          </div>
+          <h2 className="mt-1 text-2xl font-black text-white">
+            Detalhamento por Região{" "}
+            <span className="text-sm font-medium text-white/50">· ao vivo</span>
+          </h2>
+        </div>
         <button
           onClick={onOpenTable}
-          className="flex items-center gap-2 rounded-lg border border-[#e0dbec] px-3 py-2 text-sm font-bold text-[#5517ea] transition hover:bg-[#f5f1ff]"
+          className="gold-button flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black tracking-wide transition hover:-translate-y-0.5"
         >
           Ver tabela completa <Table2 className="h-4 w-4" />
         </button>
       </div>
 
-      <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+      <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
         {regioes.map((r) => (
           <button
             key={r.nome}
             type="button"
             onClick={() => onCardClick(r.nome)}
-            className="group rounded-2xl border border-[#ece8f5] bg-white p-4 text-left transition hover:-translate-y-0.5 hover:shadow-lg"
-            style={{ borderTopColor: r.cor, borderTopWidth: 3 }}
+            className="group relative overflow-hidden rounded-2xl region-chip-3d p-4 text-left transition duration-300 hover:-translate-y-1"
+            style={{
+              boxShadow: `0 20px 40px -24px ${r.cor}80, 0 1px 0 0 rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(201,168,76,0.15) inset`,
+            }}
           >
-            <div className="text-sm font-black" style={{ color: r.cor }}>
-              {r.nome}
+            <span
+              className="pointer-events-none absolute inset-x-0 top-0 h-[3px]"
+              style={{ background: `linear-gradient(90deg, transparent, ${r.cor}, #f6e6a8, ${r.cor}, transparent)` }}
+            />
+            <span
+              className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full opacity-30 blur-2xl transition group-hover:opacity-60"
+              style={{ background: r.cor }}
+            />
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black uppercase tracking-widest" style={{ color: r.cor }}>
+                {r.nome}
+              </span>
+              <span className="rounded-md border border-white/10 bg-white/5 px-1.5 py-0.5 text-[10px] font-black gold-text">
+                {r.percentual.toFixed(1).replace(".", ",")}%
+              </span>
             </div>
-            <div className="mt-2 text-2xl font-black tabular-nums text-[#140044]">
+            <div className="mt-3 text-3xl font-black tabular-nums text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
               <CountUp value={r.total} format={(n) => fmt(n)} />
             </div>
-            <div className="text-base font-black" style={{ color: r.cor }}>
-              {r.percentual.toFixed(1).replace(".", ",")}%
-            </div>
-            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-[#f1eef7]">
+            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
               <div
-                className="h-full rounded-full transition-all duration-500"
-                style={{ width: `${Math.min(100, r.percentual * 2.5)}%`, backgroundColor: r.cor }}
+                className="h-full rounded-full transition-all duration-700"
+                style={{
+                  width: `${Math.min(100, r.percentual * 2.5)}%`,
+                  background: `linear-gradient(90deg, ${r.cor}, #f6e6a8)`,
+                  boxShadow: `0 0 12px ${r.cor}`,
+                }}
               />
             </div>
-            <div className="mt-3 flex items-center gap-1 text-xs font-bold text-emerald-600">
-              <TrendingUp className="h-3.5 w-3.5" />
-              <CountUp value={r.hoje} /> hoje
-            </div>
-            <div className="mt-1 text-[10px] uppercase tracking-widest text-[#a29bbc]">
-              Atualizado agora
+            <div className="mt-3 flex items-center justify-between">
+              <span className="flex items-center gap-1 text-xs font-bold text-emerald-300">
+                <TrendingUp className="h-3.5 w-3.5" />
+                <CountUp value={r.hoje} /> hoje
+              </span>
+              <span className="text-[9px] uppercase tracking-widest text-white/40">Live</span>
             </div>
           </button>
         ))}
       </div>
 
-      <div className="mt-4 flex items-center justify-center gap-2 text-xs text-[#7b7591]">
+      <div className="mt-5 flex items-center justify-center gap-2 text-xs text-white/60">
         <span className="relative flex h-2 w-2">
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
         </span>
-        Dados atualizados automaticamente a cada 3 segundos
+        Sincronização automática · 3 segundos
       </div>
     </section>
   );
@@ -217,21 +238,26 @@ function ProducaoTempoReal({
   });
 
   return (
-    <section className="rounded-[24px] border border-[#e7e3f0] bg-white p-6 shadow-sm">
+    <section className="premium-card rounded-[28px] p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-lg font-black text-[#140044]">Produção em tempo real</h2>
+        <div>
+          <div className="text-[10px] font-black uppercase tracking-[0.35em] gold-text">
+            Live Feed
+          </div>
+          <h2 className="mt-1 text-2xl font-black text-white">Produção em tempo real</h2>
+        </div>
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
             <button
               type="button"
               onClick={() => setPlanoOpen(!planoOpen)}
-              className="flex items-center gap-2 rounded-lg border border-[#e0dbec] bg-white px-3 py-2 text-sm font-bold text-[#5517ea]"
+              className="gold-border flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-bold text-white/90 transition hover:text-white"
             >
               <BarChart3 className="h-4 w-4" /> {planoLabel(plano)}
               <ChevronDown className="h-3.5 w-3.5" />
             </button>
             {planoOpen && (
-              <ul className="absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-lg border border-[#e0dbec] bg-white shadow-xl">
+              <ul className="absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-xl border border-[#c9a84c]/40 bg-[#150a35] shadow-2xl">
                 {(["todos", "gb50", "gb80", "gb100"] as Plano[]).map((p) => (
                   <li key={p}>
                     <button
@@ -240,8 +266,10 @@ function ProducaoTempoReal({
                         setPlano(p);
                         setPlanoOpen(false);
                       }}
-                      className={`block w-full px-3 py-2 text-left text-sm ${
-                        plano === p ? "bg-[#f5f1ff] font-bold text-[#5517ea]" : "text-[#140044] hover:bg-gray-50"
+                      className={`block w-full px-3 py-2 text-left text-sm transition ${
+                        plano === p
+                          ? "bg-white/10 font-bold gold-text"
+                          : "text-white/80 hover:bg-white/5"
                       }`}
                     >
                       {planoLabel(p)}
@@ -251,59 +279,62 @@ function ProducaoTempoReal({
               </ul>
             )}
           </div>
-          <button className="flex items-center gap-2 rounded-lg border border-[#e0dbec] bg-white px-3 py-2 text-sm font-bold text-[#5517ea]">
+          <button className="gold-border flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-bold text-white/90 hover:text-white">
             <Filter className="h-4 w-4" /> Filtros
           </button>
           <button
             onClick={onOpenAll}
-            className="flex items-center gap-2 rounded-lg bg-[#5517ea] px-3 py-2 text-sm font-bold text-white hover:bg-[#4611c8]"
+            className="purple-button flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black transition hover:-translate-y-0.5"
           >
             Ver todas <ArrowRight className="h-4 w-4" />
           </button>
         </div>
       </div>
 
-      <div className="mt-4 overflow-x-auto">
+      <div className="mt-6 overflow-x-auto rounded-2xl border border-white/5 bg-black/20">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#ece8f5] text-left text-[11px] uppercase tracking-wider text-[#8b86a0]">
-              <th className="py-3">Região</th>
+            <tr className="border-b border-[#c9a84c]/25 text-left text-[10px] font-black uppercase tracking-[0.2em] text-[#f6e6a8]/80">
+              <th className="py-3 pl-4">Região</th>
               <th className="py-3">Última atualização</th>
               <th className="py-3 text-center">Novas ativações</th>
               <th className="py-3 text-right">Total de ativações</th>
               <th className="py-3 text-right">Variação hoje</th>
-              <th className="py-3 text-right pr-2">Tendência</th>
+              <th className="py-3 text-right pr-4">Tendência</th>
             </tr>
           </thead>
           <tbody>
             {linhas.map(({ r, total, isLast }, idx) => (
               <tr
                 key={r.nome}
-                className={`border-b border-[#f4f1fa] transition ${
-                  isLast ? "bg-emerald-50/40" : "hover:bg-[#faf8fe]"
+                className={`border-b border-white/5 transition ${
+                  isLast ? "bg-emerald-500/10" : "hover:bg-white/[0.03]"
                 }`}
               >
-                <td className="py-4">
-                  <span className="flex items-center gap-3 font-bold text-[#140044]">
-                    <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: r.cor }} />
+                <td className="py-4 pl-4">
+                  <span className="flex items-center gap-3 font-bold text-white">
+                    <span
+                      className="inline-block h-2.5 w-2.5 rounded-full"
+                      style={{ background: r.cor, boxShadow: `0 0 10px ${r.cor}` }}
+                    />
                     {r.nome}
                   </span>
                 </td>
-                <td className="py-4 text-[#7b7591]">
+                <td className="py-4 text-white/60">
                   {isLast ? "Agora" : `há ${(idx + 1) * 3} seg`}
                 </td>
                 <td className="py-4 text-center">
-                  <span className="rounded-md bg-emerald-50 px-2 py-1 text-sm font-black text-emerald-600">
+                  <span className="rounded-md border border-emerald-400/30 bg-emerald-400/10 px-2 py-1 text-sm font-black text-emerald-300">
                     +{isLast ? 1 : Math.max(1, r.hoje % 3)}
                   </span>
                 </td>
-                <td className="py-4 text-right font-black tabular-nums text-[#140044]">
+                <td className="py-4 text-right font-black tabular-nums text-white">
                   <CountUp value={total} format={(n) => fmt(n)} />
                 </td>
-                <td className="py-4 text-right text-xs font-bold text-emerald-600">
+                <td className="py-4 text-right text-xs font-bold text-emerald-300">
                   +{r.hoje} hoje
                 </td>
-                <td className="py-4 pr-2 text-right">
+                <td className="py-4 pr-4 text-right">
                   <div className="flex justify-end">
                     <Sparkline color={r.cor} seed={r.total} />
                   </div>

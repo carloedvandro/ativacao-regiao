@@ -350,7 +350,7 @@ function Donut3DChart({
                 strokeWidth: 1.1,
               }}
             >
-              ✓{txt}
+              {txt}
             </text>
           );
         })}

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { BarChart3, ChevronDown } from "lucide-react";
 import CountUp from "@/components/CountUp";
 import Donut3DChart from "@/components/Donut3DChart";
-import { fmt, regioesBase } from "@/data/dados";
+import { fmt, regioesBase, type Regiao } from "@/data/dados";
 
 type RegionKey =
   | "Sudeste"
@@ -104,20 +104,36 @@ function descriptionFor(region: RegionKey) {
   return `Total de ativações realizadas na região ${region} no período selecionado.`;
 }
 
-export default function DistribuicaoRegiaoDashboard() {
-  const [selected, setSelected] = useState<RegionKey>("Sudeste");
+type Props = {
+  regioes?: Regiao[];
+  selected?: RegionKey;
+  onSelectRegion?: (r: RegionKey) => void;
+};
+
+export default function DistribuicaoRegiaoDashboard({
+  regioes: regioesProp,
+  selected: selectedProp,
+  onSelectRegion,
+}: Props = {}) {
+  const regiaoData = regioesProp ?? regioesBase;
+  const [selectedInner, setSelectedInner] = useState<RegionKey>("Sudeste");
+  const selected = selectedProp ?? selectedInner;
+  const setSelected = (r: RegionKey) => {
+    setSelectedInner(r);
+    onSelectRegion?.(r);
+  };
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const regionByName = useMemo(() => {
     const m = new Map<string, (typeof regioesBase)[number]>();
-    regioesBase.forEach((r) => m.set(r.nome, r));
+    regiaoData.forEach((r) => m.set(r.nome, r));
     return m;
-  }, []);
+  }, [regiaoData]);
 
   const totalGeral = useMemo(
-    () => regioesBase.reduce((sum, region) => sum + region.total, 0),
-    [],
+    () => regiaoData.reduce((sum, region) => sum + region.total, 0),
+    [regiaoData],
   );
 
   const donutRegioes = useMemo(() => {
@@ -131,11 +147,11 @@ export default function DistribuicaoRegiaoDashboard() {
       "Nordeste",
       "Centro-Oeste",
     ];
-    const by = new Map(regioesBase.map((r) => [r.nome, r] as const));
+    const by = new Map(regiaoData.map((r) => [r.nome, r] as const));
     return order
       .map((n) => by.get(n)!)
       .map((r) => ({ nome: r.nome, cor: r.cor, total: r.total, percentual: r.percentual }));
-  }, []);
+  }, [regiaoData]);
 
   useEffect(() => {
     if (!open) return;

@@ -362,6 +362,7 @@ function Donut3DChart({
 export default memo(Donut3DChart, (prev, next) => {
   if (prev.size !== next.size) return false;
   if ((prev.innerRatio ?? 0.5) !== (next.innerRatio ?? 0.5)) return false;
+  if ((prev.startAngle ?? -90) !== (next.startAngle ?? -90)) return false;
   if (prev.selectedName !== next.selectedName) return false;
   if (prev.onSelect !== next.onSelect) return false;
   if (prev.regioes.length !== next.regioes.length) return false;

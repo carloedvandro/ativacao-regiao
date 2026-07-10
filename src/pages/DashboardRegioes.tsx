@@ -135,9 +135,9 @@ function DetalhamentoRegioes({
           <div className="text-[10px] font-black uppercase tracking-[0.35em] gold-text">
             Premium Analytics
           </div>
-          <h2 className="mt-1 text-2xl font-black text-white">
+          <h2 className="mt-1 text-2xl font-black text-[#140044]">
             Detalhamento por Região{" "}
-            <span className="text-sm font-medium text-white/50">· ao vivo</span>
+            <span className="text-sm font-medium text-[#7b7591]">· ao vivo</span>
           </h2>
         </div>
         <button
@@ -156,7 +156,7 @@ function DetalhamentoRegioes({
             onClick={() => onCardClick(r.nome)}
             className="group relative overflow-hidden rounded-2xl region-chip-3d p-4 text-left transition duration-300 hover:-translate-y-1"
             style={{
-              boxShadow: `0 20px 40px -24px ${r.cor}80, 0 1px 0 0 rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(201,168,76,0.15) inset`,
+              boxShadow: `0 20px 40px -24px ${r.cor}30, 0 1px 0 0 rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(201,168,76,0.15) inset`,
             }}
           >
             <span
@@ -164,21 +164,21 @@ function DetalhamentoRegioes({
               style={{ background: `linear-gradient(90deg, transparent, ${r.cor}, #f6e6a8, ${r.cor}, transparent)` }}
             />
             <span
-              className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full opacity-30 blur-2xl transition group-hover:opacity-60"
+              className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full opacity-20 blur-2xl transition group-hover:opacity-40"
               style={{ background: r.cor }}
             />
             <div className="flex items-center justify-between">
               <span className="text-xs font-black uppercase tracking-widest" style={{ color: r.cor }}>
                 {r.nome}
               </span>
-              <span className="rounded-md border border-white/10 bg-white/5 px-1.5 py-0.5 text-[10px] font-black gold-text">
+              <span className="rounded-md border border-[#c9a84c]/20 bg-[#c9a84c]/10 px-1.5 py-0.5 text-[10px] font-black gold-text">
                 {r.percentual.toFixed(1).replace(".", ",")}%
               </span>
             </div>
-            <div className="mt-3 text-3xl font-black tabular-nums text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
+            <div className="mt-3 text-3xl font-black tabular-nums text-[#140044] drop-shadow-[0_2px_10px_rgba(0,0,0,0.05)]">
               <CountUp value={r.total} format={(n) => fmt(n)} />
             </div>
-            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-[#f0f0f5]">
               <div
                 className="h-full rounded-full transition-all duration-700"
                 style={{
@@ -189,20 +189,20 @@ function DetalhamentoRegioes({
               />
             </div>
             <div className="mt-3 flex items-center justify-between">
-              <span className="flex items-center gap-1 text-xs font-bold text-emerald-300">
+              <span className="flex items-center gap-1 text-xs font-bold text-emerald-600">
                 <TrendingUp className="h-3.5 w-3.5" />
                 <CountUp value={r.hoje} /> hoje
               </span>
-              <span className="text-[9px] uppercase tracking-widest text-white/40">Live</span>
+              <span className="text-[9px] uppercase tracking-widest text-[#7b7591]">Live</span>
             </div>
           </button>
         ))}
       </div>
 
-      <div className="mt-5 flex items-center justify-center gap-2 text-xs text-white/60">
+      <div className="mt-5 flex items-center justify-center gap-2 text-xs text-[#7b7591]">
         <span className="relative flex h-2 w-2">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
         </span>
         Sincronização automática · 3 segundos
       </div>

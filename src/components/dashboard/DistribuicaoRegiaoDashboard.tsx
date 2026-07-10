@@ -120,16 +120,22 @@ export default function DistribuicaoRegiaoDashboard() {
     [],
   );
 
-  const donutRegioes = useMemo(
-    () =>
-      regioesBase.map((region) => ({
-        nome: region.nome,
-        cor: region.cor,
-        total: region.total,
-        percentual: region.percentual,
-      })),
-    [],
-  );
+  const donutRegioes = useMemo(() => {
+    // Order clockwise starting from upper-left so callout arrows align:
+    // Norte → Sudeste → Sul → Outros/Exterior → Nordeste → Centro-Oeste
+    const order: RegionKey[] = [
+      "Norte",
+      "Sudeste",
+      "Sul",
+      "Outros/Exterior",
+      "Nordeste",
+      "Centro-Oeste",
+    ];
+    const by = new Map(regioesBase.map((r) => [r.nome, r] as const));
+    return order
+      .map((n) => by.get(n)!)
+      .map((r) => ({ nome: r.nome, cor: r.cor, total: r.total, percentual: r.percentual }));
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -283,6 +289,7 @@ export default function DistribuicaoRegiaoDashboard() {
           regioes={donutRegioes}
           selectedName={selected}
           onSelect={(name) => setSelected(name as RegionKey)}
+          startAngle={-72.6}
         />
       </div>
 

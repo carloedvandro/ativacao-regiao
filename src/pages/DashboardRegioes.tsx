@@ -75,7 +75,7 @@ export default function DashboardRegioes() {
   const activeRegion = drillRegion ? regioes.find((r) => r.nome === drillRegion) ?? null : null;
 
   return (
-    <div className="premium-surface min-h-screen text-white">
+    <div className="premium-surface min-h-screen text-[#140044]">
       <main className="mx-auto w-full max-w-[1536px] px-6 py-10 space-y-8">
         <DetalhamentoRegioes
           regioes={regioes}
@@ -100,7 +100,7 @@ export default function DashboardRegioes() {
           totalGeral={totalGeral}
         />
 
-        <p className="text-center text-xs tracking-wide text-white/50">
+        <p className="text-center text-xs tracking-wide text-[#7b7591]">
           Dados atualizados em tempo real · Última sincronização:{" "}
           <span className="gold-text font-bold">{new Date().toLocaleString("pt-BR")}</span>
         </p>

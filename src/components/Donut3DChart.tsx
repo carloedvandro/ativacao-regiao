@@ -7,6 +7,7 @@ type Props = {
   innerRatio?: number;
   onSelect?: (nome: string) => void;
   selectedName?: string | null;
+  startAngle?: number;
 };
 
 function polar(cx: number, cy: number, rx: number, ry: number, angle: number) {
@@ -114,11 +115,12 @@ function Donut3DChart({
   innerRatio = 0.5,
   onSelect,
   selectedName,
+  startAngle = -90,
 }: Props) {
   const slices = useMemo(() => {
     const sum = regioes.reduce((s, r) => s + r.total, 0);
     const gap = 0.18;
-    let acc = -90;
+    let acc = startAngle;
     const sl = regioes.map((r) => {
       const sweep = (r.total / sum) * 360;
       const start = acc + gap / 2;
@@ -128,7 +130,7 @@ function Donut3DChart({
       return { ...r, start, end, mid };
     });
     return sl;
-  }, [regioes]);
+  }, [regioes, startAngle]);
 
   const cx = size / 2;
   const cy = size * 0.56; // baseline (top of plate)

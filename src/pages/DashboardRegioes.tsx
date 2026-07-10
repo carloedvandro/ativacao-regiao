@@ -4,16 +4,14 @@ import {
   BarChart3,
   ChevronDown,
   Filter,
-  RefreshCw,
   Table2,
   TrendingUp,
   X,
 } from "lucide-react";
-import DistribuicaoRegiaoDashboard from "@/components/dashboard/DistribuicaoRegiaoDashboard";
 import CountUp from "@/components/CountUp";
-import RealtimeBadge from "@/components/RealtimeBadge";
 import { useLiveRegioes } from "@/hooks/useLiveRegioes";
 import { fmt, type Regiao } from "@/data/dados";
+import { withPercent } from "@/hooks/useLiveRegioes";
 
 type Plano = "todos" | "gb50" | "gb80" | "gb100";
 
@@ -56,8 +54,11 @@ function Sparkline({ color, seed }: { color: string; seed: number }) {
 }
 
 export default function DashboardRegioes() {
-  const { regioes, lastUpdate } = useLiveRegioes(3000);
-  const [selected, setSelected] = useState<string>("Sudeste");
+  const { regioes: regioesAll, lastUpdate } = useLiveRegioes(3000);
+  const regioes = useMemo(
+    () => withPercent(regioesAll.filter((r) => r.nome !== "Outros/Exterior")),
+    [regioesAll],
+  );
   const [drillOpen, setDrillOpen] = useState(false);
   const [drillRegion, setDrillRegion] = useState<string | null>(null);
   const [plano, setPlano] = useState<Plano>("todos");
@@ -75,18 +76,6 @@ export default function DashboardRegioes() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f6f4fb] to-[#eef1fb] text-[#140044]">
       <main className="mx-auto w-full max-w-[1536px] px-6 py-8 space-y-8">
-        <div className="flex items-center justify-end">
-          <RealtimeBadge />
-        </div>
-
-        <div className="rounded-[28px] border border-[#e7e3f0] bg-white shadow-[0_18px_50px_-30px_rgba(20,0,68,0.35)]">
-          <DistribuicaoRegiaoDashboard
-            regioes={regioes}
-            selected={selected as never}
-            onSelectRegion={(r) => setSelected(r)}
-          />
-        </div>
-
         <DetalhamentoRegioes
           regioes={regioes}
           onOpenTable={() => {
@@ -324,12 +313,6 @@ function ProducaoTempoReal({
         </table>
       </div>
 
-      <div className="mt-6 flex justify-center">
-        <div className="flex items-center gap-2 rounded-2xl border border-[#e0dbec] bg-[#f5f1ff] px-6 py-2.5 text-sm font-bold text-[#5517ea]">
-          <RefreshCw className="h-4 w-4 animate-spin [animation-duration:3s]" />
-          Atualizando automaticamente...
-        </div>
-      </div>
     </section>
   );
 }

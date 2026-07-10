@@ -244,20 +244,20 @@ function ProducaoTempoReal({
           <div className="text-[10px] font-black uppercase tracking-[0.35em] gold-text">
             Live Feed
           </div>
-          <h2 className="mt-1 text-2xl font-black text-white">Produção em tempo real</h2>
+          <h2 className="mt-1 text-2xl font-black text-[#140044]">Produção em tempo real</h2>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
             <button
               type="button"
               onClick={() => setPlanoOpen(!planoOpen)}
-              className="gold-border flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-bold text-white/90 transition hover:text-white"
+              className="gold-border flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-bold text-[#140044] transition hover:text-[#5517ea]"
             >
               <BarChart3 className="h-4 w-4" /> {planoLabel(plano)}
               <ChevronDown className="h-3.5 w-3.5" />
             </button>
             {planoOpen && (
-              <ul className="absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-xl border border-[#c9a84c]/40 bg-[#150a35] shadow-2xl">
+              <ul className="absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-xl border border-[#c9a84c]/40 bg-white shadow-2xl">
                 {(["todos", "gb50", "gb80", "gb100"] as Plano[]).map((p) => (
                   <li key={p}>
                     <button
@@ -268,8 +268,8 @@ function ProducaoTempoReal({
                       }}
                       className={`block w-full px-3 py-2 text-left text-sm transition ${
                         plano === p
-                          ? "bg-white/10 font-bold gold-text"
-                          : "text-white/80 hover:bg-white/5"
+                          ? "bg-[#c9a84c]/10 font-bold gold-text"
+                          : "text-[#3f3860] hover:bg-gray-50"
                       }`}
                     >
                       {planoLabel(p)}
@@ -279,7 +279,7 @@ function ProducaoTempoReal({
               </ul>
             )}
           </div>
-          <button className="gold-border flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-bold text-white/90 hover:text-white">
+          <button className="gold-border flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-bold text-[#140044] hover:text-[#5517ea]">
             <Filter className="h-4 w-4" /> Filtros
           </button>
           <button
@@ -291,10 +291,10 @@ function ProducaoTempoReal({
         </div>
       </div>
 
-      <div className="mt-6 overflow-x-auto rounded-2xl border border-white/5 bg-black/20">
+      <div className="mt-6 overflow-x-auto rounded-2xl border border-gray-200 bg-white/80 shadow-sm">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#c9a84c]/25 text-left text-[10px] font-black uppercase tracking-[0.2em] text-[#f6e6a8]/80">
+            <tr className="border-b border-[#c9a84c]/25 text-left text-[10px] font-black uppercase tracking-[0.2em] text-[#8b7591]">
               <th className="py-3 pl-4">Região</th>
               <th className="py-3">Última atualização</th>
               <th className="py-3 text-center">Novas ativações</th>
@@ -307,12 +307,12 @@ function ProducaoTempoReal({
             {linhas.map(({ r, total, isLast }, idx) => (
               <tr
                 key={r.nome}
-                className={`border-b border-white/5 transition ${
-                  isLast ? "bg-emerald-500/10" : "hover:bg-white/[0.03]"
+                className={`border-b border-gray-100 transition ${
+                  isLast ? "bg-emerald-500/8" : "hover:bg-gray-50"
                 }`}
               >
                 <td className="py-4 pl-4">
-                  <span className="flex items-center gap-3 font-bold text-white">
+                  <span className="flex items-center gap-3 font-bold text-[#140044]">
                     <span
                       className="inline-block h-2.5 w-2.5 rounded-full"
                       style={{ background: r.cor, boxShadow: `0 0 10px ${r.cor}` }}
@@ -320,18 +320,18 @@ function ProducaoTempoReal({
                     {r.nome}
                   </span>
                 </td>
-                <td className="py-4 text-white/60">
+                <td className="py-4 text-[#7b7591]">
                   {isLast ? "Agora" : `há ${(idx + 1) * 3} seg`}
                 </td>
                 <td className="py-4 text-center">
-                  <span className="rounded-md border border-emerald-400/30 bg-emerald-400/10 px-2 py-1 text-sm font-black text-emerald-300">
+                  <span className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-sm font-black text-emerald-600">
                     +{isLast ? 1 : Math.max(1, r.hoje % 3)}
                   </span>
                 </td>
-                <td className="py-4 text-right font-black tabular-nums text-white">
+                <td className="py-4 text-right font-black tabular-nums text-[#140044]">
                   <CountUp value={total} format={(n) => fmt(n)} />
                 </td>
-                <td className="py-4 text-right text-xs font-bold text-emerald-300">
+                <td className="py-4 text-right text-xs font-bold text-emerald-600">
                   +{r.hoje} hoje
                 </td>
                 <td className="py-4 pr-4 text-right">

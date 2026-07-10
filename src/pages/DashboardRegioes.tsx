@@ -102,7 +102,9 @@ export default function DashboardRegioes() {
 
         <p className="text-center text-xs tracking-wide text-[#7b7591]">
           Dados atualizados em tempo real · Última sincronização:{" "}
-          <span className="gold-text font-bold">{new Date().toLocaleString("pt-BR")}</span>
+          <span className="font-black text-[#5517ea] [text-shadow:0_0_10px_rgba(201,168,76,0.35)]">
+            {new Date().toLocaleString("pt-BR")}
+          </span>
         </p>
       </main>
 
@@ -132,7 +134,7 @@ function DetalhamentoRegioes({
     <section className="premium-card rounded-[28px] p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-[10px] font-black uppercase tracking-[0.35em] gold-text">
+          <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#5517ea] [text-shadow:0_0_12px_rgba(201,168,76,0.45)]">
             Premium Analytics
           </div>
           <h2 className="mt-1 text-2xl font-black text-[#140044]">
@@ -241,7 +243,7 @@ function ProducaoTempoReal({
     <section className="premium-card rounded-[28px] p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-[10px] font-black uppercase tracking-[0.35em] gold-text">
+          <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#5517ea] [text-shadow:0_0_12px_rgba(201,168,76,0.45)]">
             Live Feed
           </div>
           <h2 className="mt-1 text-2xl font-black text-[#140044]">Produção em tempo real</h2>
@@ -251,7 +253,7 @@ function ProducaoTempoReal({
             <button
               type="button"
               onClick={() => setPlanoOpen(!planoOpen)}
-              className="gold-border flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-bold text-[#140044] transition hover:text-[#5517ea]"
+              className="flex items-center gap-2 rounded-xl border-2 border-[#c9a84c]/60 bg-white px-3.5 py-2 text-sm font-bold text-[#5517ea] shadow-[0_4px_14px_-4px_rgba(85,23,234,0.25)] transition hover:-translate-y-0.5 hover:border-[#c9a84c] hover:shadow-[0_6px_20px_-4px_rgba(201,168,76,0.45)]"
             >
               <BarChart3 className="h-4 w-4" /> {planoLabel(plano)}
               <ChevronDown className="h-3.5 w-3.5" />
@@ -268,7 +270,7 @@ function ProducaoTempoReal({
                       }}
                       className={`block w-full px-3 py-2 text-left text-sm transition ${
                         plano === p
-                          ? "bg-[#c9a84c]/10 font-bold gold-text"
+                          ? "bg-[#f5f1ff] font-bold text-[#5517ea]"
                           : "text-[#3f3860] hover:bg-gray-50"
                       }`}
                     >
@@ -279,7 +281,7 @@ function ProducaoTempoReal({
               </ul>
             )}
           </div>
-          <button className="gold-border flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-bold text-[#140044] hover:text-[#5517ea]">
+          <button className="flex items-center gap-2 rounded-xl border-2 border-[#c9a84c]/60 bg-white px-3.5 py-2 text-sm font-bold text-[#5517ea] shadow-[0_4px_14px_-4px_rgba(85,23,234,0.25)] transition hover:-translate-y-0.5 hover:border-[#c9a84c] hover:shadow-[0_6px_20px_-4px_rgba(201,168,76,0.45)]">
             <Filter className="h-4 w-4" /> Filtros
           </button>
           <button

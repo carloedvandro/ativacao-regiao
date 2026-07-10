@@ -183,19 +183,17 @@
 
 @utility premium-surface {
   background:
-    radial-gradient(1200px 500px at 10% -10%, rgba(120, 60, 220, 0.35), transparent 60%),
-    radial-gradient(900px 400px at 90% 110%, rgba(201, 168, 76, 0.22), transparent 60%),
-    linear-gradient(180deg, #0d0722 0%, #150a35 55%, #0d0722 100%);
+    radial-gradient(1200px 500px at 10% -10%, rgba(120, 60, 220, 0.08), transparent 60%),
+    radial-gradient(900px 400px at 90% 110%, rgba(201, 168, 76, 0.06), transparent 60%),
+    #ffffff;
 }
 @utility premium-card {
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015)),
-    linear-gradient(180deg, #1b0f3d 0%, #150a35 100%);
+  background: #ffffff;
   border: 1px solid rgba(201, 168, 76, 0.28);
   box-shadow:
-    0 30px 60px -35px rgba(0,0,0,0.75),
+    0 30px 60px -35px rgba(0,0,0,0.12),
     0 1px 0 0 rgba(255,255,255,0.06) inset,
-    0 0 0 1px rgba(120, 60, 220, 0.15) inset;
+    0 0 0 1px rgba(120, 60, 220, 0.08) inset;
 }
 @utility gold-text {
   background: linear-gradient(120deg, #f6e6a8 0%, #d4af37 25%, #f8dd7a 50%, #b8860b 75%, #f6e6a8 100%);
@@ -209,7 +207,7 @@
 @utility gold-border {
   border: 1px solid transparent;
   background:
-    linear-gradient(#150a35, #150a35) padding-box,
+    linear-gradient(#ffffff, #ffffff) padding-box,
     linear-gradient(135deg, #c9a84c, #f6e6a8, #b8860b, #f0d78c) border-box;
 }
 @utility gold-button {
@@ -229,8 +227,9 @@
     0 -2px 0 0 rgba(0,0,0,0.25) inset;
 }
 @utility region-chip-3d {
-  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  background: linear-gradient(180deg, #ffffff, #fafafa);
+  border: 1px solid rgba(201, 168, 76, 0.2);
   box-shadow:
-    0 12px 28px -18px rgba(0,0,0,0.9),
+    0 12px 28px -18px rgba(0,0,0,0.15),
     0 1px 0 0 rgba(255,255,255,0.08) inset;
 }

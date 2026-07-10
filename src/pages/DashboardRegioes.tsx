@@ -75,8 +75,8 @@ export default function DashboardRegioes() {
   const activeRegion = drillRegion ? regioes.find((r) => r.nome === drillRegion) ?? null : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f6f4fb] to-[#eef1fb] text-[#140044]">
-      <main className="mx-auto w-full max-w-[1536px] px-6 py-8 space-y-8">
+    <div className="premium-surface min-h-screen text-white">
+      <main className="mx-auto w-full max-w-[1536px] px-6 py-10 space-y-8">
         <DetalhamentoRegioes
           regioes={regioes}
           onOpenTable={() => {
@@ -100,9 +100,9 @@ export default function DashboardRegioes() {
           totalGeral={totalGeral}
         />
 
-        <p className="text-center text-xs text-[#7b7591]">
-          Os dados são atualizados automaticamente em tempo real. Última atualização:{" "}
-          {new Date().toLocaleString("pt-BR")}
+        <p className="text-center text-xs tracking-wide text-white/50">
+          Dados atualizados em tempo real · Última sincronização:{" "}
+          <span className="gold-text font-bold">{new Date().toLocaleString("pt-BR")}</span>
         </p>
       </main>
 

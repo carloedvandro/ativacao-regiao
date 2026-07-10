@@ -314,12 +314,6 @@ function ProducaoTempoReal({
         </table>
       </div>
 
-      <div className="mt-6 flex justify-center">
-        <div className="flex items-center gap-2 rounded-2xl border border-[#e0dbec] bg-[#f5f1ff] px-6 py-2.5 text-sm font-bold text-[#5517ea]">
-          <RefreshCw className="h-4 w-4 animate-spin [animation-duration:3s]" />
-          Atualizando automaticamente...
-        </div>
-      </div>
     </section>
   );
 }

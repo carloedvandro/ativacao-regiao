@@ -131,7 +131,7 @@ function DetalhamentoRegioes({
   onCardClick: (nome: string) => void;
 }) {
   return (
-    <section className="premium-card rounded-[28px] p-7">
+    <section className="sm:premium-card sm:rounded-[28px] sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#5517ea] [text-shadow:0_0_12px_rgba(201,168,76,0.45)]">
@@ -240,7 +240,7 @@ function ProducaoTempoReal({
   });
 
   return (
-    <section className="premium-card rounded-[28px] p-7">
+    <section className="sm:premium-card sm:rounded-[28px] sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#5517ea] [text-shadow:0_0_12px_rgba(201,168,76,0.45)]">

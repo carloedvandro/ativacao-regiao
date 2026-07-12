@@ -285,11 +285,11 @@ function ProducaoTempoReal({
           <thead>
             <tr className="border-b border-gray-200 text-left text-[11px] font-black text-[#6b7280] whitespace-nowrap">
               <th className="py-3 pl-4 pr-3">Região</th>
-              <th className="py-3 pr-3">Última atualização</th>
+              <th className="py-3 pr-3 text-center">Última atualização</th>
               <th className="py-3 pr-3 text-center">Novas ativações</th>
-              <th className="py-3 pr-3 text-right">Total de ativações</th>
-              <th className="py-3 pr-3 text-right">Variação hoje</th>
-              <th className="py-3 text-right pr-4">Tendência</th>
+              <th className="py-3 pr-3 text-center">Total de ativações</th>
+              <th className="py-3 pr-3 text-center">Variação hoje</th>
+              <th className="py-3 pr-4 text-center">Tendência</th>
             </tr>
           </thead>
           <tbody>
@@ -309,21 +309,21 @@ function ProducaoTempoReal({
                     {r.nome}
                   </span>
                 </td>
-                <td className="py-4 text-[#6b7280]">
+                <td className="py-4 text-center text-[#6b7280]">
                   {isLast ? "Agora" : `há ${(idx + 1) * 3} seg`}
                 </td>
                 <td className="py-4 text-center text-sm font-black text-emerald-600">
                   +{isLast ? 1 : Math.max(1, r.hoje % 3)}
                 </td>
-                <td className="py-4 text-right font-black tabular-nums text-[#140044]">
+                <td className="py-4 text-center font-black tabular-nums text-[#140044]">
                   <CountUp value={total} format={(n) => fmt(n)} />
                 </td>
-                <td className="py-4 text-right text-xs font-bold text-emerald-600">
+                <td className="py-4 text-center text-xs font-bold text-emerald-600">
                   +{r.hoje} hoje
                 </td>
-                <td className="py-4 pr-4 text-right">
-                  <div className="flex justify-end">
-                    <Sparkline seed={r.total} tick={lastUpdate?.when ?? 0} />
+                <td className="py-4 pr-4">
+                  <div className="flex justify-center">
+                    <Sparkline seed={r.total} tick={lastUpdate?.when ?? 0} color={r.cor} />
                   </div>
                 </td>
               </tr>

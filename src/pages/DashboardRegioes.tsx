@@ -100,9 +100,9 @@ export default function DashboardRegioes() {
           totalGeral={totalGeral}
         />
 
-        <p className="text-center text-xs tracking-wide text-[#7b7591]">
+        <p className="text-center text-xs tracking-wide text-[#6b7280]">
           Dados atualizados em tempo real · Última sincronização:{" "}
-          <span className="font-black text-[#5517ea] [text-shadow:0_0_10px_rgba(201,168,76,0.35)]">
+          <span className="font-black text-[#6A0DAD]">
             {new Date().toLocaleString("pt-BR")}
           </span>
         </p>
@@ -134,17 +134,17 @@ function DetalhamentoRegioes({
     <section className="sm:premium-card sm:rounded-[28px] sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#5517ea] [text-shadow:0_0_12px_rgba(201,168,76,0.45)]">
+          <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#6b7280]">
             Premium Analytics
           </div>
           <h2 className="mt-1 text-2xl font-black text-[#140044]">
             Detalhamento por Região{" "}
-            <span className="text-sm font-medium text-[#7b7591]">· ao vivo</span>
+            <span className="text-sm font-medium text-[#6b7280]">· ao vivo</span>
           </h2>
         </div>
         <button
           onClick={onOpenTable}
-          className="gold-button flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black tracking-wide transition hover:-translate-y-0.5"
+          className="gold-button flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black tracking-wide transition"
         >
           Ver tabela completa <Table2 className="h-4 w-4" />
         </button>
@@ -156,37 +156,25 @@ function DetalhamentoRegioes({
             key={r.nome}
             type="button"
             onClick={() => onCardClick(r.nome)}
-            className="group relative overflow-hidden rounded-2xl region-chip-3d p-4 text-left transition duration-300 hover:-translate-y-1"
-            style={{
-              boxShadow: `0 20px 40px -24px ${r.cor}30, 0 1px 0 0 rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(201,168,76,0.15) inset`,
-            }}
+            className="group relative rounded-2xl region-chip-3d p-4 text-left transition hover:shadow-sm"
           >
-            <span
-              className="pointer-events-none absolute inset-x-0 top-0 h-[3px]"
-              style={{ background: `linear-gradient(90deg, transparent, ${r.cor}, #f6e6a8, ${r.cor}, transparent)` }}
-            />
-            <span
-              className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full opacity-20 blur-2xl transition group-hover:opacity-40"
-              style={{ background: r.cor }}
-            />
             <div className="flex items-center justify-between">
               <span className="text-xs font-black uppercase tracking-widest" style={{ color: r.cor }}>
                 {r.nome}
               </span>
-              <span className="rounded-md border border-[#c9a84c]/20 bg-[#c9a84c]/10 px-1.5 py-0.5 text-[10px] font-black gold-text">
+              <span className="rounded-md border border-gray-200 bg-gray-50 px-1.5 py-0.5 text-[10px] font-black text-[#3f3860]">
                 {r.percentual.toFixed(1).replace(".", ",")}%
               </span>
             </div>
-            <div className="mt-3 text-3xl font-black tabular-nums text-[#140044] drop-shadow-[0_2px_10px_rgba(0,0,0,0.05)]">
+            <div className="mt-3 text-3xl font-black tabular-nums text-[#140044]">
               <CountUp value={r.total} format={(n) => fmt(n)} />
             </div>
-            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-[#f0f0f5]">
+            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
               <div
                 className="h-full rounded-full transition-all duration-700"
                 style={{
                   width: `${Math.min(100, r.percentual * 2.5)}%`,
-                  background: `linear-gradient(90deg, ${r.cor}, #f6e6a8)`,
-                  boxShadow: `0 0 12px ${r.cor}`,
+                  background: r.cor,
                 }}
               />
             </div>
@@ -195,13 +183,13 @@ function DetalhamentoRegioes({
                 <TrendingUp className="h-3.5 w-3.5" />
                 <CountUp value={r.hoje} /> hoje
               </span>
-              <span className="text-[9px] uppercase tracking-widest text-[#7b7591]">Live</span>
+              <span className="text-[9px] uppercase tracking-widest text-[#6b7280]">Live</span>
             </div>
           </button>
         ))}
       </div>
 
-      <div className="mt-5 flex items-center justify-center gap-2 text-xs text-[#7b7591]">
+      <div className="mt-5 flex items-center justify-center gap-2 text-xs text-[#6b7280]">
         <span className="relative flex h-2 w-2">
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
           <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
@@ -243,7 +231,7 @@ function ProducaoTempoReal({
     <section className="sm:premium-card sm:rounded-[28px] sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#5517ea] [text-shadow:0_0_12px_rgba(201,168,76,0.45)]">
+          <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#6b7280]">
             Live Feed
           </div>
           <h2 className="mt-1 text-2xl font-black text-[#140044]">Produção em tempo real</h2>
@@ -253,13 +241,13 @@ function ProducaoTempoReal({
             <button
               type="button"
               onClick={() => setPlanoOpen(!planoOpen)}
-              className="flex items-center gap-2 rounded-xl border-2 border-[#c9a84c]/60 bg-white px-3.5 py-2 text-sm font-bold text-[#5517ea] shadow-[0_4px_14px_-4px_rgba(85,23,234,0.25)] transition hover:-translate-y-0.5 hover:border-[#c9a84c] hover:shadow-[0_6px_20px_-4px_rgba(201,168,76,0.45)]"
+              className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-sm font-bold text-[#6A0DAD] shadow-sm transition hover:border-gray-300"
             >
               <BarChart3 className="h-4 w-4" /> {planoLabel(plano)}
               <ChevronDown className="h-3.5 w-3.5" />
             </button>
             {planoOpen && (
-              <ul className="absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-xl border border-[#c9a84c]/40 bg-white shadow-2xl">
+              <ul className="absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
                 {(["todos", "gb50", "gb80", "gb100"] as Plano[]).map((p) => (
                   <li key={p}>
                     <button
@@ -270,7 +258,7 @@ function ProducaoTempoReal({
                       }}
                       className={`block w-full px-3 py-2 text-left text-sm transition ${
                         plano === p
-                          ? "bg-[#f5f1ff] font-bold text-[#5517ea]"
+                          ? "bg-gray-50 font-bold text-[#6A0DAD]"
                           : "text-[#3f3860] hover:bg-gray-50"
                       }`}
                     >
@@ -281,22 +269,22 @@ function ProducaoTempoReal({
               </ul>
             )}
           </div>
-          <button className="flex items-center gap-2 rounded-xl border-2 border-[#c9a84c]/60 bg-white px-3.5 py-2 text-sm font-bold text-[#5517ea] shadow-[0_4px_14px_-4px_rgba(85,23,234,0.25)] transition hover:-translate-y-0.5 hover:border-[#c9a84c] hover:shadow-[0_6px_20px_-4px_rgba(201,168,76,0.45)]">
+          <button className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-sm font-bold text-[#6A0DAD] shadow-sm transition hover:border-gray-300">
             <Filter className="h-4 w-4" /> Filtros
           </button>
           <button
             onClick={onOpenAll}
-            className="purple-button flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black transition hover:-translate-y-0.5"
+            className="purple-button flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black transition"
           >
             Ver todas <ArrowRight className="h-4 w-4" />
           </button>
         </div>
       </div>
 
-      <div className="mt-6 overflow-x-auto rounded-2xl border border-gray-200 bg-white/80 shadow-sm">
+      <div className="mt-6 overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#c9a84c]/25 text-left text-[10px] font-black uppercase tracking-[0.2em] text-[#8b7591]">
+            <tr className="border-b border-gray-200 text-left text-[10px] font-black uppercase tracking-[0.2em] text-[#6b7280]">
               <th className="py-3 pl-4">Região</th>
               <th className="py-3">Última atualização</th>
               <th className="py-3 text-center">Novas ativações</th>
@@ -310,19 +298,19 @@ function ProducaoTempoReal({
               <tr
                 key={r.nome}
                 className={`border-b border-gray-100 transition ${
-                  isLast ? "bg-emerald-500/8" : "hover:bg-gray-50"
+                  isLast ? "bg-emerald-500/[0.04]" : "hover:bg-gray-50"
                 }`}
               >
                 <td className="py-4 pl-4">
                   <span className="flex items-center gap-3 font-bold text-[#140044]">
                     <span
                       className="inline-block h-2.5 w-2.5 rounded-full"
-                      style={{ background: r.cor, boxShadow: `0 0 10px ${r.cor}` }}
+                      style={{ background: r.cor }}
                     />
                     {r.nome}
                   </span>
                 </td>
-                <td className="py-4 text-[#7b7591]">
+                <td className="py-4 text-[#6b7280]">
                   {isLast ? "Agora" : `há ${(idx + 1) * 3} seg`}
                 </td>
                 <td className="py-4 text-center">

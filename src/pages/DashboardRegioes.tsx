@@ -100,9 +100,9 @@ export default function DashboardRegioes() {
           totalGeral={totalGeral}
         />
 
-        <p className="text-center text-xs tracking-wide text-[#7b7591]">
+        <p className="text-center text-xs tracking-wide text-[#6b7280]">
           Dados atualizados em tempo real · Última sincronização:{" "}
-          <span className="font-black text-[#5517ea] [text-shadow:0_0_10px_rgba(201,168,76,0.35)]">
+          <span className="font-black text-[#6A0DAD]">
             {new Date().toLocaleString("pt-BR")}
           </span>
         </p>

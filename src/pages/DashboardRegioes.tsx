@@ -131,7 +131,7 @@ function DetalhamentoRegioes({
   onCardClick: (nome: string) => void;
 }) {
   return (
-    <section className="sm:premium-card sm:rounded-[28px] sm:p-7">
+    <section className="premium-card rounded-2xl p-4 sm:rounded-[28px] sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#6b7280]">
@@ -144,19 +144,19 @@ function DetalhamentoRegioes({
         </div>
         <button
           onClick={onOpenTable}
-          className="gold-button flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black tracking-wide transition"
+          className="gold-button inline-flex h-10 items-center gap-2 rounded-xl border border-[#6A0DAD] px-4 text-sm font-black tracking-wide transition"
         >
           Ver tabela completa <Table2 className="h-4 w-4" />
         </button>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+      <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
         {regioes.map((r) => (
           <button
             key={r.nome}
             type="button"
             onClick={() => onCardClick(r.nome)}
-            className="group relative rounded-2xl region-chip-3d p-4 text-left transition hover:shadow-sm"
+            className="group relative flex flex-col rounded-2xl region-chip-3d p-4 text-left transition hover:shadow-sm"
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-black uppercase tracking-widest" style={{ color: r.cor }}>
@@ -228,7 +228,7 @@ function ProducaoTempoReal({
   });
 
   return (
-    <section className="sm:premium-card sm:rounded-[28px] sm:p-7">
+    <section className="premium-card rounded-2xl p-4 sm:rounded-[28px] sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#6b7280]">
@@ -241,7 +241,7 @@ function ProducaoTempoReal({
             <button
               type="button"
               onClick={() => setPlanoOpen(!planoOpen)}
-              className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-sm font-bold text-[#6A0DAD] shadow-sm transition hover:border-gray-300"
+              className="inline-flex h-10 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3.5 text-sm font-bold text-[#6A0DAD] shadow-sm transition hover:border-gray-300"
             >
               <BarChart3 className="h-4 w-4" /> {planoLabel(plano)}
               <ChevronDown className="h-3.5 w-3.5" />
@@ -269,12 +269,12 @@ function ProducaoTempoReal({
               </ul>
             )}
           </div>
-          <button className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-sm font-bold text-[#6A0DAD] shadow-sm transition hover:border-gray-300">
+          <button className="inline-flex h-10 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3.5 text-sm font-bold text-[#6A0DAD] shadow-sm transition hover:border-gray-300">
             <Filter className="h-4 w-4" /> Filtros
           </button>
           <button
             onClick={onOpenAll}
-            className="purple-button flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black transition"
+            className="purple-button inline-flex h-10 items-center gap-2 rounded-xl border border-[#6A0DAD] px-4 text-sm font-black transition"
           >
             Ver todas <ArrowRight className="h-4 w-4" />
           </button>

@@ -30,26 +30,30 @@ function Sparkline({ color, seed }: { color: string; seed: number }) {
       const x = Math.sin(seed * 37 + i * 91.7) * 10000;
       return Math.abs(x - Math.floor(x));
     };
-    return Array.from({ length: 5 }, (_, i) => 0.28 + rng(i) * 0.72);
+    return Array.from({ length: 4 }, (_, i) => 0.35 + rng(i) * 0.65);
   }, [seed]);
-  const w = 60;
-  const h = 24;
-  const bw = 3;
-  const gap = (w - bw * vals.length) / (vals.length - 1);
+  // Ascending signal-bar pattern (like a phone signal indicator)
+  const w = 44;
+  const h = 22;
+  const bw = 5;
+  const gap = 3;
   return (
     <svg width={w} height={h} aria-hidden>
-      {vals.map((v, i) => (
-        <rect
-          key={i}
-          x={i * (bw + gap)}
-          y={h - v * h}
-          width={bw}
-          height={Math.max(2, v * h)}
-          rx={bw / 2}
-          fill={color}
-          opacity={0.35 + (i / (vals.length - 1)) * 0.65}
-        />
-      ))}
+      {vals.map((_, i) => {
+        const barH = ((i + 1) / vals.length) * h;
+        return (
+          <rect
+            key={i}
+            x={i * (bw + gap)}
+            y={h - barH}
+            width={bw}
+            height={barH}
+            rx={1}
+            fill="#3f3860"
+            opacity={0.35 + (i / (vals.length - 1)) * 0.65}
+          />
+        );
+      })}
     </svg>
   );
 }

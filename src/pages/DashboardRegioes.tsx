@@ -281,10 +281,10 @@ function ProducaoTempoReal({
         </div>
       </div>
 
-      <div className="mt-6 overflow-x-auto rounded-2xl border border-gray-200 bg-white/80 shadow-sm">
+      <div className="mt-6 overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#c9a84c]/25 text-left text-[10px] font-black uppercase tracking-[0.2em] text-[#8b7591]">
+            <tr className="border-b border-gray-200 text-left text-[10px] font-black uppercase tracking-[0.2em] text-[#6b7280]">
               <th className="py-3 pl-4">Região</th>
               <th className="py-3">Última atualização</th>
               <th className="py-3 text-center">Novas ativações</th>
@@ -298,19 +298,19 @@ function ProducaoTempoReal({
               <tr
                 key={r.nome}
                 className={`border-b border-gray-100 transition ${
-                  isLast ? "bg-emerald-500/8" : "hover:bg-gray-50"
+                  isLast ? "bg-emerald-500/[0.04]" : "hover:bg-gray-50"
                 }`}
               >
                 <td className="py-4 pl-4">
                   <span className="flex items-center gap-3 font-bold text-[#140044]">
                     <span
                       className="inline-block h-2.5 w-2.5 rounded-full"
-                      style={{ background: r.cor, boxShadow: `0 0 10px ${r.cor}` }}
+                      style={{ background: r.cor }}
                     />
                     {r.nome}
                   </span>
                 </td>
-                <td className="py-4 text-[#7b7591]">
+                <td className="py-4 text-[#6b7280]">
                   {isLast ? "Agora" : `há ${(idx + 1) * 3} seg`}
                 </td>
                 <td className="py-4 text-center">

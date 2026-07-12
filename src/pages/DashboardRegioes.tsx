@@ -276,14 +276,14 @@ function ProducaoTempoReal({
       </div>
 
       <div className="mt-6 overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <table className="w-full text-sm">
+        <table className="w-full min-w-[720px] text-sm">
           <thead>
-            <tr className="border-b border-gray-200 text-left text-[10px] font-black uppercase tracking-[0.2em] text-[#6b7280]">
-              <th className="py-3 pl-4">Região</th>
-              <th className="py-3">Última atualização</th>
-              <th className="py-3 text-center">Novas ativações</th>
-              <th className="py-3 text-right">Total de ativações</th>
-              <th className="py-3 text-right">Variação hoje</th>
+            <tr className="border-b border-gray-200 text-left text-[10px] font-black uppercase tracking-[0.2em] text-[#6b7280] whitespace-nowrap">
+              <th className="py-3 pl-4 pr-3">Região</th>
+              <th className="py-3 pr-3">Última atualização</th>
+              <th className="py-3 pr-3 text-center">Novas ativações</th>
+              <th className="py-3 pr-3 text-right">Total de ativações</th>
+              <th className="py-3 pr-3 text-right">Variação hoje</th>
               <th className="py-3 text-right pr-4">Tendência</th>
             </tr>
           </thead>

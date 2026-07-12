@@ -231,7 +231,7 @@ function ProducaoTempoReal({
     <section className="sm:premium-card sm:rounded-[28px] sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#5517ea] [text-shadow:0_0_12px_rgba(201,168,76,0.45)]">
+          <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#6b7280]">
             Live Feed
           </div>
           <h2 className="mt-1 text-2xl font-black text-[#140044]">Produção em tempo real</h2>
@@ -241,13 +241,13 @@ function ProducaoTempoReal({
             <button
               type="button"
               onClick={() => setPlanoOpen(!planoOpen)}
-              className="flex items-center gap-2 rounded-xl border-2 border-[#c9a84c]/60 bg-white px-3.5 py-2 text-sm font-bold text-[#5517ea] shadow-[0_4px_14px_-4px_rgba(85,23,234,0.25)] transition hover:-translate-y-0.5 hover:border-[#c9a84c] hover:shadow-[0_6px_20px_-4px_rgba(201,168,76,0.45)]"
+              className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-sm font-bold text-[#6A0DAD] shadow-sm transition hover:border-gray-300"
             >
               <BarChart3 className="h-4 w-4" /> {planoLabel(plano)}
               <ChevronDown className="h-3.5 w-3.5" />
             </button>
             {planoOpen && (
-              <ul className="absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-xl border border-[#c9a84c]/40 bg-white shadow-2xl">
+              <ul className="absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
                 {(["todos", "gb50", "gb80", "gb100"] as Plano[]).map((p) => (
                   <li key={p}>
                     <button
@@ -258,7 +258,7 @@ function ProducaoTempoReal({
                       }}
                       className={`block w-full px-3 py-2 text-left text-sm transition ${
                         plano === p
-                          ? "bg-[#f5f1ff] font-bold text-[#5517ea]"
+                          ? "bg-gray-50 font-bold text-[#6A0DAD]"
                           : "text-[#3f3860] hover:bg-gray-50"
                       }`}
                     >
@@ -269,12 +269,12 @@ function ProducaoTempoReal({
               </ul>
             )}
           </div>
-          <button className="flex items-center gap-2 rounded-xl border-2 border-[#c9a84c]/60 bg-white px-3.5 py-2 text-sm font-bold text-[#5517ea] shadow-[0_4px_14px_-4px_rgba(85,23,234,0.25)] transition hover:-translate-y-0.5 hover:border-[#c9a84c] hover:shadow-[0_6px_20px_-4px_rgba(201,168,76,0.45)]">
+          <button className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-sm font-bold text-[#6A0DAD] shadow-sm transition hover:border-gray-300">
             <Filter className="h-4 w-4" /> Filtros
           </button>
           <button
             onClick={onOpenAll}
-            className="purple-button flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black transition hover:-translate-y-0.5"
+            className="purple-button flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black transition"
           >
             Ver todas <ArrowRight className="h-4 w-4" />
           </button>

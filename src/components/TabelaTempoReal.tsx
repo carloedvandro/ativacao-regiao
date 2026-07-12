@@ -1,13 +1,24 @@
 import { Filter } from "lucide-react";
 import { regioesBase, fmt } from "@/data/dados";
 
-function MiniSignal() {
+function MiniSignal({ active = 3 }: { active?: number }) {
+  const bars = 4;
   return (
     <div className="flex items-end gap-[3px] h-5 justify-end">
-      <span className="w-[4px] h-2 rounded bg-green-500 animate-pulse" />
-      <span className="w-[4px] h-3 rounded bg-green-500 animate-pulse delay-75" />
-      <span className="w-[4px] h-4 rounded bg-green-500 animate-pulse delay-150" />
-      <span className="w-[4px] h-5 rounded bg-green-500 animate-pulse delay-300" />
+      {Array.from({ length: bars }).map((_, i) => {
+        const h = 8 + i * 4; // ascending heights: 8,12,16,20
+        const on = i < active;
+        return (
+          <span
+            key={i}
+            className="w-[5px] rounded-[1px]"
+            style={{
+              height: `${h}px`,
+              background: on ? "#3f3860" : "#d1d5db",
+            }}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -69,7 +80,7 @@ export default function TabelaTempoReal() {
                 +{(6 + i * 0.7).toFixed(1).replace(".", ",")}%
               </td>
               <td>
-                <MiniSignal />
+                <MiniSignal active={2 + (i % 3)} />
               </td>
             </tr>
           ))}

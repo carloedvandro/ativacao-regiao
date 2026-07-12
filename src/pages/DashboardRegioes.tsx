@@ -24,23 +24,24 @@ function sumPlano(cidade: { gb50: number; gb80: number; gb100: number }, p: Plan
   return cidade[p];
 }
 
-function Sparkline({ seed, tick }: { color?: string; seed: number; tick?: number }) {
-  // Live signal-bar indicator (like a phone signal). Bars pulse subtly per tick.
-  const bars = 4;
-  const w = 44;
+function Sparkline({ seed, tick, color = "#6A0DAD" }: { color?: string; seed: number; tick?: number }) {
+  // Mini bar chart tinted with the region color.
+  const bars = 5;
+  const w = 52;
   const h = 22;
-  const bw = 5;
+  const bw = 6;
   const gap = 3;
-  const active = useMemo(() => {
-    const x = Math.sin(seed * 13.37 + (tick ?? 0) * 1.7) * 10000;
-    const r = Math.abs(x - Math.floor(x));
-    return 2 + Math.floor(r * (bars - 1)); // 2..bars
+  const heights = useMemo(() => {
+    return Array.from({ length: bars }).map((_, i) => {
+      const x = Math.sin(seed * 7.13 + i * 1.9 + (tick ?? 0) * 0.9) * 10000;
+      const r = Math.abs(x - Math.floor(x));
+      return 0.35 + r * 0.65; // 35%..100%
+    });
   }, [seed, tick]);
   return (
     <svg width={w} height={h} aria-hidden>
-      {Array.from({ length: bars }).map((_, i) => {
-        const barH = ((i + 1) / bars) * h;
-        const on = i < active;
+      {heights.map((ratio, i) => {
+        const barH = ratio * h;
         return (
           <rect
             key={i}
@@ -48,8 +49,9 @@ function Sparkline({ seed, tick }: { color?: string; seed: number; tick?: number
             y={h - barH}
             width={bw}
             height={barH}
-            rx={1}
-            fill={on ? "#3f3860" : "#d1d5db"}
+            rx={1.5}
+            fill={color}
+            opacity={0.55 + ratio * 0.45}
           />
         );
       })}
@@ -283,11 +285,11 @@ function ProducaoTempoReal({
           <thead>
             <tr className="border-b border-gray-200 text-left text-[11px] font-black text-[#6b7280] whitespace-nowrap">
               <th className="py-3 pl-4 pr-3">Região</th>
-              <th className="py-3 pr-3">Última atualização</th>
+              <th className="py-3 pr-3 text-center">Última atualização</th>
               <th className="py-3 pr-3 text-center">Novas ativações</th>
-              <th className="py-3 pr-3 text-right">Total de ativações</th>
-              <th className="py-3 pr-3 text-right">Variação hoje</th>
-              <th className="py-3 text-right pr-4">Tendência</th>
+              <th className="py-3 pr-3 text-center">Total de ativações</th>
+              <th className="py-3 pr-3 text-center">Variação hoje</th>
+              <th className="py-3 pr-4 text-center">Tendência</th>
             </tr>
           </thead>
           <tbody>
@@ -307,21 +309,21 @@ function ProducaoTempoReal({
                     {r.nome}
                   </span>
                 </td>
-                <td className="py-4 text-[#6b7280]">
+                <td className="py-4 text-center text-[#6b7280]">
                   {isLast ? "Agora" : `há ${(idx + 1) * 3} seg`}
                 </td>
                 <td className="py-4 text-center text-sm font-black text-emerald-600">
                   +{isLast ? 1 : Math.max(1, r.hoje % 3)}
                 </td>
-                <td className="py-4 text-right font-black tabular-nums text-[#140044]">
+                <td className="py-4 text-center font-black tabular-nums text-[#140044]">
                   <CountUp value={total} format={(n) => fmt(n)} />
                 </td>
-                <td className="py-4 text-right text-xs font-bold text-emerald-600">
+                <td className="py-4 text-center text-xs font-bold text-emerald-600">
                   +{r.hoje} hoje
                 </td>
-                <td className="py-4 pr-4 text-right">
-                  <div className="flex justify-end">
-                    <Sparkline seed={r.total} tick={lastUpdate?.when ?? 0} />
+                <td className="py-4 pr-4">
+                  <div className="flex justify-center">
+                    <Sparkline seed={r.total} tick={lastUpdate?.when ?? 0} color={r.cor} />
                   </div>
                 </td>
               </tr>

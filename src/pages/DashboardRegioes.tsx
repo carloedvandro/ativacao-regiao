@@ -131,13 +131,10 @@ function DetalhamentoRegioes({
   onCardClick: (nome: string) => void;
 }) {
   return (
-    <section className="premium-card rounded-2xl p-4 sm:rounded-[28px] sm:p-7">
+    <section className="sm:premium-card sm:rounded-[28px] sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#6b7280]">
-            Premium Analytics
-          </div>
-          <h2 className="mt-1 text-2xl font-black text-[#140044]">
+          <h2 className="text-2xl font-black text-[#140044]">
             Detalhamento por Região{" "}
             <span className="text-sm font-medium text-[#6b7280]">· ao vivo</span>
           </h2>
@@ -150,7 +147,7 @@ function DetalhamentoRegioes({
         </button>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
+      <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
         {regioes.map((r) => (
           <button
             key={r.nome}
@@ -228,13 +225,10 @@ function ProducaoTempoReal({
   });
 
   return (
-    <section className="premium-card rounded-2xl p-4 sm:rounded-[28px] sm:p-7">
+    <section className="sm:premium-card sm:rounded-[28px] sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#6b7280]">
-            Live Feed
-          </div>
-          <h2 className="mt-1 text-2xl font-black text-[#140044]">Produção em tempo real</h2>
+          <h2 className="text-2xl font-black text-[#140044]">Produção em tempo real</h2>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
@@ -282,14 +276,14 @@ function ProducaoTempoReal({
       </div>
 
       <div className="mt-6 overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <table className="w-full text-sm">
+        <table className="w-full min-w-[720px] text-sm">
           <thead>
-            <tr className="border-b border-gray-200 text-left text-[10px] font-black uppercase tracking-[0.2em] text-[#6b7280]">
-              <th className="py-3 pl-4">Região</th>
-              <th className="py-3">Última atualização</th>
-              <th className="py-3 text-center">Novas ativações</th>
-              <th className="py-3 text-right">Total de ativações</th>
-              <th className="py-3 text-right">Variação hoje</th>
+            <tr className="border-b border-gray-200 text-left text-[10px] font-black uppercase tracking-[0.2em] text-[#6b7280] whitespace-nowrap">
+              <th className="py-3 pl-4 pr-3">Região</th>
+              <th className="py-3 pr-3">Última atualização</th>
+              <th className="py-3 pr-3 text-center">Novas ativações</th>
+              <th className="py-3 pr-3 text-right">Total de ativações</th>
+              <th className="py-3 pr-3 text-right">Variação hoje</th>
               <th className="py-3 text-right pr-4">Tendência</th>
             </tr>
           </thead>

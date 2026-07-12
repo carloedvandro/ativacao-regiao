@@ -1,24 +1,29 @@
 import { useState, type ReactElement } from "react";
 import type { Regiao } from "@/types/dashboard";
 
-function Sparkline({ values, color }: { values: number[]; color: string }) {
-  const max = Math.max(...values, 1);
-  const w = 60;
+function Sparkline({ values }: { values: number[]; color?: string }) {
+  // Phone-signal style bars (ascending), discrete neutral palette.
+  const bars = 4;
+  const sum = values.reduce((a, b) => a + b, 0);
+  const active = 2 + (sum % (bars - 1));
+  const w = 44;
   const h = 20;
-  const barW = w / values.length - 2;
+  const bw = 5;
+  const gap = 3;
   return (
-    <svg width={w} height={h} className="inline-block">
-      {values.map((v, i) => {
-        const bh = (v / max) * h;
+    <svg width={w} height={h} className="inline-block" aria-hidden>
+      {Array.from({ length: bars }).map((_, i) => {
+        const barH = ((i + 1) / bars) * h;
+        const on = i < active;
         return (
           <rect
             key={i}
-            x={i * (barW + 2)}
-            y={h - bh}
-            width={barW}
-            height={bh}
-            fill={color}
+            x={i * (bw + gap)}
+            y={h - barH}
+            width={bw}
+            height={barH}
             rx={1}
+            fill={on ? "#3f3860" : "#d1d5db"}
           />
         );
       })}

@@ -30,26 +30,30 @@ function Sparkline({ color, seed }: { color: string; seed: number }) {
       const x = Math.sin(seed * 37 + i * 91.7) * 10000;
       return Math.abs(x - Math.floor(x));
     };
-    return Array.from({ length: 5 }, (_, i) => 0.28 + rng(i) * 0.72);
+    return Array.from({ length: 4 }, (_, i) => 0.35 + rng(i) * 0.65);
   }, [seed]);
-  const w = 60;
-  const h = 24;
-  const bw = 3;
-  const gap = (w - bw * vals.length) / (vals.length - 1);
+  // Ascending signal-bar pattern (like a phone signal indicator)
+  const w = 44;
+  const h = 22;
+  const bw = 5;
+  const gap = 3;
   return (
     <svg width={w} height={h} aria-hidden>
-      {vals.map((v, i) => (
-        <rect
-          key={i}
-          x={i * (bw + gap)}
-          y={h - v * h}
-          width={bw}
-          height={Math.max(2, v * h)}
-          rx={bw / 2}
-          fill={color}
-          opacity={0.35 + (i / (vals.length - 1)) * 0.65}
-        />
-      ))}
+      {vals.map((_, i) => {
+        const barH = ((i + 1) / vals.length) * h;
+        return (
+          <rect
+            key={i}
+            x={i * (bw + gap)}
+            y={h - barH}
+            width={bw}
+            height={barH}
+            rx={1}
+            fill="#3f3860"
+            opacity={0.35 + (i / (vals.length - 1)) * 0.65}
+          />
+        );
+      })}
     </svg>
   );
 }
@@ -76,7 +80,7 @@ export default function DashboardRegioes() {
 
   return (
     <div className="premium-surface min-h-screen text-[#140044]">
-      <main className="mx-auto w-full max-w-[1536px] px-6 py-10 space-y-8">
+      <main className="mx-auto w-full max-w-[1536px] px-3 py-10 sm:px-6 space-y-8">
         <DetalhamentoRegioes
           regioes={regioes}
           onOpenTable={() => {
@@ -278,7 +282,7 @@ function ProducaoTempoReal({
       <div className="mt-6 overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
         <table className="w-full min-w-[720px] text-sm">
           <thead>
-            <tr className="border-b border-gray-200 text-left text-[10px] font-black uppercase tracking-[0.2em] text-[#6b7280] whitespace-nowrap">
+            <tr className="border-b border-gray-200 text-left text-[11px] font-black text-[#6b7280] whitespace-nowrap">
               <th className="py-3 pl-4 pr-3">Região</th>
               <th className="py-3 pr-3">Última atualização</th>
               <th className="py-3 pr-3 text-center">Novas ativações</th>

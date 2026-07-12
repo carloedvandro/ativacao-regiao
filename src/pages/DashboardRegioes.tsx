@@ -80,7 +80,7 @@ export default function DashboardRegioes() {
 
   return (
     <div className="premium-surface min-h-screen text-[#140044]">
-      <main className="mx-auto w-full max-w-[1536px] px-6 py-10 space-y-8">
+      <main className="mx-auto w-full max-w-[1536px] px-3 py-10 sm:px-6 space-y-8">
         <DetalhamentoRegioes
           regioes={regioes}
           onOpenTable={() => {
@@ -282,7 +282,7 @@ function ProducaoTempoReal({
       <div className="mt-6 overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
         <table className="w-full min-w-[720px] text-sm">
           <thead>
-            <tr className="border-b border-gray-200 text-left text-[10px] font-black uppercase tracking-[0.2em] text-[#6b7280] whitespace-nowrap">
+            <tr className="border-b border-gray-200 text-left text-[11px] font-black text-[#6b7280] whitespace-nowrap">
               <th className="py-3 pl-4 pr-3">Região</th>
               <th className="py-3 pr-3">Última atualização</th>
               <th className="py-3 pr-3 text-center">Novas ativações</th>

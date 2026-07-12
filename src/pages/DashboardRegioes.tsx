@@ -131,13 +131,10 @@ function DetalhamentoRegioes({
   onCardClick: (nome: string) => void;
 }) {
   return (
-    <section className="premium-card rounded-2xl p-4 sm:rounded-[28px] sm:p-7">
+    <section className="sm:premium-card sm:rounded-[28px] sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#6b7280]">
-            Premium Analytics
-          </div>
-          <h2 className="mt-1 text-2xl font-black text-[#140044]">
+          <h2 className="text-2xl font-black text-[#140044]">
             Detalhamento por Região{" "}
             <span className="text-sm font-medium text-[#6b7280]">· ao vivo</span>
           </h2>
@@ -150,7 +147,7 @@ function DetalhamentoRegioes({
         </button>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
+      <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
         {regioes.map((r) => (
           <button
             key={r.nome}
@@ -228,13 +225,10 @@ function ProducaoTempoReal({
   });
 
   return (
-    <section className="premium-card rounded-2xl p-4 sm:rounded-[28px] sm:p-7">
+    <section className="sm:premium-card sm:rounded-[28px] sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#6b7280]">
-            Live Feed
-          </div>
-          <h2 className="mt-1 text-2xl font-black text-[#140044]">Produção em tempo real</h2>
+          <h2 className="text-2xl font-black text-[#140044]">Produção em tempo real</h2>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative">

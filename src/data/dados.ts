@@ -45,7 +45,7 @@ export const regioesBase: Regiao[] = [
   },
   {
     nome: "Sul",
-    cor: "#16a34a",
+    cor: "#047857",
     total: 13099,
     percentual: 28.0,
     hoje: 9,
@@ -98,7 +98,7 @@ export const regioesBase: Regiao[] = [
   },
   {
     nome: "Nordeste",
-    cor: "#a855f7",
+    cor: "#d97706",
     total: 6549,
     percentual: 14.0,
     hoje: 4,
@@ -114,7 +114,7 @@ export const regioesBase: Regiao[] = [
   },
   {
     nome: "Centro-Oeste",
-    cor: "#14b8a6",
+    cor: "#0e7490",
     total: 4678,
     percentual: 10.0,
     hoje: 5,

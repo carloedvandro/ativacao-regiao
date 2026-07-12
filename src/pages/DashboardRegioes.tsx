@@ -24,23 +24,23 @@ function sumPlano(cidade: { gb50: number; gb80: number; gb100: number }, p: Plan
   return cidade[p];
 }
 
-function Sparkline({ color, seed }: { color: string; seed: number }) {
-  const vals = useMemo(() => {
-    const rng = (i: number) => {
-      const x = Math.sin(seed * 37 + i * 91.7) * 10000;
-      return Math.abs(x - Math.floor(x));
-    };
-    return Array.from({ length: 4 }, (_, i) => 0.35 + rng(i) * 0.65);
-  }, [seed]);
-  // Ascending signal-bar pattern (like a phone signal indicator)
+function Sparkline({ seed, tick }: { color?: string; seed: number; tick?: number }) {
+  // Live signal-bar indicator (like a phone signal). Bars pulse subtly per tick.
+  const bars = 4;
   const w = 44;
   const h = 22;
   const bw = 5;
   const gap = 3;
+  const active = useMemo(() => {
+    const x = Math.sin(seed * 13.37 + (tick ?? 0) * 1.7) * 10000;
+    const r = Math.abs(x - Math.floor(x));
+    return 2 + Math.floor(r * (bars - 1)); // 2..bars
+  }, [seed, tick]);
   return (
     <svg width={w} height={h} aria-hidden>
-      {vals.map((_, i) => {
-        const barH = ((i + 1) / vals.length) * h;
+      {Array.from({ length: bars }).map((_, i) => {
+        const barH = ((i + 1) / bars) * h;
+        const on = i < active;
         return (
           <rect
             key={i}
@@ -49,8 +49,7 @@ function Sparkline({ color, seed }: { color: string; seed: number }) {
             width={bw}
             height={barH}
             rx={1}
-            fill="#3f3860"
-            opacity={0.35 + (i / (vals.length - 1)) * 0.65}
+            fill={on ? "#3f3860" : "#d1d5db"}
           />
         );
       })}
@@ -135,7 +134,7 @@ function DetalhamentoRegioes({
   onCardClick: (nome: string) => void;
 }) {
   return (
-    <section className="sm:premium-card sm:rounded-[28px] sm:p-7">
+    <section>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-2xl font-black text-[#140044]">
@@ -229,7 +228,7 @@ function ProducaoTempoReal({
   });
 
   return (
-    <section className="sm:premium-card sm:rounded-[28px] sm:p-7">
+    <section>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-2xl font-black text-[#140044]">Produção em tempo real</h2>
@@ -311,10 +310,8 @@ function ProducaoTempoReal({
                 <td className="py-4 text-[#6b7280]">
                   {isLast ? "Agora" : `há ${(idx + 1) * 3} seg`}
                 </td>
-                <td className="py-4 text-center">
-                  <span className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-sm font-black text-emerald-600">
-                    +{isLast ? 1 : Math.max(1, r.hoje % 3)}
-                  </span>
+                <td className="py-4 text-center text-sm font-black text-emerald-600">
+                  +{isLast ? 1 : Math.max(1, r.hoje % 3)}
                 </td>
                 <td className="py-4 text-right font-black tabular-nums text-[#140044]">
                   <CountUp value={total} format={(n) => fmt(n)} />
@@ -324,7 +321,7 @@ function ProducaoTempoReal({
                 </td>
                 <td className="py-4 pr-4 text-right">
                   <div className="flex justify-end">
-                    <Sparkline color={r.cor} seed={r.total} />
+                    <Sparkline seed={r.total} tick={lastUpdate?.when ?? 0} />
                   </div>
                 </td>
               </tr>

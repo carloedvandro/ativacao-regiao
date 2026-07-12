@@ -134,17 +134,17 @@ function DetalhamentoRegioes({
     <section className="sm:premium-card sm:rounded-[28px] sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#5517ea] [text-shadow:0_0_12px_rgba(201,168,76,0.45)]">
+          <div className="text-[10px] font-black uppercase tracking-[0.35em] text-[#6b7280]">
             Premium Analytics
           </div>
           <h2 className="mt-1 text-2xl font-black text-[#140044]">
             Detalhamento por Região{" "}
-            <span className="text-sm font-medium text-[#7b7591]">· ao vivo</span>
+            <span className="text-sm font-medium text-[#6b7280]">· ao vivo</span>
           </h2>
         </div>
         <button
           onClick={onOpenTable}
-          className="gold-button flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black tracking-wide transition hover:-translate-y-0.5"
+          className="gold-button flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black tracking-wide transition"
         >
           Ver tabela completa <Table2 className="h-4 w-4" />
         </button>

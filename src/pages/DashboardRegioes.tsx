@@ -189,7 +189,7 @@ function DetalhamentoRegioes({
         ))}
       </div>
 
-      <div className="mt-5 flex items-center justify-center gap-2 text-xs text-[#7b7591]">
+      <div className="mt-5 flex items-center justify-center gap-2 text-xs text-[#6b7280]">
         <span className="relative flex h-2 w-2">
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
           <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />

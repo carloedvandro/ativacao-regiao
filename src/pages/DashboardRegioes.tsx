@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   BarChart3,
@@ -72,6 +72,12 @@ export default function DashboardRegioes() {
 
   const totalGeral = regioes.reduce((s, r) => s + r.total, 0);
 
+  const [agora, setAgora] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setAgora(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
   const openDrill = (nome: string) => {
     setDrillRegion(nome);
     setDrillOpen(true);
@@ -107,8 +113,9 @@ export default function DashboardRegioes() {
 
         <p className="text-center text-xs tracking-wide text-[#6b7280]">
           Dados atualizados em tempo real · Última sincronização:{" "}
-          <span className="font-black text-[#6A0DAD]">
-            {new Date().toLocaleString("pt-BR")}
+          <span className="font-black tabular-nums text-[#6A0DAD]">
+            {agora.toLocaleDateString("pt-BR")}{" "}
+            {agora.toLocaleTimeString("pt-BR", { hour12: false })}
           </span>
         </p>
       </main>

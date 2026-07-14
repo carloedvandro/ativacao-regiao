@@ -25,21 +25,21 @@ function sumPlano(cidade: { gb50: number; gb80: number; gb100: number }, p: Plan
 }
 
 function Sparkline({ seed, tick, color = "#6A0DAD" }: { color?: string; seed: number; tick?: number }) {
-  // Mini bar chart tinted with the region color.
-  const bars = 5;
-  const w = 52;
-  const h = 22;
-  const bw = 6;
-  const gap = 3;
+  // Slim, professional mini bar chart tinted with the region color.
+  const bars = 7;
+  const w = 48;
+  const h = 20;
+  const bw = 3;
+  const gap = 2.5;
   const heights = useMemo(() => {
     return Array.from({ length: bars }).map((_, i) => {
       const x = Math.sin(seed * 7.13 + i * 1.9 + (tick ?? 0) * 0.9) * 10000;
       const r = Math.abs(x - Math.floor(x));
-      return 0.35 + r * 0.65; // 35%..100%
+      return 0.25 + r * 0.75; // 25%..100%
     });
   }, [seed, tick]);
   return (
-    <svg width={w} height={h} aria-hidden>
+    <svg width={w} height={h} aria-hidden className="overflow-visible">
       {heights.map((ratio, i) => {
         const barH = ratio * h;
         return (
@@ -49,9 +49,9 @@ function Sparkline({ seed, tick, color = "#6A0DAD" }: { color?: string; seed: nu
             y={h - barH}
             width={bw}
             height={barH}
-            rx={1.5}
+            rx={1}
             fill={color}
-            opacity={0.55 + ratio * 0.45}
+            opacity={0.35 + ratio * 0.55}
           />
         );
       })}

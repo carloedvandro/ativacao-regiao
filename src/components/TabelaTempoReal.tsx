@@ -1,20 +1,21 @@
 import { Filter } from "lucide-react";
 import { regioesBase, fmt } from "@/data/dados";
 
-function MiniSignal({ active = 3 }: { active?: number }) {
-  const bars = 4;
+function MiniSignal({ active = 3, color = "#3f3860" }: { active?: number; color?: string }) {
+  const bars = 6;
   return (
-    <div className="flex items-end gap-[3px] h-5 justify-end">
+    <div className="flex items-end gap-[2px] h-5 justify-end">
       {Array.from({ length: bars }).map((_, i) => {
-        const h = 8 + i * 4; // ascending heights: 8,12,16,20
+        const h = 6 + i * 2.5; // ascending heights: 6,8.5,11,13.5,16,18.5
         const on = i < active;
         return (
           <span
             key={i}
-            className="w-[5px] rounded-[1px]"
+            className="w-[3px] rounded-[1px]"
             style={{
               height: `${h}px`,
-              background: on ? "#3f3860" : "#d1d5db",
+              background: on ? color : "#d1d5db",
+              opacity: on ? 0.35 + i * 0.12 : 1,
             }}
           />
         );

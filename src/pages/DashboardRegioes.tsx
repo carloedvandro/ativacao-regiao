@@ -286,48 +286,48 @@ function ProducaoTempoReal({
         </div>
       </div>
 
-      <div className="mt-6 overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <div className="mt-6 overflow-x-auto rounded-2xl border border-gray-200/80 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
         <table className="w-full min-w-[720px] text-sm">
           <thead>
-            <tr className="border-b border-gray-200 text-left text-[11px] font-black text-[#6b7280] whitespace-nowrap">
-              <th className="py-3 pl-4 pr-3">Região</th>
-              <th className="py-3 pr-3 text-center">Última atualização</th>
-              <th className="py-3 pr-3 text-center">Novas ativações</th>
-              <th className="py-3 pr-3 text-center">Total de ativações</th>
-              <th className="py-3 pr-3 text-center">Variação hoje</th>
-              <th className="py-3 pr-4 text-center">Tendência</th>
+            <tr className="border-b border-gray-100 bg-gray-50/60 text-left text-[11px] font-black uppercase tracking-wider text-[#8b86a0] whitespace-nowrap">
+              <th className="py-3.5 pl-5 pr-3 font-black">Região</th>
+              <th className="py-3.5 pr-3 text-center font-black">Última atualização</th>
+              <th className="py-3.5 pr-3 text-center font-black">Novas ativações</th>
+              <th className="py-3.5 pr-3 text-center font-black">Total de ativações</th>
+              <th className="py-3.5 pr-3 text-center font-black">Variação hoje</th>
+              <th className="py-3.5 pr-5 text-center font-black">Tendência</th>
             </tr>
           </thead>
           <tbody>
             {linhas.map(({ r, total, isLast }, idx) => (
               <tr
                 key={r.nome}
-                className={`border-b border-gray-100 transition ${
-                  isLast ? "bg-emerald-500/[0.04]" : "hover:bg-gray-50"
+                className={`border-b border-gray-100/80 transition ${
+                  isLast ? "bg-emerald-500/[0.03]" : "hover:bg-gray-50/60"
                 }`}
               >
-                <td className="py-4 pl-4">
+                <td className="py-4 pl-5">
                   <span className="flex items-center gap-3 font-bold text-[#140044]">
                     <span
-                      className="inline-block h-2.5 w-2.5 rounded-full"
+                      className="inline-block h-2 w-2 rounded-full"
                       style={{ background: r.cor }}
                     />
                     {r.nome}
                   </span>
                 </td>
-                <td className="py-4 text-center text-[#6b7280]">
+                <td className="py-4 text-center text-[13px] text-[#6b7280]">
                   {isLast ? "Agora" : `há ${(idx + 1) * 3} seg`}
                 </td>
-                <td className="py-4 text-center text-sm font-black text-emerald-600">
+                <td className="py-4 text-center text-[13px] font-black text-emerald-600">
                   +{isLast ? 1 : Math.max(1, r.hoje % 3)}
                 </td>
                 <td className="py-4 text-center font-black tabular-nums text-[#140044]">
                   <CountUp value={total} format={(n) => fmt(n)} />
                 </td>
-                <td className="py-4 text-center text-xs font-bold text-emerald-600">
+                <td className="py-4 text-center text-[13px] font-bold text-emerald-600">
                   +{r.hoje} hoje
                 </td>
-                <td className="py-4 pr-4">
+                <td className="py-4 pr-5">
                   <div className="flex justify-center">
                     <Sparkline seed={r.total} tick={lastUpdate?.when ?? 0} color={r.cor} />
                   </div>

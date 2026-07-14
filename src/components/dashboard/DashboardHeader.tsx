@@ -1,14 +1,5 @@
 import { ChevronDown, Clock } from "lucide-react";
-import { useEffect, useState } from "react";
-
-function useNow() {
-  const [now, setNow] = useState(new Date());
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(t);
-  }, []);
-  return now;
-}
+import { useNow } from "@/hooks/useNow";
 
 export default function DashboardStatusBar() {
   const now = useNow();

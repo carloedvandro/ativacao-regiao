@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   ArrowRight,
   BarChart3,
@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import CountUp from "@/components/CountUp";
 import { useLiveRegioes } from "@/hooks/useLiveRegioes";
+import { useNow } from "@/hooks/useNow";
 import { fmt, type Regiao } from "@/data/dados";
 import { withPercent } from "@/hooks/useLiveRegioes";
 
@@ -72,11 +73,7 @@ export default function DashboardRegioes() {
 
   const totalGeral = regioes.reduce((s, r) => s + r.total, 0);
 
-  const [agora, setAgora] = useState(() => new Date());
-  useEffect(() => {
-    const id = setInterval(() => setAgora(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
+  const agora = useNow(1000);
 
   const openDrill = (nome: string) => {
     setDrillRegion(nome);

@@ -1,6 +1,6 @@
 import { Rocket, TrendingUp, Clock, Users } from "lucide-react";
-import { useEffect, useState } from "react";
 import { regioesBase, fmt } from "@/data/dados";
+import { useNow } from "@/hooks/useNow";
 
 function Card({
   icon: Icon,
@@ -48,11 +48,7 @@ function Card({
 export default function ResumoTempoReal() {
   const total = regioesBase.reduce((s, r) => s + r.total, 0);
   const hoje = regioesBase.reduce((s, r) => s + r.hoje, 0);
-  const [now, setNow] = useState(new Date());
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(t);
-  }, []);
+  const now = useNow(1000);
   const hora = now.toLocaleTimeString("pt-BR", { hour12: false });
 
   return (

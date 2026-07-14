@@ -81,7 +81,7 @@ export default function TabelaTempoReal() {
                 +{(6 + i * 0.7).toFixed(1).replace(".", ",")}%
               </td>
               <td>
-                <MiniSignal active={2 + (i % 3)} />
+                <MiniSignal active={2 + (i % 3)} color={l.cor} />
               </td>
             </tr>
           ))}

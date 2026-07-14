@@ -158,20 +158,20 @@ function DetalhamentoRegioes({
             key={r.nome}
             type="button"
             onClick={() => onCardClick(r.nome)}
-            className="group relative flex flex-col rounded-2xl region-chip-3d p-4 text-left transition hover:shadow-sm"
+            className="group relative flex flex-col rounded-2xl border border-gray-200/80 bg-white p-4 text-left shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition hover:-translate-y-0.5 hover:border-gray-300/80 hover:shadow-[0_8px_24px_-10px_rgba(20,0,68,0.12)]"
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-black uppercase tracking-widest" style={{ color: r.cor }}>
+              <span className="text-[11px] font-black uppercase tracking-widest" style={{ color: r.cor }}>
                 {r.nome}
               </span>
-              <span className="rounded-md border border-gray-200 bg-gray-50 px-1.5 py-0.5 text-[10px] font-black text-[#3f3860]">
+              <span className="rounded-md border border-gray-100 bg-gray-50/80 px-1.5 py-0.5 text-[10px] font-black text-[#3f3860]">
                 {r.percentual.toFixed(1).replace(".", ",")}%
               </span>
             </div>
             <div className="mt-3 text-3xl font-black tabular-nums text-[#140044]">
               <CountUp value={r.total} format={(n) => fmt(n)} />
             </div>
-            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-gray-100/80">
               <div
                 className="h-full rounded-full transition-all duration-700"
                 style={{
@@ -185,7 +185,13 @@ function DetalhamentoRegioes({
                 <TrendingUp className="h-3.5 w-3.5" />
                 <CountUp value={r.hoje} /> hoje
               </span>
-              <span className="text-[9px] uppercase tracking-widest text-[#6b7280]">Live</span>
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-emerald-600">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                </span>
+                Live
+              </span>
             </div>
           </button>
         ))}

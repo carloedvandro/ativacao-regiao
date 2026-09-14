@@ -309,15 +309,15 @@ function TabelaCompleta({
         </div>
         <div className="overflow-auto px-6 py-4">
           <table className="w-full text-left text-sm">
-            <thead className="sticky top-0 bg-white">
-              <tr className="border-b border-slate-100 text-[11px] font-semibold uppercase text-slate-500">
-                <th className="py-2">Região</th>
-                <th className="py-2">Estado</th>
-                <th className="py-2">Cidade</th>
-                <th className="py-2 text-right">50GB</th>
-                <th className="py-2 text-right">80GB</th>
-                <th className="py-2 text-right">100GB</th>
-                <th className="py-2 pr-1 text-right">Total</th>
+            <thead className="sticky top-0 z-10 bg-white">
+              <tr className="border-b border-slate-200 text-[11px] font-semibold uppercase text-slate-500">
+                <th className="bg-white py-2">Região</th>
+                <th className="bg-white py-2">Estado</th>
+                <th className="bg-white py-2">Cidade</th>
+                <th className="bg-white py-2 text-right">50GB</th>
+                <th className="bg-white py-2 text-right">80GB</th>
+                <th className="bg-white py-2 text-right">100GB</th>
+                <th className="bg-white py-2 pr-1 text-right">Total</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">

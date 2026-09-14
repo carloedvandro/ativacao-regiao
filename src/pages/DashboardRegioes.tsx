@@ -157,7 +157,7 @@ export default function DashboardRegioes() {
                     )}
 
                     {aberta && (
-                      <div className="mt-3 space-y-3">
+                      <div className="mt-3 max-h-64 space-y-3 overflow-y-auto pr-1">
                         {r.estados.map((e) => (
                           <div key={e.nome}>
                             <div className="flex items-center justify-between text-xs font-semibold text-slate-700">

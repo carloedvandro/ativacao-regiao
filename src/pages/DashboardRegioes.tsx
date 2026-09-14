@@ -9,6 +9,7 @@ import {
   X,
 } from "lucide-react";
 import CountUp from "@/components/CountUp";
+import AtivacoesHierarquia from "@/components/dashboard/AtivacoesHierarquia";
 import { useLiveRegioes } from "@/hooks/useLiveRegioes";
 import { useNow } from "@/hooks/useNow";
 import { fmt, type Regiao } from "@/data/dados";
@@ -94,6 +95,9 @@ export default function DashboardRegioes() {
           onCardClick={openDrill}
         />
 
+        <AtivacoesHierarquia regioes={regioes} />
+
+
         <ProducaoTempoReal
           regioes={regioes}
           plano={plano}
@@ -110,7 +114,7 @@ export default function DashboardRegioes() {
 
         <p className="text-center text-xs tracking-wide text-[#6b7280]">
           Dados atualizados em tempo real · Última sincronização:{" "}
-          <span className="font-black tabular-nums text-[#6A0DAD]">
+          <span suppressHydrationWarning className="font-black tabular-nums text-[#6A0DAD]">
             {agora.toLocaleDateString("pt-BR")}{" "}
             {agora.toLocaleTimeString("pt-BR", { hour12: false })}
           </span>

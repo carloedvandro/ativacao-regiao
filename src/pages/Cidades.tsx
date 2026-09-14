@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { ArrowLeft, Search } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 import { useLiveRegioes, withPercent } from "@/hooks/useLiveRegioes";
 import { fmt, siglaDe } from "@/data/dados";
 import {
@@ -75,21 +76,33 @@ export default function Cidades() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800">
-      <main className="mx-auto w-full max-w-[1920px] px-2 py-6 sm:px-4 sm:py-8 lg:px-6">
-        <Link
-          to="/"
-          className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-[#6A0DAD] transition hover:opacity-80"
-        >
-          <ArrowLeft className="h-4 w-4" /> Voltar ao painel
-        </Link>
-
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-slate-900">Ativações por cidade</h1>
-          <p className="text-sm text-slate-500">
-            {linhas.length} cidade{linhas.length === 1 ? "" : "s"} ·{" "}
-            <span className="font-semibold text-slate-700 tabular-nums">{fmt(geral)}</span> ativações
-          </p>
+      <header className="sticky top-0 z-20 border-b border-slate-200 bg-white shadow-sm">
+        <div className="mx-auto grid w-full max-w-[1920px] grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-2 py-4 sm:px-4 lg:px-6">
+          <div className="flex min-w-0 items-center gap-3">
+            <Button asChild variant="ghost" size="icon" className="shrink-0 rounded-full text-slate-500" title="Voltar ao painel">
+              <Link to="/" aria-label="Voltar ao painel">
+                <ArrowLeft className="h-5 w-5" />
+              </Link>
+            </Button>
+            <div className="min-w-0">
+              <h1 className="truncate text-xl font-bold text-slate-900">Ativações por cidade</h1>
+              <p className="truncate text-sm text-slate-500">
+                {linhas.length} cidade{linhas.length === 1 ? "" : "s"} ·{" "}
+                <span className="font-semibold text-slate-700 tabular-nums">{fmt(geral)}</span> ativações
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+            </span>
+            <span className="hidden text-[11px] font-bold text-emerald-700 sm:inline">Tempo real</span>
+          </div>
         </div>
+      </header>
+
+      <main className="mx-auto w-full max-w-[1920px] px-2 py-6 sm:px-4 lg:px-6">
 
         {/* Filtros */}
         <div className="mb-6 grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:grid-cols-2 lg:grid-cols-4">
@@ -172,7 +185,7 @@ export default function Cidades() {
           ) : (
             <ul className="space-y-4">
               {linhas.map((l) => (
-                <li key={`${l.regiao}-${l.estado}-${l.cidade}`}>
+                <li key={`${l.regiao}-${l.estado}-${l.cidade}`} className="rounded-md px-2 py-1 transition-colors hover:bg-slate-50">
                   <div className="mb-1 flex items-baseline justify-between gap-3">
                     <span className="truncate text-sm font-semibold text-slate-800">
                       {l.cidade}{" "}

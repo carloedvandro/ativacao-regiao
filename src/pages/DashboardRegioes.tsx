@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Building2, ChevronDown, ChevronsDown, ChevronsUp, Table2, X } from "lucide-react";
+import { Building2, ChevronDown, ChevronsDown, Table2, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import CountUp from "@/components/CountUp";
+import { Button } from "@/components/ui/button";
 import { useLiveRegioes, withPercent } from "@/hooks/useLiveRegioes";
 import { useNow } from "@/hooks/useNow";
 import { fmt, siglaDe, type Regiao } from "@/data/dados";
@@ -315,7 +316,6 @@ function TabelaCompleta({
   onClose: () => void;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [podeSubir, setPodeSubir] = useState(false);
   const [podeDescer, setPodeDescer] = useState(false);
 
   useEffect(() => {
@@ -330,7 +330,6 @@ function TabelaCompleta({
     const el = scrollRef.current;
     if (!el) return;
     const check = () => {
-      setPodeSubir(el.scrollTop > 2);
       setPodeDescer(el.scrollTop + el.clientHeight < el.scrollHeight - 2);
     };
     check();
@@ -350,20 +349,33 @@ function TabelaCompleta({
       <div
         className="mx-auto flex h-screen w-full max-w-[1920px] flex-col overflow-hidden bg-white"
       >
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-b border-slate-200 bg-white px-4 py-4 sm:px-6">
-          <div>
-            <h2 className="text-base font-bold text-slate-900">Região · Estado · Cidade</h2>
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-b border-slate-200 bg-white px-4 py-4 shadow-sm sm:px-6">
+          <div className="min-w-0">
+            <h2 className="truncate text-lg font-bold text-slate-900">Região · Estado · Cidade</h2>
             <p className="text-xs text-slate-500">
               Plano: {plano === "todos" ? "todos" : PLANOS.find((p) => p.key === plano)?.label}
             </p>
           </div>
-          <button
+          <div className="flex items-center gap-3">
+            <div className="hidden items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5 sm:flex">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+              </span>
+              <span className="text-[11px] font-bold text-emerald-700">Tempo real</span>
+            </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
             onClick={onClose}
-            className="rounded-full p-2 text-slate-400 hover:bg-slate-100"
+            className="shrink-0 rounded-full text-slate-400"
             aria-label="Fechar"
+            title="Fechar"
           >
             <X className="h-5 w-5" />
-          </button>
+          </Button>
+          </div>
         </div>
         <div className="relative min-h-0 flex-1 overflow-hidden">
           <div ref={scrollRef} className="h-full overflow-auto px-4 pb-4 no-scrollbar sm:px-6">
@@ -378,19 +390,19 @@ function TabelaCompleta({
             </colgroup>
             <thead>
               <tr className="text-[11px] font-semibold text-slate-500">
-                <th className="sticky top-0 z-20 border-b border-slate-200 bg-white py-3">Região</th>
-                <th className="sticky top-0 z-20 border-b border-slate-200 bg-white py-3">Estado</th>
-                <th className="sticky top-0 z-20 border-b border-slate-200 bg-white py-3">Cidade</th>
-                <th className="sticky top-0 z-20 border-b border-slate-200 bg-white py-3 text-right">100GB</th>
-                <th className="sticky top-0 z-20 border-b border-slate-200 bg-white py-3 text-right">120GB</th>
-                <th className="sticky top-0 z-20 border-b border-slate-200 bg-white py-3 pr-1 text-right">Total</th>
+                <th className="sticky top-0 z-20 border-b border-slate-200 bg-slate-50 py-3">Região</th>
+                <th className="sticky top-0 z-20 border-b border-slate-200 bg-slate-50 py-3">Estado</th>
+                <th className="sticky top-0 z-20 border-b border-slate-200 bg-slate-50 py-3">Cidade</th>
+                <th className="sticky top-0 z-20 border-b border-slate-200 bg-slate-50 py-3 text-right">100GB</th>
+                <th className="sticky top-0 z-20 border-b border-slate-200 bg-slate-50 py-3 text-right">120GB</th>
+                <th className="sticky top-0 z-20 border-b border-slate-200 bg-slate-50 py-3 pr-1 text-right">Total</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {regioes.flatMap((r) =>
                 r.estados.flatMap((e) =>
                   e.cidades.map((c) => (
-                    <tr key={`${r.nome}-${e.nome}-${c.nome}`}>
+                    <tr key={`${r.nome}-${e.nome}-${c.nome}`} className="transition-colors hover:bg-slate-50">
                       <td className="py-2 font-medium" style={{ color: r.cor }}>
                         {r.nome}
                       </td>
@@ -408,16 +420,14 @@ function TabelaCompleta({
             </tbody>
           </table>
           </div>
-          {podeSubir && (
-            <div className="pointer-events-none absolute left-1/2 top-12 z-30 flex -translate-x-1/2 items-center gap-1 rounded-md border border-slate-200 bg-white px-3 py-1 text-[10px] text-slate-500 shadow-sm">
-              <ChevronsUp className="h-3 w-3 animate-bounce" />
-              <span>Role para cima para visualizar o restante</span>
-            </div>
-          )}
         </div>
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-t border-slate-200 bg-white px-4 py-3 text-xs text-slate-500 sm:grid-cols-[1fr_auto_1fr] sm:px-6">
+        <div className="grid min-h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-t border-slate-200 bg-white px-4 py-3 text-xs text-slate-500 sm:grid-cols-[1fr_auto_1fr] sm:px-6">
           <span className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" /> Atualizando a cada 3s
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+            </span>
+            Atualizando a cada 3s
           </span>
           {podeDescer && (
             <div className="pointer-events-none col-span-2 row-start-2 flex items-center justify-center gap-1 text-[10px] text-slate-500 sm:col-span-1 sm:col-start-2 sm:row-start-1">
@@ -425,12 +435,7 @@ function TabelaCompleta({
               <span>Role para baixo para visualizar o restante</span>
             </div>
           )}
-          <button
-            onClick={onClose}
-            className="col-start-2 row-start-1 rounded-lg bg-[#6A0DAD] px-4 py-2 text-xs font-bold text-white sm:col-start-3 sm:justify-self-end"
-          >
-            Fechar
-          </button>
+          <span className="hidden text-right text-[10px] text-slate-400 sm:col-start-3 sm:block">Dados ao vivo</span>
         </div>
       </div>
     </div>

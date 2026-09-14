@@ -94,6 +94,9 @@ export default function DashboardRegioes() {
           onCardClick={openDrill}
         />
 
+        <AtivacoesHierarquia regioes={regioes} />
+
+
         <ProducaoTempoReal
           regioes={regioes}
           plano={plano}

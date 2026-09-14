@@ -2,19 +2,18 @@ import { useMemo, useState } from "react";
 import { ChevronRight, Home } from "lucide-react";
 import { fmt, siglaDe, type Regiao } from "@/data/dados";
 
-type Plano = "todos" | "gb100" | "gb120" | "ZZDROP";
+type Plano = "todos" | "gb100" | "gb120";
 
 const PLANOS: { key: Plano; label: string }[] = [
   { key: "todos", label: "Todos" },
   { key: "gb100", label: "100GB" },
   { key: "gb120", label: "120GB" },
-  { key: "ZZDROP", label: "ZZLABEL" },
 ];
 
-type Planos = { gb100: number; gb120: number; ZZDROP: number };
+type Planos = { gb100: number; gb120: number };
 
 function soma(p: Planos, plano: Plano) {
-  return plano === "todos" ? p.gb100 + p.gb120 + p.ZZDROP : p[plano];
+  return plano === "todos" ? p.gb100 + p.gb120 : p[plano];
 }
 
 function agregaPlanos(lista: Planos[]): Planos {
@@ -22,9 +21,9 @@ function agregaPlanos(lista: Planos[]): Planos {
     (acc, c) => ({
       gb100: acc.gb100 + c.gb100,
       gb120: acc.gb120 + c.gb120,
-      ZZDROP: acc.ZZDROP + c.ZZDROP,
+      ZZDROP: acc.ZZDROP,
     }),
-    { gb100: 0, gb120: 0, ZZDROP: 0 },
+    { gb100: 0, gb120: 0 },
   );
 }
 

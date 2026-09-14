@@ -33,7 +33,7 @@ export default function TabelaTempoReal() {
         estado: estado.nome,
         cidade: cidade.nome,
         ...cidade,
-        total: cidade.gb100 + cidade.gb120 + cidade.ZZDROP,
+        total: cidade.gb100 + cidade.gb120,
       })),
     ),
   );

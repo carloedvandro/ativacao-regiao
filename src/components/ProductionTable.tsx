@@ -123,7 +123,7 @@ function RegionRows({
   Sparkline,
 }: {
   regiao: Regiao;
-  cidades: Array<{ estado: string; nome: string; planos: { gb100: number; gb120: number; ZZDROP: number }; variacao?: number; tendencia?: number[] }>;
+  cidades: Array<{ estado: string; nome: string; planos: { gb100: number; gb120: number }; variacao?: number; tendencia?: number[] }>;
   open: boolean;
   onToggle: () => void;
   Sparkline: (p: { values: number[]; color: string }) => ReactElement;
@@ -146,7 +146,7 @@ function RegionRows({
       </tr>
       {open &&
         cidades.map((c) => {
-          const total = c.planos.gb100 + c.planos.gb120 + c.planos.ZZDROP;
+          const total = c.planos.gb100 + c.planos.gb120;
           return (
             <tr key={`${regiao.nome}-${c.nome}`} className="border-t border-slate-50">
               <td />

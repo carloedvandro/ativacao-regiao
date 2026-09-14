@@ -11,9 +11,9 @@ export const regioes: Regiao[] = [
       {
         nome: "São Paulo",
         cidades: [
-          { nome: "São Paulo", planos: { gb100: 1842, gb120: 2156, ZZDROP: 2394 }, variacao: 12.5, tendencia: [2, 3, 4, 5, 6, 7, 8] },
-          { nome: "Campinas", planos: { gb100: 612, gb120: 724, ZZDROP: 812 }, variacao: 10.3, tendencia: [2, 3, 3, 4, 5, 6, 7] },
-          { nome: "Ribeirão Preto", planos: { gb100: 312, gb120: 356, ZZDROP: 398 }, variacao: 8.7, tendencia: [1, 2, 3, 4, 4, 5, 6] },
+          { nome: "São Paulo", planos: { gb100: 1842, gb120: 2156 }, variacao: 12.5, tendencia: [2, 3, 4, 5, 6, 7, 8] },
+          { nome: "Campinas", planos: { gb100: 612, gb120: 724 }, variacao: 10.3, tendencia: [2, 3, 3, 4, 5, 6, 7] },
+          { nome: "Ribeirão Preto", planos: { gb100: 312, gb120: 356 }, variacao: 8.7, tendencia: [1, 2, 3, 4, 4, 5, 6] },
         ],
       },
     ],
@@ -28,9 +28,9 @@ export const regioes: Regiao[] = [
       {
         nome: "Paraná",
         cidades: [
-          { nome: "Curitiba", planos: { gb100: 1532, gb120: 1842, ZZDROP: 2068 }, variacao: 9.8, tendencia: [2, 3, 4, 5, 5, 6, 7] },
-          { nome: "Londrina", planos: { gb100: 468, gb120: 552, ZZDROP: 636 }, variacao: 8.2, tendencia: [1, 2, 3, 3, 4, 5, 6] },
-          { nome: "Maringá", planos: { gb100: 368, gb120: 420, ZZDROP: 492 }, variacao: 7.1, tendencia: [1, 2, 2, 3, 4, 5, 5] },
+          { nome: "Curitiba", planos: { gb100: 1532, gb120: 1842 }, variacao: 9.8, tendencia: [2, 3, 4, 5, 5, 6, 7] },
+          { nome: "Londrina", planos: { gb100: 468, gb120: 552 }, variacao: 8.2, tendencia: [1, 2, 3, 3, 4, 5, 6] },
+          { nome: "Maringá", planos: { gb100: 368, gb120: 420 }, variacao: 7.1, tendencia: [1, 2, 2, 3, 4, 5, 5] },
         ],
       },
     ],
@@ -45,8 +45,8 @@ export const regioes: Regiao[] = [
       {
         nome: "Bahia",
         cidades: [
-          { nome: "Salvador", planos: { gb100: 1204, gb120: 1468, ZZDROP: 1628 }, variacao: 11.4, tendencia: [2, 3, 4, 5, 6, 6, 7] },
-          { nome: "Feira de Santana", planos: { gb100: 392, gb120: 468, ZZDROP: 520 }, variacao: 9.6, tendencia: [1, 2, 3, 4, 4, 5, 6] },
+          { nome: "Salvador", planos: { gb100: 1204, gb120: 1468 }, variacao: 11.4, tendencia: [2, 3, 4, 5, 6, 6, 7] },
+          { nome: "Feira de Santana", planos: { gb100: 392, gb120: 468 }, variacao: 9.6, tendencia: [1, 2, 3, 4, 4, 5, 6] },
         ],
       },
     ],
@@ -61,8 +61,8 @@ export const regioes: Regiao[] = [
       {
         nome: "Goiás",
         cidades: [
-          { nome: "Goiânia", planos: { gb100: 876, gb120: 1052, ZZDROP: 1156 }, variacao: 8.9, tendencia: [2, 2, 3, 4, 5, 5, 6] },
-          { nome: "Aparecida de Goiânia", planos: { gb100: 324, gb120: 384, ZZDROP: 428 }, variacao: 7.3, tendencia: [1, 2, 2, 3, 4, 4, 5] },
+          { nome: "Goiânia", planos: { gb100: 876, gb120: 1052 }, variacao: 8.9, tendencia: [2, 2, 3, 4, 5, 5, 6] },
+          { nome: "Aparecida de Goiânia", planos: { gb100: 324, gb120: 384 }, variacao: 7.3, tendencia: [1, 2, 2, 3, 4, 4, 5] },
         ],
       },
     ],
@@ -77,8 +77,8 @@ export const regioes: Regiao[] = [
       {
         nome: "Pará",
         cidades: [
-          { nome: "Belém", planos: { gb100: 652, gb120: 796, ZZDROP: 872 }, variacao: 10.2, tendencia: [2, 3, 3, 4, 5, 6, 6] },
-          { nome: "Ananindeua", planos: { gb100: 212, gb120: 248, ZZDROP: 276 }, variacao: 6.8, tendencia: [1, 1, 2, 3, 3, 4, 5] },
+          { nome: "Belém", planos: { gb100: 652, gb120: 796 }, variacao: 10.2, tendencia: [2, 3, 3, 4, 5, 6, 6] },
+          { nome: "Ananindeua", planos: { gb100: 212, gb120: 248 }, variacao: 6.8, tendencia: [1, 1, 2, 3, 3, 4, 5] },
         ],
       },
     ],

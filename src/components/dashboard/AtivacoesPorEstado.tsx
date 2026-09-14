@@ -8,7 +8,7 @@ export default function AtivacoesPorEstado() {
   const estados = useMemo(() => {
     return regioesBase.flatMap((r) =>
       r.estados.map((e) => {
-        const total = e.cidades.reduce((s, c) => s + c.gb100 + c.gb120 + c.ZZDROP, 0);
+        const total = e.cidades.reduce((s, c) => s + c.gb100 + c.gb120, 0);
         return {
           nome: e.nome,
           sigla: siglaDe(e.nome),

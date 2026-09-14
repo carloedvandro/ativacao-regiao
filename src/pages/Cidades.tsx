@@ -4,13 +4,12 @@ import { Link } from "@tanstack/react-router";
 import { useLiveRegioes, withPercent } from "@/hooks/useLiveRegioes";
 import { fmt, siglaDe } from "@/data/dados";
 
-type Plano = "todos" | "gb100" | "gb120" | "ZZDROP";
+type Plano = "todos" | "gb100" | "gb120";
 
 const PLANOS: { key: Plano; label: string }[] = [
   { key: "todos", label: "Todos" },
   { key: "gb100", label: "100GB" },
   { key: "gb120", label: "120GB" },
-  { key: "ZZDROP", label: "ZZLABEL" },
 ];
 
 type Linha = {
@@ -20,7 +19,6 @@ type Linha = {
   cor: string;
   gb100: number;
   gb120: number;
-  ZZDROP: number;
   total: number;
 };
 
@@ -48,7 +46,7 @@ export default function Cidades() {
       for (const e of r.estados) {
         if (estado !== "todos" && e.nome !== estado) continue;
         for (const c of e.cidades) {
-          const total = plano === "todos" ? c.gb100 + c.gb120 + c.ZZDROP : c[plano];
+          const total = plano === "todos" ? c.gb100 + c.gb120 : c[plano];
           if (busca && !c.nome.toLowerCase().includes(busca.toLowerCase())) continue;
           out.push({
             cidade: c.nome,
@@ -57,7 +55,6 @@ export default function Cidades() {
             cor: r.cor,
             gb100: c.gb100,
             gb120: c.gb120,
-            ZZDROP: c.ZZDROP,
             total,
           });
         }

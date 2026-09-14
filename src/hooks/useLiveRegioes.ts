@@ -45,7 +45,7 @@ export function useLiveRegioes(intervalMs = 3000) {
         const plano = ["gb100", "gb120", "ZZDROP"][Math.floor(Math.random() * 3)] as
           | "gb100"
           | "gb120"
-          | "ZZDROP";
+         ;
         cid[plano] += 1;
         reg.total += 1;
         reg.hoje += 1;

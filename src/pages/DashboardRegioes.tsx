@@ -6,19 +6,18 @@ import { useLiveRegioes, withPercent } from "@/hooks/useLiveRegioes";
 import { useNow } from "@/hooks/useNow";
 import { fmt, siglaDe, type Regiao } from "@/data/dados";
 
-type Plano = "todos" | "gb100" | "gb120" | "ZZDROP";
+type Plano = "todos" | "gb100" | "gb120";
 
 const PLANOS: { key: Plano; label: string }[] = [
   { key: "todos", label: "Todos" },
   { key: "gb100", label: "100GB" },
   { key: "gb120", label: "120GB" },
-  { key: "ZZDROP", label: "ZZLABEL" },
 ];
 
-type Planos = { gb100: number; gb120: number; ZZDROP: number };
+type Planos = { gb100: number; gb120: number };
 
 function soma(p: Planos, plano: Plano) {
-  return plano === "todos" ? p.gb100 + p.gb120 + p.ZZDROP : p[plano];
+  return plano === "todos" ? p.gb100 + p.gb120 : p[plano];
 }
 
 function totalRegiao(r: Regiao, plano: Plano) {
@@ -341,7 +340,7 @@ function TabelaCompleta({
                       <td className="py-2 text-right tabular-nums text-slate-500">{fmt(c.gb120)}</td>
                       <td className="py-2 text-right tabular-nums text-slate-500">{fmt(c.ZZDROP)}</td>
                       <td className="py-2 pr-1 text-right font-bold tabular-nums text-slate-800">
-                        {fmt(c.gb100 + c.gb120 + c.ZZDROP)}
+                        {fmt(c.gb100 + c.gb120)}
                       </td>
                     </tr>
                   )),

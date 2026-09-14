@@ -4,7 +4,7 @@ export default function EstadosDaRegiao({ regiaoNome }: { regiaoNome: string }) 
   const regiao = regioesBase.find((r) => r.nome === regiaoNome) ?? regioesBase[0];
   const estados = regiao.estados.map((e) => ({
     nome: e.nome,
-    total: e.cidades.reduce((s, c) => s + c.gb100 + c.gb120 + c.ZZDROP, 0),
+    total: e.cidades.reduce((s, c) => s + c.gb100 + c.gb120, 0),
   }));
 
   return (

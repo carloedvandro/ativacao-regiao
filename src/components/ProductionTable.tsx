@@ -76,9 +76,9 @@ export default function ProductionTable({ regioes }: { regioes: Regiao[] }) {
               <th />
               <th />
               <th />
-              <th className="px-3 py-1 text-right font-medium">50GB</th>
-              <th className="px-3 py-1 text-right font-medium">80GB</th>
               <th className="px-3 py-1 text-right font-medium">100GB</th>
+              <th className="px-3 py-1 text-right font-medium">120GB</th>
+              <th className="px-3 py-1 text-right font-medium">ZZLABEL</th>
               <th className="px-3 py-1 text-right font-medium">Total</th>
               <th />
               <th />
@@ -123,7 +123,7 @@ function RegionRows({
   Sparkline,
 }: {
   regiao: Regiao;
-  cidades: Array<{ estado: string; nome: string; planos: { gb50: number; gb80: number; gb100: number }; variacao?: number; tendencia?: number[] }>;
+  cidades: Array<{ estado: string; nome: string; planos: { gb100: number; gb120: number; ZZDROP: number }; variacao?: number; tendencia?: number[] }>;
   open: boolean;
   onToggle: () => void;
   Sparkline: (p: { values: number[]; color: string }) => ReactElement;
@@ -146,20 +146,20 @@ function RegionRows({
       </tr>
       {open &&
         cidades.map((c) => {
-          const total = c.planos.gb50 + c.planos.gb80 + c.planos.gb100;
+          const total = c.planos.gb100 + c.planos.gb120 + c.planos.ZZDROP;
           return (
             <tr key={`${regiao.nome}-${c.nome}`} className="border-t border-slate-50">
               <td />
               <td className="px-3 py-2 text-slate-500">{c.estado}</td>
               <td className="px-3 py-2 text-slate-800">{c.nome}</td>
               <td className="px-3 py-2 text-right tabular-nums text-slate-700">
-                {c.planos.gb50.toLocaleString("pt-BR")}
-              </td>
-              <td className="px-3 py-2 text-right tabular-nums text-slate-700">
-                {c.planos.gb80.toLocaleString("pt-BR")}
-              </td>
-              <td className="px-3 py-2 text-right tabular-nums text-slate-700">
                 {c.planos.gb100.toLocaleString("pt-BR")}
+              </td>
+              <td className="px-3 py-2 text-right tabular-nums text-slate-700">
+                {c.planos.gb120.toLocaleString("pt-BR")}
+              </td>
+              <td className="px-3 py-2 text-right tabular-nums text-slate-700">
+                {c.planos.ZZDROP.toLocaleString("pt-BR")}
               </td>
               <td className="px-3 py-2 text-right font-semibold tabular-nums text-slate-900">
                 {total.toLocaleString("pt-BR")}

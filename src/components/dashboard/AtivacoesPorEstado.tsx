@@ -8,7 +8,7 @@ export default function AtivacoesPorEstado() {
   const estados = useMemo(() => {
     return regioesBase.flatMap((r) =>
       r.estados.map((e) => {
-        const total = e.cidades.reduce((s, c) => s + c.gb50 + c.gb80 + c.gb100, 0);
+        const total = e.cidades.reduce((s, c) => s + c.gb100 + c.gb120 + c.ZZDROP, 0);
         return {
           nome: e.nome,
           sigla: siglaDe(e.nome),
@@ -127,7 +127,7 @@ export default function AtivacoesPorEstado() {
               Plano predominante
             </p>
             <p className="text-xl font-black text-[#3A0068]">
-              Smart<span className="text-[#6A0DAD]">Voz</span> 50GB
+              Smart<span className="text-[#6A0DAD]">Voz</span> 100GB
             </p>
             <div className="h-px bg-[#E9DDF8] my-3" />
             <p className="text-xs uppercase tracking-widest text-slate-500">Crescimento</p>

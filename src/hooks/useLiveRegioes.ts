@@ -42,10 +42,10 @@ export function useLiveRegioes(intervalMs = 3000) {
         const reg = next[idx];
         const est = reg.estados[Math.floor(Math.random() * reg.estados.length)];
         const cid = est.cidades[Math.floor(Math.random() * est.cidades.length)];
-        const plano = ["gb50", "gb80", "gb100"][Math.floor(Math.random() * 3)] as
-          | "gb50"
-          | "gb80"
-          | "gb100";
+        const plano = ["gb100", "gb120", "ZZDROP"][Math.floor(Math.random() * 3)] as
+          | "gb100"
+          | "gb120"
+          | "ZZDROP";
         cid[plano] += 1;
         reg.total += 1;
         reg.hoje += 1;

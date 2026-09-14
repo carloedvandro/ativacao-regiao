@@ -1,4 +1,4 @@
-export type Planos = { gb50: number; gb80: number; gb100: number };
+export type Planos = { gb100: number; gb120: number };
 
 export type Cidade = {
   nome: string;

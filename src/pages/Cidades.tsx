@@ -4,13 +4,12 @@ import { Link } from "@tanstack/react-router";
 import { useLiveRegioes, withPercent } from "@/hooks/useLiveRegioes";
 import { fmt, siglaDe } from "@/data/dados";
 
-type Plano = "todos" | "gb50" | "gb80" | "gb100";
+type Plano = "todos" | "gb100" | "gb120";
 
 const PLANOS: { key: Plano; label: string }[] = [
   { key: "todos", label: "Todos" },
-  { key: "gb50", label: "50GB" },
-  { key: "gb80", label: "80GB" },
   { key: "gb100", label: "100GB" },
+  { key: "gb120", label: "120GB" },
 ];
 
 type Linha = {
@@ -18,9 +17,8 @@ type Linha = {
   estado: string;
   regiao: string;
   cor: string;
-  gb50: number;
-  gb80: number;
   gb100: number;
+  gb120: number;
   total: number;
 };
 
@@ -48,16 +46,15 @@ export default function Cidades() {
       for (const e of r.estados) {
         if (estado !== "todos" && e.nome !== estado) continue;
         for (const c of e.cidades) {
-          const total = plano === "todos" ? c.gb50 + c.gb80 + c.gb100 : c[plano];
+          const total = plano === "todos" ? c.gb100 + c.gb120 : c[plano];
           if (busca && !c.nome.toLowerCase().includes(busca.toLowerCase())) continue;
           out.push({
             cidade: c.nome,
             estado: e.nome,
             regiao: r.nome,
             cor: r.cor,
-            gb50: c.gb50,
-            gb80: c.gb80,
             gb100: c.gb100,
+            gb120: c.gb120,
             total,
           });
         }
@@ -182,9 +179,8 @@ export default function Cidades() {
                   </div>
                   {plano === "todos" && (
                     <div className="mt-1 flex gap-4 text-[11px] text-slate-500 tabular-nums">
-                      <span>50GB: {fmt(l.gb50)}</span>
-                      <span>80GB: {fmt(l.gb80)}</span>
                       <span>100GB: {fmt(l.gb100)}</span>
+                      <span>120GB: {fmt(l.gb120)}</span>
                     </div>
                   )}
                 </li>

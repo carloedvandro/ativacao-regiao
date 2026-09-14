@@ -33,7 +33,7 @@ export default function TabelaTempoReal() {
         estado: estado.nome,
         cidade: cidade.nome,
         ...cidade,
-        total: cidade.gb50 + cidade.gb80 + cidade.gb100,
+        total: cidade.gb100 + cidade.gb120,
       })),
     ),
   );
@@ -60,9 +60,8 @@ export default function TabelaTempoReal() {
             <th className="py-3.5 pl-5 pr-3">Região</th>
             <th className="py-3.5 pr-3">Estado</th>
             <th className="py-3.5 pr-3">Cidade</th>
-            <th className="py-3.5 pr-3 text-center">50GB</th>
-            <th className="py-3.5 pr-3 text-center">80GB</th>
             <th className="py-3.5 pr-3 text-center">100GB</th>
+            <th className="py-3.5 pr-3 text-center">120GB</th>
             <th className="py-3.5 pr-3 text-center">Total</th>
             <th className="py-3.5 pr-3 text-center">Variação hoje</th>
             <th className="py-3.5 pr-5 text-center">Tendência</th>
@@ -79,9 +78,8 @@ export default function TabelaTempoReal() {
               </td>
               <td className="py-3.5 text-[#3f3860]">{l.estado}</td>
               <td className="py-3.5 text-[#3f3860]">{l.cidade}</td>
-              <td className="py-3.5 text-center tabular-nums text-[#3f3860]">{fmt(l.gb50)}</td>
-              <td className="py-3.5 text-center tabular-nums text-[#3f3860]">{fmt(l.gb80)}</td>
               <td className="py-3.5 text-center tabular-nums text-[#3f3860]">{fmt(l.gb100)}</td>
+              <td className="py-3.5 text-center tabular-nums text-[#3f3860]">{fmt(l.gb120)}</td>
               <td className="py-3.5 text-center font-black tabular-nums text-[#140044]">{fmt(l.total)}</td>
               <td className="py-3.5 text-center text-[13px] font-bold text-emerald-600">
                 +{(6 + i * 0.7).toFixed(1).replace(".", ",")}%

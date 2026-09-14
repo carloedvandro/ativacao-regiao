@@ -11,7 +11,7 @@ export default function DistribuicaoPorRegiao() {
   const estados = regiao.estados.map((e) => ({
     nome: e.nome,
     sigla: siglaDe(e.nome),
-    total: e.cidades.reduce((s, c) => s + c.gb50 + c.gb80 + c.gb100, 0),
+    total: e.cidades.reduce((s, c) => s + c.gb100 + c.gb120, 0),
   }));
   const totalReg = estados.reduce((s, e) => s + e.total, 0) || 1;
   const max = Math.max(...estados.map((e) => e.total));

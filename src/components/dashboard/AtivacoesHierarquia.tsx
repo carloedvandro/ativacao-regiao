@@ -2,29 +2,27 @@ import { useMemo, useState } from "react";
 import { ChevronRight, Home } from "lucide-react";
 import { fmt, siglaDe, type Regiao } from "@/data/dados";
 
-type Plano = "todos" | "gb50" | "gb80" | "gb100";
+type Plano = "todos" | "gb100" | "gb120";
 
 const PLANOS: { key: Plano; label: string }[] = [
   { key: "todos", label: "Todos" },
-  { key: "gb50", label: "50GB" },
-  { key: "gb80", label: "80GB" },
   { key: "gb100", label: "100GB" },
+  { key: "gb120", label: "120GB" },
 ];
 
-type Planos = { gb50: number; gb80: number; gb100: number };
+type Planos = { gb100: number; gb120: number };
 
 function soma(p: Planos, plano: Plano) {
-  return plano === "todos" ? p.gb50 + p.gb80 + p.gb100 : p[plano];
+  return plano === "todos" ? p.gb100 + p.gb120 : p[plano];
 }
 
 function agregaPlanos(lista: Planos[]): Planos {
   return lista.reduce(
     (acc, c) => ({
-      gb50: acc.gb50 + c.gb50,
-      gb80: acc.gb80 + c.gb80,
       gb100: acc.gb100 + c.gb100,
+      gb120: acc.gb120 + c.gb120,
     }),
-    { gb50: 0, gb80: 0, gb100: 0 },
+    { gb100: 0, gb120: 0 },
   );
 }
 
@@ -193,8 +191,8 @@ export default function AtivacoesHierarquia({ regioes }: { regioes: Regiao[] }) 
       </div>
 
       {/* Quebra por plano do nível atual */}
-      <div className="mt-6 grid grid-cols-3 gap-3 border-t border-gray-100 pt-5">
-        {(["gb50", "gb80", "gb100"] as const).map((p) => {
+      <div className="mt-6 grid grid-cols-2 gap-3 border-t border-gray-100 pt-5">
+        {(["gb100", "gb120"] as const).map((p) => {
           const v = ordenados.reduce((s, i) => s + i.planos[p], 0);
           return (
             <div key={p} className="rounded-xl border border-gray-200/80 bg-gray-50/50 p-3">

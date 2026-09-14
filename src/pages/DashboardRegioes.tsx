@@ -6,19 +6,18 @@ import { useLiveRegioes, withPercent } from "@/hooks/useLiveRegioes";
 import { useNow } from "@/hooks/useNow";
 import { fmt, siglaDe, type Regiao } from "@/data/dados";
 
-type Plano = "todos" | "gb50" | "gb80" | "gb100";
+type Plano = "todos" | "gb100" | "gb120";
 
 const PLANOS: { key: Plano; label: string }[] = [
   { key: "todos", label: "Todos" },
-  { key: "gb50", label: "50GB" },
-  { key: "gb80", label: "80GB" },
   { key: "gb100", label: "100GB" },
+  { key: "gb120", label: "120GB" },
 ];
 
-type Planos = { gb50: number; gb80: number; gb100: number };
+type Planos = { gb100: number; gb120: number };
 
 function soma(p: Planos, plano: Plano) {
-  return plano === "todos" ? p.gb50 + p.gb80 + p.gb100 : p[plano];
+  return plano === "todos" ? p.gb100 + p.gb120 : p[plano];
 }
 
 function totalRegiao(r: Regiao, plano: Plano) {
@@ -321,9 +320,8 @@ function TabelaCompleta({
                 <th className="bg-white py-2">Região</th>
                 <th className="bg-white py-2">Estado</th>
                 <th className="bg-white py-2">Cidade</th>
-                <th className="bg-white py-2 text-right">50GB</th>
-                <th className="bg-white py-2 text-right">80GB</th>
                 <th className="bg-white py-2 text-right">100GB</th>
+                <th className="bg-white py-2 text-right">120GB</th>
                 <th className="bg-white py-2 pr-1 text-right">Total</th>
               </tr>
             </thead>
@@ -337,11 +335,10 @@ function TabelaCompleta({
                       </td>
                       <td className="py-2 text-slate-700">{e.nome}</td>
                       <td className="py-2 text-slate-700">{c.nome}</td>
-                      <td className="py-2 text-right tabular-nums text-slate-500">{fmt(c.gb50)}</td>
-                      <td className="py-2 text-right tabular-nums text-slate-500">{fmt(c.gb80)}</td>
                       <td className="py-2 text-right tabular-nums text-slate-500">{fmt(c.gb100)}</td>
+                      <td className="py-2 text-right tabular-nums text-slate-500">{fmt(c.gb120)}</td>
                       <td className="py-2 pr-1 text-right font-bold tabular-nums text-slate-800">
-                        {fmt(c.gb50 + c.gb80 + c.gb100)}
+                        {fmt(c.gb100 + c.gb120)}
                       </td>
                     </tr>
                   )),

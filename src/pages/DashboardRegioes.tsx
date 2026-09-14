@@ -92,7 +92,7 @@ export default function DashboardRegioes() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800">
-      <main className="mx-auto w-full max-w-[1600px] px-4 py-8 sm:px-6 lg:px-10 sm:py-10">
+      <main className="mx-auto w-full max-w-[1920px] px-2 py-6 sm:px-4 lg:px-6 sm:py-8">
         {/* Cabeçalho + filtro de plano */}
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>

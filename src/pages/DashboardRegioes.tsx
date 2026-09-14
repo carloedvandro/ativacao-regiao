@@ -156,33 +156,7 @@ export default function DashboardRegioes() {
                       </div>
                     )}
 
-                    {aberta && (
-                      <div className="mt-3 max-h-64 space-y-3 overflow-y-auto pr-1">
-                        {r.estados.map((e) => (
-                          <div key={e.nome}>
-                            <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
-                              <span>
-                                {e.nome} <span className="text-slate-400">({siglaDe(e.nome)})</span>
-                              </span>
-                              <span className="tabular-nums">
-                                {fmt(e.cidades.reduce((s, c) => s + soma(c, plano), 0))}
-                              </span>
-                            </div>
-                            <ul className="mt-1 space-y-1">
-                              {e.cidades.map((c) => (
-                                <li
-                                  key={c.nome}
-                                  className="flex items-center justify-between text-[11px] text-slate-500"
-                                >
-                                  <span>{c.nome}</span>
-                                  <span className="tabular-nums">{fmt(soma(c, plano))}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    {aberta && <ListaEstados r={r} plano={plano} />}
                   </div>
                 </div>
               </div>

@@ -157,9 +157,6 @@ function RegionRows({
               <td className="px-3 py-2 text-right tabular-nums text-slate-700">
                 {c.planos.gb120.toLocaleString("pt-BR")}
               </td>
-              <td className="px-3 py-2 text-right tabular-nums text-slate-700">
-                {c.planos.ZZDROP.toLocaleString("pt-BR")}
-              </td>
               <td className="px-3 py-2 text-right font-semibold tabular-nums text-slate-900">
                 {total.toLocaleString("pt-BR")}
               </td>

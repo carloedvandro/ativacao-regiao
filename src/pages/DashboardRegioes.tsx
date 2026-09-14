@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { ChevronDown, Table2, X } from "lucide-react";
+import { Building2, ChevronDown, Table2, X } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import CountUp from "@/components/CountUp";
 import { useLiveRegioes, withPercent } from "@/hooks/useLiveRegioes";
 import { useNow } from "@/hooks/useNow";

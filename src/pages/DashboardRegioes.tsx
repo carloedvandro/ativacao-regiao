@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Building2, ChevronDown, Table2, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Building2, ChevronDown, ChevronsDown, Table2, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import CountUp from "@/components/CountUp";
 import { useLiveRegioes, withPercent } from "@/hooks/useLiveRegioes";
@@ -22,6 +22,56 @@ function soma(p: Planos, plano: Plano) {
 
 function totalRegiao(r: Regiao, plano: Plano) {
   return r.estados.reduce((s, e) => s + e.cidades.reduce((cs, c) => cs + soma(c, plano), 0), 0);
+}
+
+function ListaEstados({ r, plano }: { r: Regiao; plano: Plano }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [precisaScroll, setPrecisaScroll] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const check = () => setPrecisaScroll(el.scrollHeight > el.clientHeight && el.scrollTop + el.clientHeight < el.scrollHeight - 2);
+    check();
+    el.addEventListener("scroll", check);
+    return () => el.removeEventListener("scroll", check);
+  }, [r, plano]);
+
+  return (
+    <div className="relative mt-3">
+      <div ref={ref} className="max-h-64 space-y-3 overflow-y-auto pr-1 pb-1 no-scrollbar">
+        {r.estados.map((e) => (
+          <div key={e.nome}>
+            <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
+              <span>
+                {e.nome} <span className="text-slate-400">({siglaDe(e.nome)})</span>
+              </span>
+              <span className="tabular-nums">
+                {fmt(e.cidades.reduce((s, c) => s + soma(c, plano), 0))}
+              </span>
+            </div>
+            <ul className="mt-1 space-y-1">
+              {e.cidades.map((c) => (
+                <li
+                  key={c.nome}
+                  className="flex items-center justify-between text-[11px] text-slate-500"
+                >
+                  <span>{c.nome}</span>
+                  <span className="tabular-nums">{fmt(soma(c, plano))}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      {precisaScroll && (
+        <div className="pointer-events-none flex flex-col items-center pt-1 text-[10px] text-slate-400">
+          <ChevronsDown className="h-3 w-3 animate-bounce" />
+          <span>Role para ver mais</span>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function DashboardRegioes() {
@@ -156,33 +206,7 @@ export default function DashboardRegioes() {
                       </div>
                     )}
 
-                    {aberta && (
-                      <div className="mt-3 max-h-64 space-y-3 overflow-y-auto pr-1">
-                        {r.estados.map((e) => (
-                          <div key={e.nome}>
-                            <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
-                              <span>
-                                {e.nome} <span className="text-slate-400">({siglaDe(e.nome)})</span>
-                              </span>
-                              <span className="tabular-nums">
-                                {fmt(e.cidades.reduce((s, c) => s + soma(c, plano), 0))}
-                              </span>
-                            </div>
-                            <ul className="mt-1 space-y-1">
-                              {e.cidades.map((c) => (
-                                <li
-                                  key={c.nome}
-                                  className="flex items-center justify-between text-[11px] text-slate-500"
-                                >
-                                  <span>{c.nome}</span>
-                                  <span className="tabular-nums">{fmt(soma(c, plano))}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    {aberta && <ListaEstados r={r} plano={plano} />}
                   </div>
                 </div>
               </div>

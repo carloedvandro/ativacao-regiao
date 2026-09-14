@@ -9,6 +9,7 @@ import {
   X,
 } from "lucide-react";
 import CountUp from "@/components/CountUp";
+import AtivacoesHierarquia from "@/components/dashboard/AtivacoesHierarquia";
 import { useLiveRegioes } from "@/hooks/useLiveRegioes";
 import { useNow } from "@/hooks/useNow";
 import { fmt, type Regiao } from "@/data/dados";

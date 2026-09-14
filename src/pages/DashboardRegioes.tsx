@@ -319,6 +319,14 @@ function TabelaCompleta({
   const [podeDescer, setPodeDescer] = useState(false);
 
   useEffect(() => {
+    const overflowAnterior = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = overflowAnterior;
+    };
+  }, []);
+
+  useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     const check = () => {
@@ -337,14 +345,12 @@ function TabelaCompleta({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
-      onClick={onClose}
+      className="fixed inset-0 z-50 bg-white"
     >
       <div
-        className="flex h-[88vh] w-full max-w-5xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
+        className="mx-auto flex h-screen w-full max-w-[1920px] flex-col overflow-hidden bg-white"
       >
-        <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-b border-slate-200 bg-white px-4 py-4 sm:px-6">
           <div>
             <h2 className="text-base font-bold text-slate-900">Região · Estado · Cidade</h2>
             <p className="text-xs text-slate-500">
@@ -360,7 +366,7 @@ function TabelaCompleta({
           </button>
         </div>
         <div className="relative min-h-0 flex-1 overflow-hidden">
-          <div ref={scrollRef} className="h-full overflow-auto px-6 pb-4 no-scrollbar">
+          <div ref={scrollRef} className="h-full overflow-auto px-4 pb-4 no-scrollbar sm:px-6">
           <table className="w-full min-w-[720px] table-fixed text-left text-sm">
             <colgroup>
               <col className="w-[18%]" />
@@ -415,7 +421,7 @@ function TabelaCompleta({
             </div>
           )}
         </div>
-        <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50/60 px-6 py-3 text-xs text-slate-500">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-t border-slate-200 bg-white px-4 py-3 text-xs text-slate-500 sm:px-6">
           <span className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-500" /> Atualizando a cada 3s
           </span>

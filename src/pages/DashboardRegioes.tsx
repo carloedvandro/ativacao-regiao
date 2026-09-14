@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { ChevronDown, Table2, X } from "lucide-react";
+import { Building2, ChevronDown, Table2, X } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import CountUp from "@/components/CountUp";
 import { useLiveRegioes, withPercent } from "@/hooks/useLiveRegioes";
 import { useNow } from "@/hooks/useNow";
@@ -74,6 +75,12 @@ export default function DashboardRegioes() {
                 </button>
               ))}
             </div>
+            <Link
+              to="/cidades"
+              className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#6A0DAD] shadow-sm transition hover:bg-slate-50"
+            >
+              Ver cidades <Building2 className="h-4 w-4" />
+            </Link>
             <button
               type="button"
               onClick={() => setTabelaAberta(true)}

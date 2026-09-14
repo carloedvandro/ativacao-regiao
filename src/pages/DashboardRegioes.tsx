@@ -360,7 +360,7 @@ function TabelaCompleta({
           </button>
         </div>
         <div className="relative min-h-0 flex-1 overflow-hidden">
-          <div ref={scrollRef} className="h-full overflow-auto px-6 py-4 no-scrollbar">
+          <div ref={scrollRef} className="h-full overflow-auto px-6 pb-4 no-scrollbar">
           <table className="w-full min-w-[720px] table-fixed text-left text-sm">
             <colgroup>
               <col className="w-[18%]" />
@@ -403,7 +403,7 @@ function TabelaCompleta({
           </table>
           </div>
           {podeSubir && (
-            <div className="pointer-events-none absolute left-1/2 top-14 z-30 flex -translate-x-1/2 items-center gap-1 rounded-md border border-slate-200 bg-white px-3 py-1 text-[10px] text-slate-500 shadow-sm">
+            <div className="pointer-events-none absolute left-1/2 top-12 z-30 flex -translate-x-1/2 items-center gap-1 rounded-md border border-slate-200 bg-white px-3 py-1 text-[10px] text-slate-500 shadow-sm">
               <ChevronsUp className="h-3 w-3 animate-bounce" />
               <span>Role para cima para visualizar o restante</span>
             </div>

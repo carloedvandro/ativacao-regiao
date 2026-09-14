@@ -3,6 +3,13 @@ import { ArrowLeft, Search } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useLiveRegioes, withPercent } from "@/hooks/useLiveRegioes";
 import { fmt, siglaDe } from "@/data/dados";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Plano = "todos" | "gb100" | "gb120";
 
@@ -88,52 +95,58 @@ export default function Cidades() {
         <div className="mb-6 grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:grid-cols-2 lg:grid-cols-4">
           <label className="block">
             <span className="mb-1 block text-xs font-semibold text-slate-500">Região</span>
-            <select
+            <Select
               value={regiao}
-              onChange={(ev) => {
-                setRegiao(ev.target.value);
+              onValueChange={(value) => {
+                setRegiao(value);
                 setEstado("todos");
               }}
-              className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700"
             >
-              <option value="todas">Todas as regiões</option>
-              {regioes.map((r) => (
-                <option key={r.nome} value={r.nome}>
-                  {r.nome}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="h-10 rounded-xl border-slate-200 bg-white px-3 text-sm text-slate-700">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="max-h-72">
+                <SelectItem value="todas">Todas as regiões</SelectItem>
+                {regioes.map((r) => (
+                  <SelectItem key={r.nome} value={r.nome}>{r.nome}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
 
           <label className="block">
             <span className="mb-1 block text-xs font-semibold text-slate-500">Estado</span>
-            <select
+            <Select
               value={estado}
-              onChange={(ev) => setEstado(ev.target.value)}
-              className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700"
+              onValueChange={setEstado}
             >
-              <option value="todos">Todos os estados</option>
-              {estadosDisponiveis.map((e) => (
-                <option key={e} value={e}>
-                  {e} ({siglaDe(e)})
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="h-10 rounded-xl border-slate-200 bg-white px-3 text-sm text-slate-700">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="max-h-72">
+                <SelectItem value="todos">Todos os estados</SelectItem>
+                {estadosDisponiveis.map((e) => (
+                  <SelectItem key={e} value={e}>{e} ({siglaDe(e)})</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
 
           <label className="block">
             <span className="mb-1 block text-xs font-semibold text-slate-500">Plano</span>
-            <select
+            <Select
               value={plano}
-              onChange={(ev) => setPlano(ev.target.value as Plano)}
-              className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700"
+              onValueChange={(value) => setPlano(value as Plano)}
             >
-              {PLANOS.map((p) => (
-                <option key={p.key} value={p.key}>
-                  {p.label}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="h-10 rounded-xl border-slate-200 bg-white px-3 text-sm text-slate-700">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {PLANOS.map((p) => (
+                  <SelectItem key={p.key} value={p.key}>{p.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
 
           <label className="block">

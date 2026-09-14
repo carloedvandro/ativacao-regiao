@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Building2, ChevronDown, ChevronsDown, Table2, X } from "lucide-react";
+import { Building2, ChevronDown, ChevronsDown, ChevronsUp, Table2, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import CountUp from "@/components/CountUp";
 import { useLiveRegioes, withPercent } from "@/hooks/useLiveRegioes";
@@ -314,13 +314,34 @@ function TabelaCompleta({
   plano: Plano;
   onClose: () => void;
 }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [podeSubir, setPodeSubir] = useState(false);
+  const [podeDescer, setPodeDescer] = useState(false);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const check = () => {
+      setPodeSubir(el.scrollTop > 2);
+      setPodeDescer(el.scrollTop + el.clientHeight < el.scrollHeight - 2);
+    };
+    check();
+    el.addEventListener("scroll", check);
+    const observer = new ResizeObserver(check);
+    observer.observe(el);
+    return () => {
+      el.removeEventListener("scroll", check);
+      observer.disconnect();
+    };
+  }, [regioes, plano]);
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
       onClick={onClose}
     >
       <div
-        className="flex max-h-[88vh] w-full max-w-4xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl"
+        className="flex max-h-[88vh] w-full max-w-5xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
@@ -338,16 +359,25 @@ function TabelaCompleta({
             <X className="h-5 w-5" />
           </button>
         </div>
-        <div className="overflow-auto px-6 py-4">
-          <table className="w-full text-left text-sm">
-            <thead className="sticky top-0 z-10 bg-white">
-              <tr className="border-b border-slate-200 text-[11px] font-semibold uppercase text-slate-500">
-                <th className="bg-white py-2">Região</th>
-                <th className="bg-white py-2">Estado</th>
-                <th className="bg-white py-2">Cidade</th>
-                <th className="bg-white py-2 text-right">100GB</th>
-                <th className="bg-white py-2 text-right">120GB</th>
-                <th className="bg-white py-2 pr-1 text-right">Total</th>
+        <div className="relative min-h-0 flex-1 overflow-hidden">
+          <div ref={scrollRef} className="h-full overflow-auto px-6 py-4 no-scrollbar">
+          <table className="w-full min-w-[720px] table-fixed text-left text-sm">
+            <colgroup>
+              <col className="w-[18%]" />
+              <col className="w-[25%]" />
+              <col className="w-[25%]" />
+              <col className="w-[10%]" />
+              <col className="w-[10%]" />
+              <col className="w-[12%]" />
+            </colgroup>
+            <thead>
+              <tr className="text-[11px] font-semibold text-slate-500">
+                <th className="sticky top-0 z-20 border-b border-slate-200 bg-white py-3">Região</th>
+                <th className="sticky top-0 z-20 border-b border-slate-200 bg-white py-3">Estado</th>
+                <th className="sticky top-0 z-20 border-b border-slate-200 bg-white py-3">Cidade</th>
+                <th className="sticky top-0 z-20 border-b border-slate-200 bg-white py-3 text-right">100GB</th>
+                <th className="sticky top-0 z-20 border-b border-slate-200 bg-white py-3 text-right">120GB</th>
+                <th className="sticky top-0 z-20 border-b border-slate-200 bg-white py-3 pr-1 text-right">Total</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
@@ -371,6 +401,19 @@ function TabelaCompleta({
               )}
             </tbody>
           </table>
+          </div>
+          {podeSubir && (
+            <div className="pointer-events-none absolute left-1/2 top-14 z-30 flex -translate-x-1/2 items-center gap-1 rounded-md border border-slate-200 bg-white px-3 py-1 text-[10px] text-slate-500 shadow-sm">
+              <ChevronsUp className="h-3 w-3 animate-bounce" />
+              <span>Role para cima para visualizar o restante</span>
+            </div>
+          )}
+          {podeDescer && (
+            <div className="pointer-events-none absolute bottom-2 left-1/2 z-30 flex -translate-x-1/2 items-center gap-1 rounded-md border border-slate-200 bg-white px-3 py-1 text-[10px] text-slate-500 shadow-sm">
+              <ChevronsDown className="h-3 w-3 animate-bounce" />
+              <span>Role para baixo para visualizar o restante</span>
+            </div>
+          )}
         </div>
         <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50/60 px-6 py-3 text-xs text-slate-500">
           <span className="flex items-center gap-2">

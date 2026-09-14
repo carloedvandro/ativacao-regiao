@@ -1,64 +1,27 @@
 import { useMemo, useState } from "react";
-import {
-  ArrowRight,
-  BarChart3,
-  ChevronDown,
-  Filter,
-  Table2,
-  TrendingUp,
-  X,
-} from "lucide-react";
+import { ChevronDown, Table2, X } from "lucide-react";
 import CountUp from "@/components/CountUp";
-import AtivacoesHierarquia from "@/components/dashboard/AtivacoesHierarquia";
-import { useLiveRegioes } from "@/hooks/useLiveRegioes";
+import { useLiveRegioes, withPercent } from "@/hooks/useLiveRegioes";
 import { useNow } from "@/hooks/useNow";
-import { fmt, type Regiao } from "@/data/dados";
-import { withPercent } from "@/hooks/useLiveRegioes";
+import { fmt, siglaDe, type Regiao } from "@/data/dados";
 
 type Plano = "todos" | "gb50" | "gb80" | "gb100";
 
-function planoLabel(p: Plano) {
-  return p === "todos" ? "Todos os planos" : p === "gb50" ? "50GB" : p === "gb80" ? "80GB" : "100GB";
+const PLANOS: { key: Plano; label: string }[] = [
+  { key: "todos", label: "Todos" },
+  { key: "gb50", label: "50GB" },
+  { key: "gb80", label: "80GB" },
+  { key: "gb100", label: "100GB" },
+];
+
+type Planos = { gb50: number; gb80: number; gb100: number };
+
+function soma(p: Planos, plano: Plano) {
+  return plano === "todos" ? p.gb50 + p.gb80 + p.gb100 : p[plano];
 }
 
-function sumPlano(cidade: { gb50: number; gb80: number; gb100: number }, p: Plano) {
-  if (p === "todos") return cidade.gb50 + cidade.gb80 + cidade.gb100;
-  return cidade[p];
-}
-
-function Sparkline({ seed, tick, color = "#6A0DAD" }: { color?: string; seed: number; tick?: number }) {
-  // Slim, professional mini bar chart tinted with the region color.
-  const bars = 8;
-  const w = 46;
-  const h = 18;
-  const bw = 2.5;
-  const gap = 3;
-  const heights = useMemo(() => {
-    return Array.from({ length: bars }).map((_, i) => {
-      const x = Math.sin(seed * 7.13 + i * 1.9 + (tick ?? 0) * 0.9) * 10000;
-      const r = Math.abs(x - Math.floor(x));
-      return 0.2 + r * 0.8; // 20%..100%
-    });
-  }, [seed, tick]);
-  return (
-    <svg width={w} height={h} aria-hidden className="overflow-visible">
-      {heights.map((ratio, i) => {
-        const barH = ratio * h;
-        return (
-          <rect
-            key={i}
-            x={i * (bw + gap)}
-            y={h - barH}
-            width={bw}
-            height={barH}
-            rx={0.8}
-            fill={color}
-            opacity={0.3 + ratio * 0.6}
-          />
-        );
-      })}
-    </svg>
-  );
+function totalRegiao(r: Regiao, plano: Plano) {
+  return r.estados.reduce((s, e) => s + e.cidades.reduce((cs, c) => cs + soma(c, plano), 0), 0);
 }
 
 export default function DashboardRegioes() {
@@ -67,407 +30,326 @@ export default function DashboardRegioes() {
     () => withPercent(regioesAll.filter((r) => r.nome !== "Outros/Exterior")),
     [regioesAll],
   );
-  const [drillOpen, setDrillOpen] = useState(false);
-  const [drillRegion, setDrillRegion] = useState<string | null>(null);
+
   const [plano, setPlano] = useState<Plano>("todos");
-  const [planoOpen, setPlanoOpen] = useState(false);
-
-  const totalGeral = regioes.reduce((s, r) => s + r.total, 0);
-
+  const [expandida, setExpandida] = useState<string | null>(null);
+  const [tabelaAberta, setTabelaAberta] = useState(false);
   const agora = useNow(1000);
 
-  const openDrill = (nome: string) => {
-    setDrillRegion(nome);
-    setDrillOpen(true);
-  };
-
-  const activeRegion = drillRegion ? regioes.find((r) => r.nome === drillRegion) ?? null : null;
+  const totais = regioes.map((r) => ({ r, total: totalRegiao(r, plano) }));
+  const geral = totais.reduce((s, t) => s + t.total, 0);
+  const maior = Math.max(1, ...totais.map((t) => t.total));
 
   return (
-    <div className="premium-surface min-h-screen text-[#140044]">
-      <main className="mx-auto w-full max-w-[1536px] px-3 py-10 sm:px-6 space-y-8">
-        <DetalhamentoRegioes
-          regioes={regioes}
-          onOpenTable={() => {
-            setDrillRegion(null);
-            setDrillOpen(true);
-          }}
-          onCardClick={openDrill}
-        />
+    <div className="min-h-screen bg-slate-50 text-slate-800">
+      <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+        {/* Cabeçalho + filtro de plano */}
+        <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">Painel de Ativações</h1>
+            <p className="text-sm text-slate-500">
+              Monitoramento em tempo real por região e plano ·{" "}
+              <span className="font-semibold text-slate-700 tabular-nums">{fmt(geral)}</span>{" "}
+              ativações
+            </p>
+          </div>
 
-        <AtivacoesHierarquia regioes={regioes} />
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              Filtrar plano:
+            </span>
+            <div className="flex rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
+              {PLANOS.map((p) => (
+                <button
+                  key={p.key}
+                  type="button"
+                  onClick={() => setPlano(p.key)}
+                  className={`rounded-md px-4 py-1.5 text-sm font-medium transition ${
+                    plano === p.key
+                      ? "bg-[#6A0DAD] text-white"
+                      : "text-slate-600 hover:bg-slate-50"
+                  }`}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setTabelaAberta(true)}
+              className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#6A0DAD] shadow-sm transition hover:bg-slate-50"
+            >
+              Ver tabela completa <Table2 className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
 
+        {/* Cards unificados por região */}
+        <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+          {totais.map(({ r, total }) => {
+            const aberta = expandida === r.nome;
+            const share = geral ? (total / geral) * 100 : 0;
+            return (
+              <div
+                key={r.nome}
+                className="rounded-xl border-l-4 bg-white p-5 shadow-sm"
+                style={{ borderLeftColor: r.cor }}
+              >
+                <div className="mb-4 flex items-start justify-between">
+                  <div>
+                    <span
+                      className="text-xs font-bold uppercase tracking-wide"
+                      style={{ color: r.cor }}
+                    >
+                      {r.nome}
+                    </span>
+                    <div className="text-3xl font-bold text-slate-800 tabular-nums">
+                      <CountUp value={total} format={(n) => fmt(n)} />
+                    </div>
+                  </div>
+                  <span className="text-xs font-medium text-emerald-600">+{r.hoje} hoje</span>
+                </div>
 
-        <ProducaoTempoReal
-          regioes={regioes}
-          plano={plano}
-          planoOpen={planoOpen}
-          setPlano={setPlano}
-          setPlanoOpen={setPlanoOpen}
-          onOpenAll={() => {
-            setDrillRegion(null);
-            setDrillOpen(true);
-          }}
-          lastUpdate={lastUpdate}
-          totalGeral={totalGeral}
-        />
+                <div className="space-y-3">
+                  <div>
+                    <div className="mb-1 flex justify-between text-xs text-slate-600">
+                      <span>Participação</span>
+                      <span className="tabular-nums">
+                        {share.toFixed(1).replace(".", ",")}%
+                      </span>
+                    </div>
+                    <div className="h-2 w-full rounded-full bg-slate-100">
+                      <div
+                        className="h-2 rounded-full transition-all duration-700"
+                        style={{ width: `${(total / maior) * 100}%`, background: r.cor }}
+                      />
+                    </div>
+                  </div>
 
-        <p className="text-center text-xs tracking-wide text-[#6b7280]">
-          Dados atualizados em tempo real · Última sincronização:{" "}
-          <span suppressHydrationWarning className="font-black tabular-nums text-[#6A0DAD]">
+                  <div className="border-t border-slate-100 pt-3">
+                    <button
+                      type="button"
+                      onClick={() => setExpandida(aberta ? null : r.nome)}
+                      className="flex w-full items-center justify-between text-[11px] font-semibold text-slate-500 transition hover:text-[#6A0DAD]"
+                    >
+                      {aberta ? "Ocultar estados" : "Ver estados e cidades"}
+                      <ChevronDown
+                        className={`h-3.5 w-3.5 transition ${aberta ? "rotate-180" : ""}`}
+                      />
+                    </button>
+
+                    {!aberta && (
+                      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px] font-medium text-slate-500 tabular-nums">
+                        {r.estados.slice(0, 3).map((e) => (
+                          <span key={e.nome}>
+                            {siglaDe(e.nome)}:{" "}
+                            {fmt(e.cidades.reduce((s, c) => s + soma(c, plano), 0))}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {aberta && (
+                      <div className="mt-3 space-y-3">
+                        {r.estados.map((e) => (
+                          <div key={e.nome}>
+                            <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
+                              <span>
+                                {e.nome} <span className="text-slate-400">({siglaDe(e.nome)})</span>
+                              </span>
+                              <span className="tabular-nums">
+                                {fmt(e.cidades.reduce((s, c) => s + soma(c, plano), 0))}
+                              </span>
+                            </div>
+                            <ul className="mt-1 space-y-1">
+                              {e.cidades.map((c) => (
+                                <li
+                                  key={c.nome}
+                                  className="flex items-center justify-between text-[11px] text-slate-500"
+                                >
+                                  <span>{c.nome}</span>
+                                  <span className="tabular-nums">{fmt(soma(c, plano))}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Últimas ativações */}
+        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+          <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+            <h2 className="flex items-center gap-2 text-sm font-bold text-slate-800">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
+              Últimas ativações
+            </h2>
+            <span
+              suppressHydrationWarning
+              className="text-[10px] uppercase tracking-tight text-slate-400 tabular-nums"
+            >
+              {agora.toLocaleTimeString("pt-BR", { hour12: false })}
+            </span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[560px] border-collapse text-left">
+              <thead>
+                <tr className="bg-slate-50/60">
+                  <th className="px-6 py-3 text-[11px] font-semibold uppercase text-slate-500">
+                    Horário
+                  </th>
+                  <th className="px-6 py-3 text-[11px] font-semibold uppercase text-slate-500">
+                    Região / UF
+                  </th>
+                  <th className="px-6 py-3 text-[11px] font-semibold uppercase text-slate-500">
+                    Plano
+                  </th>
+                  <th className="px-6 py-3 text-right text-[11px] font-semibold uppercase text-slate-500">
+                    Total
+                  </th>
+                  <th className="px-6 py-3 text-[11px] font-semibold uppercase text-slate-500">
+                    Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {totais.map(({ r, total }, i) => {
+                  const isLast = lastUpdate?.regiao === r.nome;
+                  return (
+                    <tr key={r.nome} className={isLast ? "bg-emerald-50/40" : undefined}>
+                      <td className="px-6 py-3 font-mono text-sm text-slate-500">
+                        {isLast ? "agora" : `há ${(i + 1) * 3}s`}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-slate-700">
+                        <span className="flex items-center gap-2 font-medium">
+                          <span
+                            className="inline-block h-2 w-2 rounded-full"
+                            style={{ background: r.cor }}
+                          />
+                          {r.nome} ({siglaDe(r.estados[0]?.nome ?? "")})
+                        </span>
+                      </td>
+                      <td className="px-6 py-3">
+                        <span className="rounded bg-purple-50 px-2 py-0.5 text-xs font-bold text-[#6A0DAD]">
+                          {plano === "todos" ? "Todos" : PLANOS.find((p) => p.key === plano)?.label}
+                        </span>
+                      </td>
+                      <td className="px-6 py-3 text-right text-sm font-bold text-slate-800 tabular-nums">
+                        <CountUp value={total} format={(n) => fmt(n)} />
+                      </td>
+                      <td className="px-6 py-3 text-xs font-bold uppercase tracking-tight text-emerald-600">
+                        {isLast ? "Nova ativação" : "Ativo"}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <p className="mt-5 text-center text-xs text-slate-400">
+          Atualização automática a cada 3 segundos ·{" "}
+          <span suppressHydrationWarning className="tabular-nums">
             {agora.toLocaleDateString("pt-BR")}{" "}
             {agora.toLocaleTimeString("pt-BR", { hour12: false })}
           </span>
         </p>
       </main>
 
-      {drillOpen && (
-        <DrillDownModal
+      {tabelaAberta && (
+        <TabelaCompleta
           regioes={regioes}
-          activeRegion={activeRegion}
           plano={plano}
-          onClose={() => setDrillOpen(false)}
-          onSelectRegion={(nome) => setDrillRegion(nome)}
+          onClose={() => setTabelaAberta(false)}
         />
       )}
     </div>
   );
 }
 
-function DetalhamentoRegioes({
+function TabelaCompleta({
   regioes,
-  onOpenTable,
-  onCardClick,
-}: {
-  regioes: Regiao[];
-  onOpenTable: () => void;
-  onCardClick: (nome: string) => void;
-}) {
-  return (
-    <section>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="text-2xl font-black text-[#140044]">
-            Detalhamento por Região{" "}
-            <span className="text-sm font-medium text-[#6b7280]">· ao vivo</span>
-          </h2>
-        </div>
-        <button
-          onClick={onOpenTable}
-          className="inline-flex h-10 items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-black tracking-wide text-[#6A0DAD] shadow-sm transition hover:border-gray-300"
-        >
-          Ver tabela completa <Table2 className="h-4 w-4" />
-        </button>
-      </div>
-
-      <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
-        {regioes.map((r) => (
-          <button
-            key={r.nome}
-            type="button"
-            onClick={() => onCardClick(r.nome)}
-            className="group relative flex flex-col rounded-2xl border border-gray-200/80 bg-white p-4 text-left shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition hover:-translate-y-0.5 hover:border-gray-300/80 hover:shadow-[0_8px_24px_-10px_rgba(20,0,68,0.12)]"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-black uppercase tracking-widest" style={{ color: r.cor }}>
-                {r.nome}
-              </span>
-              <span className="rounded-md border border-gray-100 bg-gray-50/80 px-1.5 py-0.5 text-[10px] font-black text-[#3f3860]">
-                {r.percentual.toFixed(1).replace(".", ",")}%
-              </span>
-            </div>
-            <div className="mt-3 text-3xl font-black tabular-nums text-[#140044]">
-              <CountUp value={r.total} format={(n) => fmt(n)} />
-            </div>
-            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-gray-100/80">
-              <div
-                className="h-full rounded-full transition-all duration-700"
-                style={{
-                  width: `${Math.min(100, r.percentual * 2.5)}%`,
-                  background: r.cor,
-                }}
-              />
-            </div>
-            <div className="mt-3 flex items-center justify-between">
-              <span className="flex items-center gap-1 text-xs font-bold text-emerald-600">
-                <TrendingUp className="h-3.5 w-3.5" />
-                <CountUp value={r.hoje} /> hoje
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-emerald-600">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                </span>
-                Live
-              </span>
-            </div>
-          </button>
-        ))}
-      </div>
-
-      <div className="mt-5 flex items-center justify-center gap-2 text-xs text-[#6b7280]">
-        <span className="relative flex h-2 w-2">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-        </span>
-        Sincronização automática · 3 segundos
-      </div>
-    </section>
-  );
-}
-
-function ProducaoTempoReal({
-  regioes,
-  plano,
-  planoOpen,
-  setPlano,
-  setPlanoOpen,
-  onOpenAll,
-  lastUpdate,
-}: {
-  regioes: Regiao[];
-  plano: Plano;
-  planoOpen: boolean;
-  setPlano: (p: Plano) => void;
-  setPlanoOpen: (b: boolean) => void;
-  onOpenAll: () => void;
-  lastUpdate: { regiao: string; when: number } | null;
-  totalGeral: number;
-}) {
-  const linhas = regioes.map((r) => {
-    const total = r.estados.reduce(
-      (s, e) => s + e.cidades.reduce((cs, c) => cs + sumPlano(c, plano), 0),
-      0,
-    );
-    const isLast = lastUpdate?.regiao === r.nome;
-    return { r, total, isLast };
-  });
-
-  return (
-    <section>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="text-2xl font-black text-[#140044]">Produção em tempo real</h2>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setPlanoOpen(!planoOpen)}
-              className="inline-flex h-10 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3.5 text-sm font-bold text-[#6A0DAD] shadow-sm transition hover:border-gray-300"
-            >
-              <BarChart3 className="h-4 w-4" /> {planoLabel(plano)}
-              <ChevronDown className="h-3.5 w-3.5" />
-            </button>
-            {planoOpen && (
-              <ul className="absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
-                {(["todos", "gb50", "gb80", "gb100"] as Plano[]).map((p) => (
-                  <li key={p}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setPlano(p);
-                        setPlanoOpen(false);
-                      }}
-                      className={`block w-full px-3 py-2 text-left text-sm transition ${
-                        plano === p
-                          ? "bg-gray-50 font-bold text-[#6A0DAD]"
-                          : "text-[#3f3860] hover:bg-gray-50"
-                      }`}
-                    >
-                      {planoLabel(p)}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-          <button className="inline-flex h-10 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3.5 text-sm font-bold text-[#6A0DAD] shadow-sm transition hover:border-gray-300">
-            <Filter className="h-4 w-4" /> Filtros
-          </button>
-          <button
-            onClick={onOpenAll}
-            className="inline-flex h-10 items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-black text-[#6A0DAD] shadow-sm transition hover:border-gray-300"
-          >
-            Ver todas <ArrowRight className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-
-      <div className="mt-6 overflow-x-auto rounded-2xl border border-gray-200/80 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-        <table className="w-full min-w-[720px] text-sm">
-          <thead>
-            <tr className="border-b border-gray-100 bg-gray-50/60 text-left text-[11px] font-black uppercase tracking-wider text-[#8b86a0] whitespace-nowrap">
-              <th className="py-3.5 pl-5 pr-3 font-black">Região</th>
-              <th className="py-3.5 pr-3 text-center font-black">Última atualização</th>
-              <th className="py-3.5 pr-3 text-center font-black">Novas ativações</th>
-              <th className="py-3.5 pr-3 text-center font-black">Total de ativações</th>
-              <th className="py-3.5 pr-3 text-center font-black">Variação hoje</th>
-              <th className="py-3.5 pr-5 text-center font-black">Tendência</th>
-            </tr>
-          </thead>
-          <tbody>
-            {linhas.map(({ r, total, isLast }, idx) => (
-              <tr
-                key={r.nome}
-                className={`border-b border-gray-100/80 transition ${
-                  isLast ? "bg-emerald-500/[0.03]" : "hover:bg-gray-50/60"
-                }`}
-              >
-                <td className="py-4 pl-5">
-                  <span className="flex items-center gap-3 font-bold text-[#140044]">
-                    <span
-                      className="inline-block h-2 w-2 rounded-full"
-                      style={{ background: r.cor }}
-                    />
-                    {r.nome}
-                  </span>
-                </td>
-                <td className="py-4 text-center text-[13px] text-[#6b7280]">
-                  {isLast ? "Agora" : `há ${(idx + 1) * 3} seg`}
-                </td>
-                <td className="py-4 text-center text-[13px] font-black text-emerald-600">
-                  +{isLast ? 1 : Math.max(1, r.hoje % 3)}
-                </td>
-                <td className="py-4 text-center font-black tabular-nums text-[#140044]">
-                  <CountUp value={total} format={(n) => fmt(n)} />
-                </td>
-                <td className="py-4 text-center text-[13px] font-bold text-emerald-600">
-                  +{r.hoje} hoje
-                </td>
-                <td className="py-4 pr-5">
-                  <div className="flex justify-center">
-                    <Sparkline seed={r.total} tick={lastUpdate?.when ?? 0} color={r.cor} />
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-    </section>
-  );
-}
-
-function DrillDownModal({
-  regioes,
-  activeRegion,
   plano,
   onClose,
-  onSelectRegion,
 }: {
   regioes: Regiao[];
-  activeRegion: Regiao | null;
   plano: Plano;
   onClose: () => void;
-  onSelectRegion: (nome: string) => void;
 }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
       onClick={onClose}
     >
       <div
-        className="relative flex max-h-[90vh] w-full max-w-6xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl"
+        className="flex max-h-[88vh] w-full max-w-4xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-[#ece8f5] px-6 py-4">
+        <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
           <div>
-            <h2 className="text-xl font-black text-[#140044]">
-              {activeRegion ? `Detalhamento — ${activeRegion.nome}` : "Todas as Regiões — Estados e Cidades"}
-            </h2>
-            <p className="text-xs text-[#7b7591]">
-              Ativações por estado, cidade e plano ({plano === "todos" ? "todos os planos" : planoLabel(plano)})
+            <h2 className="text-base font-bold text-slate-900">Região · Estado · Cidade</h2>
+            <p className="text-xs text-slate-500">
+              Plano: {plano === "todos" ? "todos" : PLANOS.find((p) => p.key === plano)?.label}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="rounded-full p-2 text-[#7b7591] hover:bg-gray-100"
+            className="rounded-full p-2 text-slate-400 hover:bg-slate-100"
             aria-label="Fechar"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
-
-        <div className="flex flex-wrap gap-2 border-b border-[#ece8f5] px-6 py-3">
-          <button
-            onClick={() => onSelectRegion("")}
-            className={`rounded-full px-3 py-1.5 text-xs font-bold ${
-              !activeRegion ? "bg-[#5517ea] text-white" : "bg-[#f5f1ff] text-[#5517ea]"
-            }`}
-          >
-            Todas
-          </button>
-          {regioes.map((r) => (
-            <button
-              key={r.nome}
-              onClick={() => onSelectRegion(r.nome)}
-              className={`rounded-full px-3 py-1.5 text-xs font-bold ${
-                activeRegion?.nome === r.nome ? "text-white" : "bg-white"
-              }`}
-              style={
-                activeRegion?.nome === r.nome
-                  ? { backgroundColor: r.cor }
-                  : { color: r.cor, border: `1px solid ${r.cor}44` }
-              }
-            >
-              {r.nome}
-            </button>
-          ))}
-        </div>
-
         <div className="overflow-auto px-6 py-4">
-          <table className="w-full text-sm">
+          <table className="w-full text-left text-sm">
             <thead className="sticky top-0 bg-white">
-              <tr className="border-b border-[#ece8f5] text-left text-[11px] uppercase tracking-wider text-[#8b86a0]">
+              <tr className="border-b border-slate-100 text-[11px] font-semibold uppercase text-slate-500">
                 <th className="py-2">Região</th>
                 <th className="py-2">Estado</th>
                 <th className="py-2">Cidade</th>
                 <th className="py-2 text-right">50GB</th>
                 <th className="py-2 text-right">80GB</th>
                 <th className="py-2 text-right">100GB</th>
-                <th className="py-2 text-right pr-2">Total</th>
+                <th className="py-2 pr-1 text-right">Total</th>
               </tr>
             </thead>
-            <tbody>
-              {(activeRegion ? [activeRegion] : regioes).flatMap((r) =>
+            <tbody className="divide-y divide-slate-50">
+              {regioes.flatMap((r) =>
                 r.estados.flatMap((e) =>
-                  e.cidades.map((c) => {
-                    const total = c.gb50 + c.gb80 + c.gb100;
-                    return (
-                      <tr key={`${r.nome}-${e.nome}-${c.nome}`} className="border-b border-[#f4f1fa]">
-                        <td className="py-2">
-                          <span className="flex items-center gap-2 font-bold" style={{ color: r.cor }}>
-                            <span className="inline-block h-2 w-2 rounded-full" style={{ background: r.cor }} />
-                            {r.nome}
-                          </span>
-                        </td>
-                        <td className="py-2 text-[#140044]">{e.nome}</td>
-                        <td className="py-2 text-[#140044]">{c.nome}</td>
-                        <td className="py-2 text-right tabular-nums text-[#3f3860]">{fmt(c.gb50)}</td>
-                        <td className="py-2 text-right tabular-nums text-[#3f3860]">{fmt(c.gb80)}</td>
-                        <td className="py-2 text-right tabular-nums text-[#3f3860]">{fmt(c.gb100)}</td>
-                        <td className="py-2 pr-2 text-right font-black tabular-nums text-[#140044]">
-                          {fmt(total)}
-                        </td>
-                      </tr>
-                    );
-                  }),
+                  e.cidades.map((c) => (
+                    <tr key={`${r.nome}-${e.nome}-${c.nome}`}>
+                      <td className="py-2 font-medium" style={{ color: r.cor }}>
+                        {r.nome}
+                      </td>
+                      <td className="py-2 text-slate-700">{e.nome}</td>
+                      <td className="py-2 text-slate-700">{c.nome}</td>
+                      <td className="py-2 text-right tabular-nums text-slate-500">{fmt(c.gb50)}</td>
+                      <td className="py-2 text-right tabular-nums text-slate-500">{fmt(c.gb80)}</td>
+                      <td className="py-2 text-right tabular-nums text-slate-500">{fmt(c.gb100)}</td>
+                      <td className="py-2 pr-1 text-right font-bold tabular-nums text-slate-800">
+                        {fmt(c.gb50 + c.gb80 + c.gb100)}
+                      </td>
+                    </tr>
+                  )),
                 ),
               )}
             </tbody>
           </table>
         </div>
-
-        <div className="flex items-center justify-between border-t border-[#ece8f5] bg-[#faf8fe] px-6 py-3 text-xs text-[#7b7591]">
+        <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50/60 px-6 py-3 text-xs text-slate-500">
           <span className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            Live — atualizando a cada 3s
+            <span className="h-2 w-2 rounded-full bg-emerald-500" /> Atualizando a cada 3s
           </span>
           <button
             onClick={onClose}
-            className="rounded-lg bg-[#5517ea] px-4 py-2 text-xs font-bold text-white hover:bg-[#4611c8]"
+            className="rounded-lg bg-[#6A0DAD] px-4 py-2 text-xs font-bold text-white"
           >
             Fechar
           </button>

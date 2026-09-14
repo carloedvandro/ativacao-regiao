@@ -322,7 +322,6 @@ function TabelaCompleta({
                 <th className="bg-white py-2">Cidade</th>
                 <th className="bg-white py-2 text-right">100GB</th>
                 <th className="bg-white py-2 text-right">120GB</th>
-                <th className="bg-white py-2 text-right">ZZLABEL</th>
                 <th className="bg-white py-2 pr-1 text-right">Total</th>
               </tr>
             </thead>
@@ -338,7 +337,6 @@ function TabelaCompleta({
                       <td className="py-2 text-slate-700">{c.nome}</td>
                       <td className="py-2 text-right tabular-nums text-slate-500">{fmt(c.gb100)}</td>
                       <td className="py-2 text-right tabular-nums text-slate-500">{fmt(c.gb120)}</td>
-                      <td className="py-2 text-right tabular-nums text-slate-500">{fmt(c.ZZDROP)}</td>
                       <td className="py-2 pr-1 text-right font-bold tabular-nums text-slate-800">
                         {fmt(c.gb100 + c.gb120)}
                       </td>

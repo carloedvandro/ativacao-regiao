@@ -21,7 +21,6 @@ function agregaPlanos(lista: Planos[]): Planos {
     (acc, c) => ({
       gb100: acc.gb100 + c.gb100,
       gb120: acc.gb120 + c.gb120,
-      ZZDROP: acc.ZZDROP,
     }),
     { gb100: 0, gb120: 0 },
   );
@@ -192,8 +191,8 @@ export default function AtivacoesHierarquia({ regioes }: { regioes: Regiao[] }) 
       </div>
 
       {/* Quebra por plano do nível atual */}
-      <div className="mt-6 grid grid-cols-3 gap-3 border-t border-gray-100 pt-5">
-        {(["gb100", "gb120", "ZZDROP"] as const).map((p) => {
+      <div className="mt-6 grid grid-cols-2 gap-3 border-t border-gray-100 pt-5">
+        {(["gb100", "gb120"] as const).map((p) => {
           const v = ordenados.reduce((s, i) => s + i.planos[p], 0);
           return (
             <div key={p} className="rounded-xl border border-gray-200/80 bg-gray-50/50 p-3">

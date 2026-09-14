@@ -78,7 +78,6 @@ export default function ProductionTable({ regioes }: { regioes: Regiao[] }) {
               <th />
               <th className="px-3 py-1 text-right font-medium">100GB</th>
               <th className="px-3 py-1 text-right font-medium">120GB</th>
-              <th className="px-3 py-1 text-right font-medium">ZZLABEL</th>
               <th className="px-3 py-1 text-right font-medium">Total</th>
               <th />
               <th />

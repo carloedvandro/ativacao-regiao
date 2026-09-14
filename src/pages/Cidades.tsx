@@ -181,7 +181,6 @@ export default function Cidades() {
                     <div className="mt-1 flex gap-4 text-[11px] text-slate-500 tabular-nums">
                       <span>100GB: {fmt(l.gb100)}</span>
                       <span>120GB: {fmt(l.gb120)}</span>
-                      <span>ZZLABEL: {fmt(l.ZZDROP)}</span>
                     </div>
                   )}
                 </li>

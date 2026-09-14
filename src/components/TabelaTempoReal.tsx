@@ -62,7 +62,6 @@ export default function TabelaTempoReal() {
             <th className="py-3.5 pr-3">Cidade</th>
             <th className="py-3.5 pr-3 text-center">100GB</th>
             <th className="py-3.5 pr-3 text-center">120GB</th>
-            <th className="py-3.5 pr-3 text-center">ZZLABEL</th>
             <th className="py-3.5 pr-3 text-center">Total</th>
             <th className="py-3.5 pr-3 text-center">Variação hoje</th>
             <th className="py-3.5 pr-5 text-center">Tendência</th>
@@ -81,7 +80,6 @@ export default function TabelaTempoReal() {
               <td className="py-3.5 text-[#3f3860]">{l.cidade}</td>
               <td className="py-3.5 text-center tabular-nums text-[#3f3860]">{fmt(l.gb100)}</td>
               <td className="py-3.5 text-center tabular-nums text-[#3f3860]">{fmt(l.gb120)}</td>
-              <td className="py-3.5 text-center tabular-nums text-[#3f3860]">{fmt(l.ZZDROP)}</td>
               <td className="py-3.5 text-center font-black tabular-nums text-[#140044]">{fmt(l.total)}</td>
               <td className="py-3.5 text-center text-[13px] font-bold text-emerald-600">
                 +{(6 + i * 0.7).toFixed(1).replace(".", ",")}%

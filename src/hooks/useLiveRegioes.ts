@@ -42,7 +42,7 @@ export function useLiveRegioes(intervalMs = 3000) {
         const reg = next[idx];
         const est = reg.estados[Math.floor(Math.random() * reg.estados.length)];
         const cid = est.cidades[Math.floor(Math.random() * est.cidades.length)];
-        const plano = ["gb100", "gb120", "ZZDROP"][Math.floor(Math.random() * 3)] as
+        const plano = ["gb100", "gb120"][Math.floor(Math.random() * 2)] as
           | "gb100"
           | "gb120"
          ;

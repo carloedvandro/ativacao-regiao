@@ -414,20 +414,20 @@ function TabelaCompleta({
               <span>Role para cima para visualizar o restante</span>
             </div>
           )}
+        </div>
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-t border-slate-200 bg-white px-4 py-3 text-xs text-slate-500 sm:grid-cols-[1fr_auto_1fr] sm:px-6">
+          <span className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-500" /> Atualizando a cada 3s
+          </span>
           {podeDescer && (
-            <div className="pointer-events-none absolute bottom-2 left-1/2 z-30 flex -translate-x-1/2 items-center gap-1 rounded-md border border-slate-200 bg-white px-3 py-1 text-[10px] text-slate-500 shadow-sm">
+            <div className="pointer-events-none col-span-2 row-start-2 flex items-center justify-center gap-1 text-[10px] text-slate-500 sm:col-span-1 sm:col-start-2 sm:row-start-1">
               <ChevronsDown className="h-3 w-3 animate-bounce" />
               <span>Role para baixo para visualizar o restante</span>
             </div>
           )}
-        </div>
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-t border-slate-200 bg-white px-4 py-3 text-xs text-slate-500 sm:px-6">
-          <span className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" /> Atualizando a cada 3s
-          </span>
           <button
             onClick={onClose}
-            className="rounded-lg bg-[#6A0DAD] px-4 py-2 text-xs font-bold text-white"
+            className="col-start-2 row-start-1 rounded-lg bg-[#6A0DAD] px-4 py-2 text-xs font-bold text-white sm:col-start-3 sm:justify-self-end"
           >
             Fechar
           </button>

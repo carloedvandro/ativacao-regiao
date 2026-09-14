@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Building2, ChevronDown, ChevronsDown, Table2, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import CountUp from "@/components/CountUp";

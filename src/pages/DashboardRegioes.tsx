@@ -91,42 +91,42 @@ export default function DashboardRegioes() {
         </div>
 
         {/* Cards unificados por região */}
-        <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="mb-8 grid grid-cols-1 items-start gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {totais.map(({ r, total }) => {
             const aberta = expandida === r.nome;
             const share = geral ? (total / geral) * 100 : 0;
             return (
               <div
                 key={r.nome}
-                className="rounded-xl border-l-4 bg-white p-5 shadow-sm"
+                className="flex flex-col justify-between rounded-xl border-l-4 bg-white p-4 shadow-sm transition hover:shadow-md"
                 style={{ borderLeftColor: r.cor }}
               >
-                <div className="mb-4 flex items-start justify-between">
-                  <div>
-                    <span
-                      className="text-xs font-bold uppercase tracking-wide"
-                      style={{ color: r.cor }}
-                    >
-                      {r.nome}
-                    </span>
-                    <div className="text-3xl font-bold text-slate-800 tabular-nums">
-                      <CountUp value={total} format={(n) => fmt(n)} />
-                    </div>
-                  </div>
-                  <span className="text-xs font-medium text-emerald-600">+{r.hoje} hoje</span>
+                <div className="mb-2 flex items-start justify-between gap-2">
+                  <span
+                    className="min-w-0 truncate text-[10px] font-bold uppercase tracking-wider"
+                    style={{ color: r.cor }}
+                  >
+                    {r.nome}
+                  </span>
+                  <span className="shrink-0 rounded bg-emerald-50 px-1.5 py-0.5 text-[11px] font-semibold text-emerald-600">
+                    +{r.hoje} hoje
+                  </span>
+                </div>
+                <div className="mb-4 text-2xl font-bold text-slate-900 tabular-nums">
+                  <CountUp value={total} format={(n) => fmt(n)} />
                 </div>
 
                 <div className="space-y-3">
                   <div>
-                    <div className="mb-1 flex justify-between text-xs text-slate-600">
+                    <div className="mb-1.5 flex justify-between text-[11px] font-medium text-slate-500">
                       <span>Participação</span>
                       <span className="tabular-nums">
                         {share.toFixed(1).replace(".", ",")}%
                       </span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-slate-100">
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
                       <div
-                        className="h-2 rounded-full transition-all duration-700"
+                        className="h-full rounded-full transition-all duration-700"
                         style={{ width: `${(total / maior) * 100}%`, background: r.cor }}
                       />
                     </div>
@@ -136,16 +136,17 @@ export default function DashboardRegioes() {
                     <button
                       type="button"
                       onClick={() => setExpandida(aberta ? null : r.nome)}
-                      className="flex w-full items-center justify-between text-[11px] font-semibold text-slate-500 transition hover:text-[#6A0DAD]"
+                      className="group flex w-full items-center justify-between text-[11px] font-medium text-slate-400 transition hover:text-[#6A0DAD]"
                     >
                       {aberta ? "Ocultar estados" : "Ver estados e cidades"}
                       <ChevronDown
-                        className={`h-3.5 w-3.5 transition ${aberta ? "rotate-180" : ""}`}
+                        className={`h-3 w-3 transition ${aberta ? "rotate-180" : ""}`}
                       />
                     </button>
 
                     {!aberta && (
-                      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px] font-medium text-slate-500 tabular-nums">
+                      <div className="mt-2 flex justify-between gap-2 text-[10px] font-medium text-slate-600 tabular-nums">
+
                         {r.estados.slice(0, 3).map((e) => (
                           <span key={e.nome}>
                             {siglaDe(e.nome)}:{" "}
@@ -156,7 +157,7 @@ export default function DashboardRegioes() {
                     )}
 
                     {aberta && (
-                      <div className="mt-3 space-y-3">
+                      <div className="mt-3 max-h-64 space-y-3 overflow-y-auto pr-1">
                         {r.estados.map((e) => (
                           <div key={e.nome}>
                             <div className="flex items-center justify-between text-xs font-semibold text-slate-700">

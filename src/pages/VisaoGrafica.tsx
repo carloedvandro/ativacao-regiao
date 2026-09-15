@@ -82,39 +82,41 @@ export default function VisaoGrafica() {
   const maximo = Math.max(1, ...linhas.map((linha) => linha.total));
   const linhaSelecionada = linhas.find((linha) => linha.nome === selecionado) ?? linhas[0];
   const totalRegioes = regioes.reduce((soma, regiao) => soma + regiao.total, 0);
-  let acumulado = 0;
+  const segmentosRegiao = regioes.reduce<Array<(typeof regioes)[number] & { parte: number; offset: number }>>(
+    (segmentos, regiao) => {
+      const parte = totalRegioes > 0 ? (regiao.total / totalRegioes) * 270 : 0;
+      const offset = segmentos.reduce((soma, segmento) => soma + segmento.parte, 0);
+      return [...segmentos, { ...regiao, parte, offset }];
+    },
+    [],
+  );
 
   return (
     <div className="min-h-screen bg-muted/40 text-foreground">
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
-        <div className="mx-auto grid w-full max-w-[1920px] grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-3 py-3 sm:px-5 lg:px-7">
+        <div className="mx-auto grid w-full max-w-[1920px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:px-5 lg:px-7">
           <div className="flex min-w-0 items-center gap-3">
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground shadow-sm">
               <BarChart3 className="h-5 w-5" />
             </span>
             <div className="min-w-0">
-              <h1 className="truncate text-lg font-bold sm:text-xl">Visão gráfica de ativações</h1>
+              <h1 className="truncate text-base font-bold sm:text-xl">Visão gráfica de ativações</h1>
               <p className="hidden text-xs text-muted-foreground sm:block">Regiões, estados e cidades em tempo real</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="hidden items-center gap-2 rounded-full border border-live/20 bg-live-soft px-3 py-1.5 text-xs font-semibold text-live sm:flex">
+            <span className="flex items-center gap-2 rounded-full border border-live/20 bg-live-soft px-2.5 py-1.5 text-[11px] font-semibold text-live sm:px-3 sm:text-xs">
               <span className="relative flex h-2 w-2">
                 <span className="absolute h-full w-full animate-ping rounded-full bg-live opacity-50" />
                 <span className="relative h-2 w-2 rounded-full bg-live" />
               </span>
               Tempo real
             </span>
-            <Button asChild variant="outline" className="h-10 rounded-lg border-border bg-background text-primary">
-              <Link to="/painel">
-                Produção em tempo real <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[1920px] px-3 py-5 sm:px-5 lg:px-7">
+      <main className="mx-auto w-full max-w-[1920px] px-3 py-4 sm:px-5 sm:py-5 lg:px-7">
         <div className="mb-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <div>
             <p className="text-xs font-semibold text-primary">Distribuição geográfica</p>
@@ -124,8 +126,10 @@ export default function VisaoGrafica() {
             </p>
           </div>
 
-          <div className="grid gap-2 sm:flex sm:items-center">
-            <div className="grid grid-cols-3 rounded-lg border bg-background p-1 shadow-sm">
+          <div className="grid gap-2" aria-label="Filtros da visão gráfica">
+            <div>
+              <p className="mb-1.5 text-[11px] font-semibold text-muted-foreground sm:hidden">Visualizar por</p>
+              <div className="grid grid-cols-3 rounded-lg border bg-background p-1 shadow-sm">
               {NIVEIS.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -138,32 +142,36 @@ export default function VisaoGrafica() {
                       setNivel(item.key);
                       setSelecionado(null);
                     }}
-                    className="h-9 rounded-md px-3"
+                    className="h-10 min-w-0 rounded-md px-1.5 text-xs sm:h-9 sm:px-3 sm:text-sm"
                   >
-                    <Icon className="h-4 w-4" /> {item.label}
+                    <Icon className="h-4 w-4 shrink-0" /> <span className="truncate">{item.label}</span>
                   </Button>
                 );
               })}
+              </div>
             </div>
-            <div className="grid grid-cols-3 rounded-lg border bg-background p-1 shadow-sm">
-              {PLANOS.map((item) => (
-                <Button
-                  key={item.key}
-                  type="button"
-                  variant={plano === item.key ? "secondary" : "ghost"}
-                  size="sm"
-                  onClick={() => setPlano(item.key)}
-                  className="h-9 rounded-md px-3"
-                >
-                  {item.label}
-                </Button>
-              ))}
+            <div>
+              <p className="mb-1.5 text-[11px] font-semibold text-muted-foreground sm:hidden">Plano</p>
+              <div className="grid grid-cols-3 rounded-lg border bg-background p-1 shadow-sm">
+                {PLANOS.map((item) => (
+                  <Button
+                    key={item.key}
+                    type="button"
+                    variant={plano === item.key ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setPlano(item.key)}
+                    className="h-10 rounded-md px-2 text-xs sm:h-9 sm:px-3 sm:text-sm"
+                  >
+                    {item.label}
+                  </Button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
         <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.55fr)_minmax(360px,0.75fr)]">
-          <section className="min-w-0 rounded-lg border bg-card p-4 shadow-sm sm:p-6">
+          <section className="order-2 min-w-0 rounded-lg border bg-card p-3 shadow-sm sm:p-6 xl:order-1">
             <div className="mb-5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
               <div className="min-w-0">
                 <h3 className="truncate font-semibold">Ranking de {nivel}</h3>
@@ -180,11 +188,12 @@ export default function VisaoGrafica() {
               {linhas.map((linha, indice) => {
                 const ativa = linhaSelecionada?.nome === linha.nome;
                 return (
-                  <button
+                  <Button
                     key={`${linha.regiao}-${linha.nome}`}
                     type="button"
+                    variant="ghost"
                     onClick={() => setSelecionado(linha.nome)}
-                    className={`group grid w-full grid-cols-[38px_minmax(0,1fr)_auto] items-center gap-3 rounded-md px-2 py-1.5 text-left transition ${ativa ? "bg-primary-soft" : "hover:bg-muted"}`}
+                    className={`group grid h-auto w-full grid-cols-[34px_minmax(0,1fr)_auto] items-center gap-2 rounded-md px-2 py-2 text-left transition sm:grid-cols-[38px_minmax(0,1fr)_auto] sm:gap-3 ${ativa ? "bg-primary-soft" : "hover:bg-muted"}`}
                   >
                     <span className="text-xs font-bold text-muted-foreground">{linha.sigla}</span>
                     <span className="min-w-0">
@@ -200,14 +209,14 @@ export default function VisaoGrafica() {
                       </span>
                     </span>
                     <span className="w-16 text-right text-sm font-bold tabular-nums">{fmt(linha.total)}</span>
-                  </button>
+                  </Button>
                 );
               })}
             </div>
           </section>
 
-          <div className="grid gap-5">
-            <section className="rounded-lg border bg-card p-5 shadow-sm">
+          <div className="order-1 grid gap-5 xl:order-2">
+            <section className="overflow-hidden rounded-xl border bg-card/80 p-4 shadow-[var(--shadow-glass)] backdrop-blur-xl sm:p-5">
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
                 <div className="min-w-0">
                   <h3 className="truncate font-semibold">Distribuição por região</h3>
@@ -215,39 +224,51 @@ export default function VisaoGrafica() {
                 </div>
                 <Activity className="h-5 w-5 text-primary" />
               </div>
-              <div className="mt-5 grid items-center gap-5 sm:grid-cols-[190px_minmax(0,1fr)] xl:grid-cols-1 2xl:grid-cols-[190px_minmax(0,1fr)]">
-                <div className="relative mx-auto h-44 w-44">
-                  <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90" aria-label="Distribuição das ativações por região">
-                    <circle cx="60" cy="60" r="43" fill="none" stroke="var(--muted)" strokeWidth="15" />
-                    {regioes.map((regiao) => {
-                      const parte = (regiao.total / totalRegioes) * 270;
-                      const offset = acumulado;
-                      acumulado += parte;
-                      return (
-                        <circle
-                          key={regiao.nome}
-                          cx="60"
-                          cy="60"
-                          r="43"
-                          fill="none"
-                          stroke={regiao.cor}
-                          strokeWidth="15"
-                          strokeDasharray={`${parte} ${270 - parte}`}
-                          strokeDashoffset={-offset}
-                        />
-                      );
-                    })}
+              <div className="mt-5 grid items-center gap-5 sm:grid-cols-[210px_minmax(0,1fr)] xl:grid-cols-1 2xl:grid-cols-[210px_minmax(0,1fr)]">
+                <div className="relative mx-auto grid h-52 w-52 place-items-center sm:h-48 sm:w-48">
+                  <div className="absolute inset-2 rounded-full bg-muted shadow-[var(--shadow-relief)]" />
+                  <svg viewBox="0 0 120 126" className="relative h-full w-full -rotate-90 overflow-visible drop-shadow-[0_12px_10px_var(--donut-shadow)]" aria-label="Distribuição das ativações por região em gráfico circular tridimensional">
+                    <circle cx="60" cy="63" r="43" fill="none" stroke="var(--muted)" strokeWidth="18" />
+                    {segmentosRegiao.map((regiao) => (
+                      <circle
+                        key={`depth-${regiao.nome}`}
+                        cx="60"
+                        cy="66"
+                        r="43"
+                        fill="none"
+                        stroke={regiao.cor}
+                        strokeWidth="18"
+                        strokeDasharray={`${regiao.parte} ${270 - regiao.parte}`}
+                        strokeDashoffset={-regiao.offset}
+                        className="brightness-75"
+                      />
+                    ))}
+                    {segmentosRegiao.map((regiao) => (
+                      <circle
+                        key={regiao.nome}
+                        cx="60"
+                        cy="61"
+                        r="43"
+                        fill="none"
+                        stroke={regiao.cor}
+                        strokeWidth="18"
+                        strokeDasharray={`${regiao.parte} ${270 - regiao.parte}`}
+                        strokeDashoffset={-regiao.offset}
+                        className="transition-all duration-700"
+                      />
+                    ))}
+                    <circle cx="60" cy="61" r="34" fill="none" stroke="var(--donut-highlight)" strokeWidth="2" opacity="0.6" />
                   </svg>
-                  <div className="absolute inset-0 grid place-content-center text-center">
-                    <strong className="text-2xl tabular-nums">{fmt(totalRegioes)}</strong>
-                    <span className="text-[10px] text-muted-foreground">Ativações</span>
+                  <div className="absolute inset-12 grid place-content-center rounded-full border border-background/70 bg-background/90 text-center shadow-[inset_0_5px_12px_var(--donut-shadow),inset_0_-4px_10px_var(--donut-highlight)] sm:inset-11">
+                    <strong className="text-2xl tabular-nums sm:text-xl">{fmt(totalRegioes)}</strong>
+                    <span className="text-[10px] font-medium text-muted-foreground">Ativações</span>
                   </div>
                 </div>
-                <ul className="space-y-2.5">
+                <ul className="grid gap-2.5 sm:grid-cols-1">
                   {regioes.map((regiao) => (
-                    <li key={regiao.nome} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 text-xs">
-                      <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: regiao.cor }} />
-                      <span className="truncate text-muted-foreground">{regiao.nome}</span>
+                    <li key={regiao.nome} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-lg border border-border/70 bg-background/70 px-3 py-2 text-xs">
+                      <span className="h-3 w-3 rounded-full shadow-[0_2px_5px_var(--donut-shadow)]" style={{ backgroundColor: regiao.cor }} />
+                      <span className="truncate font-medium text-muted-foreground">{regiao.nome}</span>
                       <strong className="tabular-nums">{regiao.percentual.toFixed(1).replace(".", ",")}%</strong>
                     </li>
                   ))}

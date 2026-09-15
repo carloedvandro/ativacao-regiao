@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
-import { Activity, ArrowRight, BarChart3, Building2, Map, MapPin } from "lucide-react";
+import { ArrowRight, BarChart3, Building2, Map, MapPin } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import CountUp from "@/components/CountUp";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { fmt, siglaDe } from "@/data/dados";
 import { useLiveRegioes, withPercent } from "@/hooks/useLiveRegioes";
 
@@ -25,12 +26,38 @@ function valorPlano(item: { gb100: number; gb120: number }, plano: Plano) {
   return plano === "todos" ? item.gb100 + item.gb120 : item[plano];
 }
 
+function pontoPolar(cx: number, cy: number, raio: number, angulo: number) {
+  const radianos = ((angulo - 90) * Math.PI) / 180;
+  return {
+    x: Number((cx + raio * Math.cos(radianos)).toFixed(4)),
+    y: Number((cy + raio * Math.sin(radianos)).toFixed(4)),
+  };
+}
+
+function arcoRosca(inicio: number, fim: number, raioExterno = 57, raioInterno = 34) {
+  const arcoMaior = fim - inicio > 180 ? 1 : 0;
+  const inicioEstavel = Number(inicio.toFixed(4));
+  const fimEstavel = Number(fim.toFixed(4));
+  const externoInicioEstavel = pontoPolar(80, 77, raioExterno, inicioEstavel);
+  const externoFimEstavel = pontoPolar(80, 77, raioExterno, fimEstavel);
+  const internoFimEstavel = pontoPolar(80, 77, raioInterno, fimEstavel);
+  const internoInicioEstavel = pontoPolar(80, 77, raioInterno, inicioEstavel);
+  return [
+    `M ${externoInicioEstavel.x} ${externoInicioEstavel.y}`,
+    `A ${raioExterno} ${raioExterno} 0 ${arcoMaior} 1 ${externoFimEstavel.x} ${externoFimEstavel.y}`,
+    `L ${internoFimEstavel.x} ${internoFimEstavel.y}`,
+    `A ${raioInterno} ${raioInterno} 0 ${arcoMaior} 0 ${internoInicioEstavel.x} ${internoInicioEstavel.y}`,
+    "Z",
+  ].join(" ");
+}
+
 export default function VisaoGrafica() {
   const { regioes: regioesAoVivo, lastUpdate } = useLiveRegioes(3000);
   const regioes = useMemo(() => withPercent(regioesAoVivo), [regioesAoVivo]);
   const [plano, setPlano] = useState<Plano>("todos");
   const [nivel, setNivel] = useState<Nivel>("estados");
   const [selecionado, setSelecionado] = useState<string | null>(null);
+  const [regiaoGrafico, setRegiaoGrafico] = useState("Sudeste");
 
   const linhas = useMemo(() => {
     if (nivel === "regioes") {
@@ -82,14 +109,15 @@ export default function VisaoGrafica() {
   const maximo = Math.max(1, ...linhas.map((linha) => linha.total));
   const linhaSelecionada = linhas.find((linha) => linha.nome === selecionado) ?? linhas[0];
   const totalRegioes = regioes.reduce((soma, regiao) => soma + regiao.total, 0);
-  const segmentosRegiao = regioes.reduce<Array<(typeof regioes)[number] & { parte: number; offset: number }>>(
+  const segmentosRegiao = regioes.reduce<Array<(typeof regioes)[number] & { inicio: number; fim: number }>>(
     (segmentos, regiao) => {
-      const parte = totalRegioes > 0 ? (regiao.total / totalRegioes) * 270 : 0;
-      const offset = segmentos.reduce((soma, segmento) => soma + segmento.parte, 0);
-      return [...segmentos, { ...regiao, parte, offset }];
+      const inicio = segmentos.length ? segmentos[segmentos.length - 1].fim : 0;
+      const fim = inicio + (totalRegioes > 0 ? (regiao.total / totalRegioes) * 360 : 0);
+      return [...segmentos, { ...regiao, inicio, fim }];
     },
     [],
   );
+  const regiaoSelecionada = regioes.find((regiao) => regiao.nome === regiaoGrafico) ?? regioes[0];
 
   return (
     <div className="min-h-screen bg-muted/40 text-foreground">
@@ -216,57 +244,57 @@ export default function VisaoGrafica() {
           </section>
 
           <div className="order-1 grid gap-5 xl:order-2">
-            <section className="overflow-hidden rounded-xl border bg-card/80 p-4 shadow-[var(--shadow-glass)] backdrop-blur-xl sm:p-5">
+            <section className="overflow-hidden rounded-xl border bg-card p-4 shadow-[var(--shadow-glass)] sm:p-5">
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
                 <div className="min-w-0">
                   <h3 className="truncate font-semibold">Distribuição por região</h3>
                   <p className="text-xs text-muted-foreground">Participação no total de ativações</p>
                 </div>
-                <Activity className="h-5 w-5 text-primary" />
+                <Select value={regiaoGrafico} onValueChange={setRegiaoGrafico}>
+                  <SelectTrigger className="h-10 w-[142px] rounded-lg border-border bg-background px-3 text-xs shadow-sm sm:w-[168px]">
+                    <span className="mr-1 h-3 w-3 shrink-0 rounded-sm" style={{ backgroundColor: regiaoSelecionada?.cor }} />
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {regioes.map((regiao) => (
+                      <SelectItem key={regiao.nome} value={regiao.nome}>{regiao.nome}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <div className="mt-5 grid items-center gap-5 sm:grid-cols-[210px_minmax(0,1fr)] xl:grid-cols-1 2xl:grid-cols-[210px_minmax(0,1fr)]">
-                <div className="relative mx-auto grid h-52 w-52 place-items-center sm:h-48 sm:w-48">
-                  <div className="absolute inset-2 rounded-full bg-muted shadow-[var(--shadow-relief)]" />
-                  <svg viewBox="0 0 120 126" className="relative h-full w-full -rotate-90 overflow-visible drop-shadow-[0_12px_10px_var(--donut-shadow)]" aria-label="Distribuição das ativações por região em gráfico circular tridimensional">
-                    <circle cx="60" cy="63" r="43" fill="none" stroke="var(--muted)" strokeWidth="18" />
-                    {segmentosRegiao.map((regiao) => (
-                      <circle
-                        key={`depth-${regiao.nome}`}
-                        cx="60"
-                        cy="66"
-                        r="43"
-                        fill="none"
-                        stroke={regiao.cor}
-                        strokeWidth="18"
-                        strokeDasharray={`${regiao.parte} ${270 - regiao.parte}`}
-                        strokeDashoffset={-regiao.offset}
-                        className="brightness-75"
-                      />
-                    ))}
-                    {segmentosRegiao.map((regiao) => (
-                      <circle
-                        key={regiao.nome}
-                        cx="60"
-                        cy="61"
-                        r="43"
-                        fill="none"
-                        stroke={regiao.cor}
-                        strokeWidth="18"
-                        strokeDasharray={`${regiao.parte} ${270 - regiao.parte}`}
-                        strokeDashoffset={-regiao.offset}
-                        className="transition-all duration-700"
-                      />
-                    ))}
-                    <circle cx="60" cy="61" r="34" fill="none" stroke="var(--donut-highlight)" strokeWidth="2" opacity="0.6" />
+              <div className="mt-5 grid items-center gap-5 sm:grid-cols-[250px_minmax(0,1fr)] xl:grid-cols-1 2xl:grid-cols-[250px_minmax(0,1fr)]">
+                <div className="relative mx-auto grid h-64 w-64 max-w-full place-items-center sm:h-60 sm:w-60">
+                  <svg viewBox="0 0 160 160" className="relative h-full w-full overflow-visible drop-shadow-[0_12px_8px_var(--donut-shadow)]" aria-label="Distribuição das ativações por região em gráfico circular tridimensional">
+                    <defs>
+                      <filter id="donutShine">
+                        <feSpecularLighting result="spec" specularExponent="24" lightingColor="white" surfaceScale="3">
+                          <fePointLight x="48" y="25" z="80" />
+                        </feSpecularLighting>
+                        <feComposite in="spec" in2="SourceAlpha" operator="in" result="specOut" />
+                        <feBlend in="SourceGraphic" in2="specOut" mode="screen" />
+                      </filter>
+                    </defs>
+                    {segmentosRegiao.map((regiao) => {
+                      const meio = (regiao.inicio + regiao.fim) / 2;
+                      const ativa = regiao.nome === regiaoGrafico;
+                      const deslocamento = pontoPolar(0, 0, ativa ? 7 : 0, meio + 90);
+                      const transformacao = `translate(${deslocamento.x} ${deslocamento.y})`;
+                      return (
+                        <g key={regiao.nome} transform={transformacao} className="cursor-pointer transition-transform duration-300" onClick={() => setRegiaoGrafico(regiao.nome)}>
+                          <path d={arcoRosca(regiao.inicio, regiao.fim)} fill={regiao.cor} transform="translate(0 7)" className="brightness-65" />
+                          <path d={arcoRosca(regiao.inicio, regiao.fim)} fill={regiao.cor} stroke="var(--background)" strokeWidth="0.8" filter="url(#donutShine)" />
+                        </g>
+                      );
+                    })}
                   </svg>
-                  <div className="absolute inset-12 grid place-content-center rounded-full border border-background/70 bg-background/90 text-center shadow-[inset_0_5px_12px_var(--donut-shadow),inset_0_-4px_10px_var(--donut-highlight)] sm:inset-11">
-                    <strong className="text-2xl tabular-nums sm:text-xl">{fmt(totalRegioes)}</strong>
+                  <div className="pointer-events-none absolute inset-[31%] grid place-content-center rounded-full border border-background/70 bg-background text-center shadow-[inset_0_5px_12px_var(--donut-shadow),inset_0_-4px_10px_var(--donut-highlight)]">
+                    <strong className="text-2xl tabular-nums">{fmt(regiaoSelecionada?.total ?? totalRegioes)}</strong>
                     <span className="text-[10px] font-medium text-muted-foreground">Ativações</span>
                   </div>
                 </div>
                 <ul className="grid gap-2.5 sm:grid-cols-1">
                   {regioes.map((regiao) => (
-                    <li key={regiao.nome} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-lg border border-border/70 bg-background/70 px-3 py-2 text-xs">
+                    <li key={regiao.nome} className={`grid cursor-pointer grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-lg border px-3 py-2 text-xs transition ${regiao.nome === regiaoGrafico ? "border-primary/30 bg-primary-soft" : "border-border/70 bg-background"}`} onClick={() => setRegiaoGrafico(regiao.nome)}>
                       <span className="h-3 w-3 rounded-full shadow-[0_2px_5px_var(--donut-shadow)]" style={{ backgroundColor: regiao.cor }} />
                       <span className="truncate font-medium text-muted-foreground">{regiao.nome}</span>
                       <strong className="tabular-nums">{regiao.percentual.toFixed(1).replace(".", ",")}%</strong>

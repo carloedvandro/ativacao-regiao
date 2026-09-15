@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Building2, ChevronDown, ChevronsDown, Table2, X } from "lucide-react";
+import { BarChart3, Building2, ChevronDown, ChevronsDown, Table2, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import CountUp from "@/components/CountUp";
 import { Button } from "@/components/ui/button";
@@ -106,6 +106,11 @@ export default function DashboardRegioes() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
+            <Button asChild variant="outline" className="h-10 rounded-lg border-slate-200 bg-white text-[#6A0DAD] shadow-sm">
+              <Link to="/">
+                <BarChart3 className="h-4 w-4" /> Visão gráfica
+              </Link>
+            </Button>
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Filtrar plano:
             </span>

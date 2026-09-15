@@ -28,7 +28,10 @@ function valorPlano(item: { gb100: number; gb120: number }, plano: Plano) {
 
 function pontoPolar(cx: number, cy: number, raio: number, angulo: number) {
   const radianos = ((angulo - 90) * Math.PI) / 180;
-  return { x: cx + raio * Math.cos(radianos), y: cy + raio * Math.sin(radianos) };
+  return {
+    x: Number((cx + raio * Math.cos(radianos)).toFixed(4)),
+    y: Number((cy + raio * Math.sin(radianos)).toFixed(4)),
+  };
 }
 
 function arcoRosca(inicio: number, fim: number, raioExterno = 57, raioInterno = 34) {
@@ -37,11 +40,17 @@ function arcoRosca(inicio: number, fim: number, raioExterno = 57, raioInterno = 
   const internoFim = pontoPolar(80, 77, raioInterno, fim);
   const internoInicio = pontoPolar(80, 77, raioInterno, inicio);
   const arcoMaior = fim - inicio > 180 ? 1 : 0;
+  const inicioEstavel = Number(inicio.toFixed(4));
+  const fimEstavel = Number(fim.toFixed(4));
+  const externoInicioEstavel = pontoPolar(80, 77, raioExterno, inicioEstavel);
+  const externoFimEstavel = pontoPolar(80, 77, raioExterno, fimEstavel);
+  const internoFimEstavel = pontoPolar(80, 77, raioInterno, fimEstavel);
+  const internoInicioEstavel = pontoPolar(80, 77, raioInterno, inicioEstavel);
   return [
-    `M ${externoInicio.x} ${externoInicio.y}`,
-    `A ${raioExterno} ${raioExterno} 0 ${arcoMaior} 1 ${externoFim.x} ${externoFim.y}`,
-    `L ${internoFim.x} ${internoFim.y}`,
-    `A ${raioInterno} ${raioInterno} 0 ${arcoMaior} 0 ${internoInicio.x} ${internoInicio.y}`,
+    `M ${externoInicioEstavel.x} ${externoInicioEstavel.y}`,
+    `A ${raioExterno} ${raioExterno} 0 ${arcoMaior} 1 ${externoFimEstavel.x} ${externoFimEstavel.y}`,
+    `L ${internoFimEstavel.x} ${internoFimEstavel.y}`,
+    `A ${raioInterno} ${raioInterno} 0 ${arcoMaior} 0 ${internoInicioEstavel.x} ${internoInicioEstavel.y}`,
     "Z",
   ].join(" ");
 }

@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import DashboardRegioes from "@/pages/DashboardRegioes";
+import VisaoGrafica from "@/pages/VisaoGrafica";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Distribuição por Região — SmartVoz" },
-      { name: "description", content: "Distribuição por região das ativações na rede SmartVoz." },
-      { property: "og:title", content: "Distribuição por Região — SmartVoz" },
-      { property: "og:description", content: "Distribuição por região das ativações na rede SmartVoz." },
+      { title: "Visão gráfica de ativações — SmartVoz" },
+      { name: "description", content: "Visão gráfica das ativações SmartVoz por região, estado, cidade e plano." },
+      { property: "og:title", content: "Visão gráfica de ativações — SmartVoz" },
+      { property: "og:description", content: "Visão gráfica das ativações SmartVoz por região, estado, cidade e plano." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -16,5 +16,5 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  return <DashboardRegioes />;
+  return <VisaoGrafica />;
 }

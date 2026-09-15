@@ -79,8 +79,8 @@ export default function Cidades() {
       <header className="sticky top-0 z-20 border-b border-slate-200 bg-white shadow-sm">
         <div className="mx-auto grid w-full max-w-[1920px] grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-2 py-4 sm:px-4 lg:px-6">
           <div className="flex min-w-0 items-center gap-3">
-            <Button asChild variant="ghost" size="icon" className="shrink-0 rounded-full text-slate-500" title="Voltar ao painel">
-              <Link to="/" aria-label="Voltar ao painel">
+            <Button asChild variant="ghost" size="icon" className="shrink-0 rounded-full text-slate-500" title="Voltar à visão gráfica">
+              <Link to="/" aria-label="Voltar à visão gráfica">
                 <ArrowLeft className="h-5 w-5" />
               </Link>
             </Button>

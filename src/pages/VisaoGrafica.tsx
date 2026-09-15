@@ -204,13 +204,13 @@ export default function VisaoGrafica() {
         </div>
 
         <section className="mb-5 overflow-hidden rounded-lg border bg-card p-4 shadow-sm sm:p-6">
-          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+          <div className="grid items-start gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
             <div className="min-w-0">
-              <h3 className="truncate text-lg font-bold sm:text-xl">Distribuição por região</h3>
+              <h3 className="text-lg font-bold sm:truncate sm:text-xl">Distribuição por região</h3>
               <p className="text-sm text-muted-foreground">Participação no total de ativações</p>
             </div>
             <Select value={regiaoGrafico} onValueChange={setRegiaoGrafico}>
-              <SelectTrigger className="h-11 w-[148px] rounded-lg border-border bg-background px-3 text-xs shadow-sm sm:w-[190px] sm:text-sm">
+              <SelectTrigger className="h-11 w-full rounded-lg border-border bg-background px-3 text-xs shadow-sm sm:w-[190px] sm:text-sm">
                 <span className="mr-1 h-3.5 w-3.5 shrink-0 rounded-full" style={{ backgroundColor: regiaoSelecionada?.cor }} />
                 <SelectValue />
               </SelectTrigger>

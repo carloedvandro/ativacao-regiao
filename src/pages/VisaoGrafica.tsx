@@ -35,10 +35,6 @@ function pontoPolar(cx: number, cy: number, raio: number, angulo: number) {
 }
 
 function arcoRosca(inicio: number, fim: number, raioExterno = 57, raioInterno = 34) {
-  const externoInicio = pontoPolar(80, 77, raioExterno, inicio);
-  const externoFim = pontoPolar(80, 77, raioExterno, fim);
-  const internoFim = pontoPolar(80, 77, raioInterno, fim);
-  const internoInicio = pontoPolar(80, 77, raioInterno, inicio);
   const arcoMaior = fim - inicio > 180 ? 1 : 0;
   const inicioEstavel = Number(inicio.toFixed(4));
   const fimEstavel = Number(fim.toFixed(4));

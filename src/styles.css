@@ -79,6 +79,10 @@
   --primary-soft: oklch(0.96 0.025 304);
   --live: oklch(0.56 0.16 153);
   --live-soft: oklch(0.96 0.04 153);
+  --shadow-glass: 0 18px 45px oklch(0.25 0.02 265 / 0.08), inset 0 1px 0 oklch(1 0 0 / 0.9);
+  --shadow-relief: 12px 14px 28px oklch(0.45 0.02 265 / 0.16), -10px -10px 24px oklch(1 0 0 / 0.95);
+  --donut-shadow: oklch(0.28 0.03 265 / 0.25);
+  --donut-highlight: oklch(1 0 0 / 0.72);
   --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);
   --muted: oklch(0.968 0.007 247.896);

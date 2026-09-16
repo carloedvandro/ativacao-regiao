@@ -152,7 +152,7 @@ export default function VisaoGrafica() {
               <BarChart3 className="h-5 w-5" />
             </span>
             <div className="min-w-0">
-              <h1 className="truncate text-base font-bold sm:text-xl">Visão gráfica de ativações</h1>
+              <h1 className="truncate text-base font-bold sm:text-xl">Espectro Mágico</h1>
               <p className="hidden text-xs text-muted-foreground lg:block">Regiões, estados e cidades em tempo real</p>
             </div>
           </div>

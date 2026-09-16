@@ -146,18 +146,18 @@ export default function VisaoGrafica() {
   return (
     <div className="min-h-screen bg-muted/40 text-foreground">
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
-        <div className="mx-auto grid w-full max-w-[1920px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:px-5 lg:px-7">
-          <div className="flex min-w-0 items-center gap-3">
+        <div className="mx-auto flex w-full max-w-[1920px] items-center justify-between gap-3 px-4 py-3 sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:px-5 lg:px-7">
+          <div className="hidden min-w-0 items-center gap-3 sm:flex">
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground shadow-sm">
               <BarChart3 className="h-5 w-5" />
             </span>
             <div className="min-w-0">
               <h1 className="truncate text-base font-bold sm:text-xl">Visão gráfica de ativações</h1>
-              <p className="hidden text-xs text-muted-foreground sm:block">Regiões, estados e cidades em tempo real</p>
+              <p className="hidden text-xs text-muted-foreground lg:block">Regiões, estados e cidades em tempo real</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="flex items-center gap-2 rounded-full border border-live/20 bg-live-soft px-2.5 py-1.5 text-[11px] font-semibold text-live sm:px-3 sm:text-xs">
+          <div className="flex w-full items-center justify-end sm:w-auto">
+            <span className="flex items-center gap-2 rounded-full border border-live/20 bg-live-soft px-3 py-1.5 text-xs font-semibold text-live">
               <span className="relative flex h-2 w-2">
                 <span className="absolute h-full w-full animate-ping rounded-full bg-live opacity-50" />
                 <span className="relative h-2 w-2 rounded-full bg-live" />

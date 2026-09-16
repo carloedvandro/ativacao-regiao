@@ -56,6 +56,25 @@ function arcoRosca(inicio: number, fim: number, centroY = 91) {
   ].join(" ");
 }
 
+function arcoRoscaPadrao(inicio: number, fim: number) {
+  const cx = 100;
+  const cy = 100;
+  const raioExterno = 80;
+  const raioInterno = 54;
+  const arcoMaior = fim - inicio > 180 ? 1 : 0;
+  const externoInicio = pontoPolar(cx, cy, raioExterno, raioExterno, inicio);
+  const externoFim = pontoPolar(cx, cy, raioExterno, raioExterno, fim);
+  const internoFim = pontoPolar(cx, cy, raioInterno, raioInterno, fim);
+  const internoInicio = pontoPolar(cx, cy, raioInterno, raioInterno, inicio);
+  return [
+    `M ${externoInicio.x} ${externoInicio.y}`,
+    `A ${raioExterno} ${raioExterno} 0 ${arcoMaior} 1 ${externoFim.x} ${externoFim.y}`,
+    `L ${internoFim.x} ${internoFim.y}`,
+    `A ${raioInterno} ${raioInterno} 0 ${arcoMaior} 0 ${internoInicio.x} ${internoInicio.y}`,
+    "Z",
+  ].join(" ");
+}
+
 export default function VisaoGrafica() {
   const { regioes: regioesAoVivo, lastUpdate } = useLiveRegioes(3000);
   const regioes = useMemo(() => withPercent(regioesAoVivo), [regioesAoVivo]);

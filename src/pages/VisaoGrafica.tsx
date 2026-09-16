@@ -178,7 +178,7 @@ export default function VisaoGrafica() {
             </p>
           </div>
 
-          <div className="grid gap-2" aria-label="Filtros da visão gráfica">
+          <div className="grid gap-2 lg:flex lg:items-center lg:gap-3" aria-label="Filtros da visão gráfica">
             <div>
               <p className="mb-1.5 text-[11px] font-semibold text-muted-foreground sm:hidden">Visualizar por</p>
               <div className="grid grid-cols-3 rounded-lg border bg-background p-1 shadow-sm">
@@ -241,7 +241,7 @@ export default function VisaoGrafica() {
             </Select>
           </div>
 
-          <div className="mt-5 grid items-center gap-6 md:grid-cols-[280px_minmax(0,1fr)] lg:grid-cols-[320px_minmax(0,1fr)]">
+          <div className="mt-5 grid items-center gap-6 md:grid-cols-[280px_minmax(0,1fr)] lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)_minmax(320px,0.85fr)]">
             <div className="relative mx-auto h-[220px] w-[220px] sm:h-[260px] sm:w-[260px]">
               <svg viewBox="0 0 200 200" className="h-full w-full -rotate-90" aria-label="Distribuição das ativações por região">
                 <defs>
@@ -297,10 +297,37 @@ export default function VisaoGrafica() {
                 </li>
               ))}
             </ul>
+
+            {linhaSelecionada && (
+              <div className="rounded-lg border bg-card p-5 shadow-sm">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-primary">Detalhamento</p>
+                    <h3 className="mt-1 truncate text-lg font-bold">{linhaSelecionada.nome}</h3>
+                    <p className="text-xs text-muted-foreground">{linhaSelecionada.regiao}</p>
+                  </div>
+                  <strong className="text-xl tabular-nums">{fmt(linhaSelecionada.total)}</strong>
+                </div>
+                <div className="mt-4 grid grid-cols-2 divide-x rounded-md border bg-muted/40 py-3 text-center">
+                  <div>
+                    <p className="text-xs text-muted-foreground">100GB</p>
+                    <p className="mt-1 font-bold tabular-nums">{fmt(linhaSelecionada.gb100)}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">120GB</p>
+                    <p className="mt-1 font-bold tabular-nums">{fmt(linhaSelecionada.gb120)}</p>
+                  </div>
+                </div>
+                <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+                  <span className={`h-2 w-2 rounded-full ${lastUpdate?.regiao === linhaSelecionada.regiao ? "animate-pulse bg-live" : "bg-muted-foreground/40"}`} />
+                  Dados atualizados automaticamente a cada 3 segundos
+                </p>
+              </div>
+            )}
           </div>
         </section>
 
-        <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.55fr)_minmax(360px,0.75fr)]">
+        <div className="grid items-start gap-5">
           <section className="min-w-0 rounded-lg border bg-card p-3 shadow-sm sm:p-6">
             <div className="mb-5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
               <div className="min-w-0">
@@ -344,35 +371,6 @@ export default function VisaoGrafica() {
               })}
             </div>
           </section>
-
-          <div className="grid gap-5">
-            {linhaSelecionada && (
-              <section className="rounded-lg border bg-card p-5 shadow-sm">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <p className="text-xs font-semibold text-primary">Detalhamento</p>
-                    <h3 className="mt-1 truncate text-lg font-bold">{linhaSelecionada.nome}</h3>
-                    <p className="text-xs text-muted-foreground">{linhaSelecionada.regiao}</p>
-                  </div>
-                  <strong className="text-xl tabular-nums">{fmt(linhaSelecionada.total)}</strong>
-                </div>
-                <div className="mt-4 grid grid-cols-2 divide-x rounded-md border bg-muted/40 py-3 text-center">
-                  <div>
-                    <p className="text-xs text-muted-foreground">100GB</p>
-                    <p className="mt-1 font-bold tabular-nums">{fmt(linhaSelecionada.gb100)}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">120GB</p>
-                    <p className="mt-1 font-bold tabular-nums">{fmt(linhaSelecionada.gb120)}</p>
-                  </div>
-                </div>
-                <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
-                  <span className={`h-2 w-2 rounded-full ${lastUpdate?.regiao === linhaSelecionada.regiao ? "animate-pulse bg-live" : "bg-muted-foreground/40"}`} />
-                  Dados atualizados automaticamente a cada 3 segundos
-                </p>
-              </section>
-            )}
-          </div>
         </div>
       </main>
     </div>

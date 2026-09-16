@@ -223,9 +223,9 @@ export default function VisaoGrafica() {
         </div>
 
         <section className="mb-5 overflow-hidden rounded-lg border bg-card p-4 shadow-sm sm:p-6">
-          <div className="grid items-start gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+          <div className="flex flex-col gap-3 sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
             <div className="min-w-0">
-              <h3 className="text-lg font-bold sm:truncate sm:text-xl">Distribuição por região</h3>
+              <h3 className="text-lg font-bold sm:text-xl">Distribuição por região</h3>
               <p className="text-sm text-muted-foreground">Participação no total de ativações</p>
             </div>
             <Select value={regiaoGrafico} onValueChange={setRegiaoGrafico}>

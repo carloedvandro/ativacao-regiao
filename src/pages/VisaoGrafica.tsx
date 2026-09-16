@@ -241,58 +241,42 @@ export default function VisaoGrafica() {
             </Select>
           </div>
 
-          <div className="mt-5 grid items-center gap-6 md:grid-cols-[320px_minmax(0,1fr)] lg:grid-cols-[340px_minmax(0,1fr)]">
-            <div className="relative mx-auto h-[220px] w-full max-w-[320px] sm:h-[250px]">
-              <svg viewBox="0 0 260 205" className="h-full w-full overflow-visible" aria-label="Distribuição das ativações por região em gráfico circular tridimensional">
+          <div className="mt-5 grid items-center gap-6 md:grid-cols-[280px_minmax(0,1fr)] lg:grid-cols-[320px_minmax(0,1fr)]">
+            <div className="relative mx-auto h-[220px] w-[220px] sm:h-[260px] sm:w-[260px]">
+              <svg viewBox="0 0 200 200" className="h-full w-full -rotate-90" aria-label="Distribuição das ativações por região">
                 <defs>
-                  <filter id="donutShadow" x="-30%" y="-30%" width="160%" height="180%">
-                    <feDropShadow dx="0" dy="9" stdDeviation="7" floodColor="var(--donut-shadow)" floodOpacity="0.55" />
+                  <filter id="donutGlow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="var(--donut-shadow)" floodOpacity="0.22" />
                   </filter>
                   {segmentosRegiao.map((regiao, indice) => (
-                    <linearGradient key={regiao.nome} id={`regiao-top-${indice}`} x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={regiao.cor} stopOpacity="0.58" />
-                      <stop offset="48%" stopColor={regiao.cor} stopOpacity="0.9" />
-                      <stop offset="100%" stopColor={regiao.cor} />
+                    <linearGradient key={`grad-${regiao.nome}`} id={`regiao-${indice}`} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={regiao.cor} stopOpacity="0.92" />
+                      <stop offset="100%" stopColor={regiao.cor} stopOpacity="1" />
                     </linearGradient>
                   ))}
                 </defs>
-                <ellipse cx="130" cy="164" rx="91" ry="18" fill="var(--donut-shadow)" opacity="0.18" />
-                <g filter="url(#donutShadow)">
-                  {segmentosRegiao.map((regiao) => {
-                    const meio = (regiao.inicio + regiao.fim) / 2;
-                    const ativa = regiao.nome === regiaoGrafico;
-                    const deslocamento = pontoPolar(0, 0, ativa ? 5 : 0, ativa ? 4 : 0, meio + 90);
-                    return (
-                      <path
-                        key={`base-${regiao.nome}`}
-                        d={arcoRosca(regiao.inicio, regiao.fim, 101)}
-                        fill={regiao.cor}
-                        opacity="0.72"
-                        transform={`translate(${deslocamento.x} ${deslocamento.y})`}
-                      />
-                    );
-                  })}
-                  {segmentosRegiao.map((regiao, indice) => {
-                    const meio = (regiao.inicio + regiao.fim) / 2;
-                    const ativa = regiao.nome === regiaoGrafico;
-                    const deslocamento = pontoPolar(0, 0, ativa ? 5 : 0, ativa ? 4 : 0, meio + 90);
-                    return (
-                      <path
-                        key={`top-${regiao.nome}`}
-                        d={arcoRosca(regiao.inicio, regiao.fim)}
-                        fill={`url(#regiao-top-${indice})`}
-                        stroke="var(--background)"
-                        strokeWidth={ativa ? 2 : 1.2}
-                        transform={`translate(${deslocamento.x} ${deslocamento.y})`}
-                        className="cursor-pointer transition-all duration-300"
-                        onClick={() => setRegiaoGrafico(regiao.nome)}
-                      />
-                    );
-                  })}
-                </g>
+                {segmentosRegiao.map((regiao, indice) => {
+                  const meio = (regiao.inicio + regiao.fim) / 2;
+                  const ativa = regiao.nome === regiaoGrafico;
+                  const deslocamento = ativa ? pontoPolar(0, 0, 4, 4, meio + 90) : { x: 0, y: 0 };
+                  return (
+                    <path
+                      key={regiao.nome}
+                      d={arcoRoscaPadrao(regiao.inicio, regiao.fim)}
+                      fill={`url(#regiao-${indice})`}
+                      stroke="var(--background)"
+                      strokeWidth={ativa ? 3 : 1.8}
+                      strokeLinecap="butt"
+                      transform={`translate(100 100) scale(${ativa ? 1.04 : 1}) translate(-100 -100) translate(${deslocamento.x} ${deslocamento.y})`}
+                      className="cursor-pointer transition-all duration-300"
+                      onClick={() => setRegiaoGrafico(regiao.nome)}
+                      filter={ativa ? "url(#donutGlow)" : undefined}
+                    />
+                  );
+                })}
               </svg>
-              <div className="pointer-events-none absolute left-1/2 top-[44%] grid h-[74px] w-[96px] -translate-x-1/2 -translate-y-1/2 place-content-center rounded-[50%] border border-border bg-background text-center shadow-inner sm:h-[82px] sm:w-[106px]">
-                <strong className="text-2xl font-bold tabular-nums sm:text-3xl">{fmt(regiaoSelecionada?.total ?? totalRegioes)}</strong>
+              <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                <strong className="text-2xl font-bold tabular-nums text-foreground sm:text-3xl">{fmt(regiaoSelecionada?.total ?? totalRegioes)}</strong>
                 <span className="text-[10px] font-medium text-muted-foreground sm:text-xs">Ativações</span>
               </div>
             </div>

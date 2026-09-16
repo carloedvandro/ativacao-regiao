@@ -241,8 +241,8 @@ export default function VisaoGrafica() {
             </Select>
           </div>
 
-          <div className="mt-5 grid items-center gap-6 md:grid-cols-[280px_minmax(0,1fr)] lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)_minmax(320px,0.85fr)]">
-            <div className="relative mx-auto h-[220px] w-[220px] sm:h-[260px] sm:w-[260px]">
+          <div className="mt-5 grid items-stretch gap-5 md:grid-cols-[300px_minmax(0,1fr)] lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)_minmax(380px,1fr)]">
+            <div className="relative mx-auto h-[240px] w-[240px] sm:h-[280px] sm:w-[280px]">
               <svg viewBox="0 0 200 200" className="h-full w-full -rotate-90" aria-label="Distribuição das ativações por região">
                 <defs>
                   <filter id="donutGlow" x="-50%" y="-50%" width="200%" height="200%">
@@ -281,7 +281,7 @@ export default function VisaoGrafica() {
               </div>
             </div>
 
-            <ul className="grid gap-2.5">
+            <ul className="grid content-center gap-2.5">
               {regioes.map((regiao) => (
                 <li key={regiao.nome}>
                   <Button
@@ -299,26 +299,29 @@ export default function VisaoGrafica() {
             </ul>
 
             {linhaSelecionada && (
-              <div className="rounded-lg border bg-card p-5 shadow-sm">
+              <div className="flex h-full flex-col justify-between rounded-xl border bg-card p-5 shadow-sm sm:p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <p className="text-xs font-semibold text-primary">Detalhamento</p>
-                    <h3 className="mt-1 truncate text-lg font-bold">{linhaSelecionada.nome}</h3>
-                    <p className="text-xs text-muted-foreground">{linhaSelecionada.regiao}</p>
+                    <h3 className="mt-1 truncate text-xl font-bold sm:text-2xl">{linhaSelecionada.nome}</h3>
+                    <p className="text-sm text-muted-foreground">{linhaSelecionada.regiao}</p>
                   </div>
-                  <strong className="text-xl tabular-nums">{fmt(linhaSelecionada.total)}</strong>
-                </div>
-                <div className="mt-4 grid grid-cols-2 divide-x rounded-md border bg-muted/40 py-3 text-center">
-                  <div>
-                    <p className="text-xs text-muted-foreground">100GB</p>
-                    <p className="mt-1 font-bold tabular-nums">{fmt(linhaSelecionada.gb100)}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">120GB</p>
-                    <p className="mt-1 font-bold tabular-nums">{fmt(linhaSelecionada.gb120)}</p>
+                  <div className="text-right">
+                    <strong className="text-2xl tabular-nums sm:text-3xl">{fmt(linhaSelecionada.total)}</strong>
+                    <p className="text-[10px] text-muted-foreground sm:text-xs">ativações</p>
                   </div>
                 </div>
-                <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+                <div className="my-5 grid grid-cols-2 divide-x rounded-xl border bg-muted/40 py-5 text-center">
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground sm:text-sm">Plano 100GB</p>
+                    <p className="mt-1 text-lg font-bold tabular-nums sm:text-xl">{fmt(linhaSelecionada.gb100)}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground sm:text-sm">Plano 120GB</p>
+                    <p className="mt-1 text-lg font-bold tabular-nums sm:text-xl">{fmt(linhaSelecionada.gb120)}</p>
+                  </div>
+                </div>
+                <p className="flex items-center gap-2 text-xs text-muted-foreground">
                   <span className={`h-2 w-2 rounded-full ${lastUpdate?.regiao === linhaSelecionada.regiao ? "animate-pulse bg-live" : "bg-muted-foreground/40"}`} />
                   Dados atualizados automaticamente a cada 3 segundos
                 </p>

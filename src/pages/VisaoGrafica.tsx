@@ -56,6 +56,25 @@ function arcoRosca(inicio: number, fim: number, centroY = 91) {
   ].join(" ");
 }
 
+function arcoRoscaPadrao(inicio: number, fim: number) {
+  const cx = 100;
+  const cy = 100;
+  const raioExterno = 80;
+  const raioInterno = 54;
+  const arcoMaior = fim - inicio > 180 ? 1 : 0;
+  const externoInicio = pontoPolar(cx, cy, raioExterno, raioExterno, inicio);
+  const externoFim = pontoPolar(cx, cy, raioExterno, raioExterno, fim);
+  const internoFim = pontoPolar(cx, cy, raioInterno, raioInterno, fim);
+  const internoInicio = pontoPolar(cx, cy, raioInterno, raioInterno, inicio);
+  return [
+    `M ${externoInicio.x} ${externoInicio.y}`,
+    `A ${raioExterno} ${raioExterno} 0 ${arcoMaior} 1 ${externoFim.x} ${externoFim.y}`,
+    `L ${internoFim.x} ${internoFim.y}`,
+    `A ${raioInterno} ${raioInterno} 0 ${arcoMaior} 0 ${internoInicio.x} ${internoInicio.y}`,
+    "Z",
+  ].join(" ");
+}
+
 export default function VisaoGrafica() {
   const { regioes: regioesAoVivo, lastUpdate } = useLiveRegioes(3000);
   const regioes = useMemo(() => withPercent(regioesAoVivo), [regioesAoVivo]);
@@ -127,18 +146,18 @@ export default function VisaoGrafica() {
   return (
     <div className="min-h-screen bg-muted/40 text-foreground">
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
-        <div className="mx-auto grid w-full max-w-[1920px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:px-5 lg:px-7">
-          <div className="flex min-w-0 items-center gap-3">
+        <div className="mx-auto flex w-full max-w-[1920px] items-center justify-between gap-3 px-4 py-3 sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:px-5 lg:px-7">
+          <div className="hidden min-w-0 items-center gap-3 sm:flex">
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground shadow-sm">
               <BarChart3 className="h-5 w-5" />
             </span>
             <div className="min-w-0">
               <h1 className="truncate text-base font-bold sm:text-xl">Visão gráfica de ativações</h1>
-              <p className="hidden text-xs text-muted-foreground sm:block">Regiões, estados e cidades em tempo real</p>
+              <p className="hidden text-xs text-muted-foreground lg:block">Regiões, estados e cidades em tempo real</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="flex items-center gap-2 rounded-full border border-live/20 bg-live-soft px-2.5 py-1.5 text-[11px] font-semibold text-live sm:px-3 sm:text-xs">
+          <div className="flex w-full items-center justify-end sm:w-auto">
+            <span className="flex items-center gap-2 rounded-full border border-live/20 bg-live-soft px-3 py-1.5 text-xs font-semibold text-live">
               <span className="relative flex h-2 w-2">
                 <span className="absolute h-full w-full animate-ping rounded-full bg-live opacity-50" />
                 <span className="relative h-2 w-2 rounded-full bg-live" />
@@ -204,9 +223,9 @@ export default function VisaoGrafica() {
         </div>
 
         <section className="mb-5 overflow-hidden rounded-lg border bg-card p-4 shadow-sm sm:p-6">
-          <div className="grid items-start gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+          <div className="flex flex-col gap-3 sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
             <div className="min-w-0">
-              <h3 className="text-lg font-bold sm:truncate sm:text-xl">Distribuição por região</h3>
+              <h3 className="text-lg font-bold sm:text-xl">Distribuição por região</h3>
               <p className="text-sm text-muted-foreground">Participação no total de ativações</p>
             </div>
             <Select value={regiaoGrafico} onValueChange={setRegiaoGrafico}>
@@ -222,58 +241,42 @@ export default function VisaoGrafica() {
             </Select>
           </div>
 
-          <div className="mt-5 grid items-center gap-6 md:grid-cols-[320px_minmax(0,1fr)] lg:grid-cols-[340px_minmax(0,1fr)]">
-            <div className="relative mx-auto h-[220px] w-full max-w-[320px] sm:h-[250px]">
-              <svg viewBox="0 0 260 205" className="h-full w-full overflow-visible" aria-label="Distribuição das ativações por região em gráfico circular tridimensional">
+          <div className="mt-5 grid items-center gap-6 md:grid-cols-[280px_minmax(0,1fr)] lg:grid-cols-[320px_minmax(0,1fr)]">
+            <div className="relative mx-auto h-[220px] w-[220px] sm:h-[260px] sm:w-[260px]">
+              <svg viewBox="0 0 200 200" className="h-full w-full -rotate-90" aria-label="Distribuição das ativações por região">
                 <defs>
-                  <filter id="donutShadow" x="-30%" y="-30%" width="160%" height="180%">
-                    <feDropShadow dx="0" dy="9" stdDeviation="7" floodColor="var(--donut-shadow)" floodOpacity="0.55" />
+                  <filter id="donutGlow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="var(--donut-shadow)" floodOpacity="0.22" />
                   </filter>
                   {segmentosRegiao.map((regiao, indice) => (
-                    <linearGradient key={regiao.nome} id={`regiao-top-${indice}`} x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={regiao.cor} stopOpacity="0.58" />
-                      <stop offset="48%" stopColor={regiao.cor} stopOpacity="0.9" />
-                      <stop offset="100%" stopColor={regiao.cor} />
+                    <linearGradient key={`grad-${regiao.nome}`} id={`regiao-${indice}`} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={regiao.cor} stopOpacity="0.92" />
+                      <stop offset="100%" stopColor={regiao.cor} stopOpacity="1" />
                     </linearGradient>
                   ))}
                 </defs>
-                <ellipse cx="130" cy="164" rx="91" ry="18" fill="var(--donut-shadow)" opacity="0.18" />
-                <g filter="url(#donutShadow)">
-                  {segmentosRegiao.map((regiao) => {
-                    const meio = (regiao.inicio + regiao.fim) / 2;
-                    const ativa = regiao.nome === regiaoGrafico;
-                    const deslocamento = pontoPolar(0, 0, ativa ? 5 : 0, ativa ? 4 : 0, meio + 90);
-                    return (
-                      <path
-                        key={`base-${regiao.nome}`}
-                        d={arcoRosca(regiao.inicio, regiao.fim, 101)}
-                        fill={regiao.cor}
-                        opacity="0.72"
-                        transform={`translate(${deslocamento.x} ${deslocamento.y})`}
-                      />
-                    );
-                  })}
-                  {segmentosRegiao.map((regiao, indice) => {
-                    const meio = (regiao.inicio + regiao.fim) / 2;
-                    const ativa = regiao.nome === regiaoGrafico;
-                    const deslocamento = pontoPolar(0, 0, ativa ? 5 : 0, ativa ? 4 : 0, meio + 90);
-                    return (
-                      <path
-                        key={`top-${regiao.nome}`}
-                        d={arcoRosca(regiao.inicio, regiao.fim)}
-                        fill={`url(#regiao-top-${indice})`}
-                        stroke="var(--background)"
-                        strokeWidth={ativa ? 2 : 1.2}
-                        transform={`translate(${deslocamento.x} ${deslocamento.y})`}
-                        className="cursor-pointer transition-all duration-300"
-                        onClick={() => setRegiaoGrafico(regiao.nome)}
-                      />
-                    );
-                  })}
-                </g>
+                {segmentosRegiao.map((regiao, indice) => {
+                  const meio = (regiao.inicio + regiao.fim) / 2;
+                  const ativa = regiao.nome === regiaoGrafico;
+                  const deslocamento = ativa ? pontoPolar(0, 0, 4, 4, meio + 90) : { x: 0, y: 0 };
+                  return (
+                    <path
+                      key={regiao.nome}
+                      d={arcoRoscaPadrao(regiao.inicio, regiao.fim)}
+                      fill={`url(#regiao-${indice})`}
+                      stroke="var(--background)"
+                      strokeWidth={ativa ? 3 : 1.8}
+                      strokeLinecap="butt"
+                      transform={`translate(100 100) scale(${ativa ? 1.04 : 1}) translate(-100 -100) translate(${deslocamento.x} ${deslocamento.y})`}
+                      className="cursor-pointer transition-all duration-300"
+                      onClick={() => setRegiaoGrafico(regiao.nome)}
+                      filter={ativa ? "url(#donutGlow)" : undefined}
+                    />
+                  );
+                })}
               </svg>
-              <div className="pointer-events-none absolute left-1/2 top-[44%] grid h-[74px] w-[96px] -translate-x-1/2 -translate-y-1/2 place-content-center rounded-[50%] border border-border bg-background text-center shadow-inner sm:h-[82px] sm:w-[106px]">
-                <strong className="text-2xl font-bold tabular-nums sm:text-3xl">{fmt(regiaoSelecionada?.total ?? totalRegioes)}</strong>
+              <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                <strong className="text-2xl font-bold tabular-nums text-foreground sm:text-3xl">{fmt(regiaoSelecionada?.total ?? totalRegioes)}</strong>
                 <span className="text-[10px] font-medium text-muted-foreground sm:text-xs">Ativações</span>
               </div>
             </div>

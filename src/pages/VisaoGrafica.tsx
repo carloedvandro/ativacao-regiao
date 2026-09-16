@@ -197,64 +197,11 @@ export default function VisaoGrafica() {
 
 
       <main className="mx-auto w-full max-w-[1920px] px-3 py-4 sm:px-5 sm:py-5 lg:px-7">
-        <div className="mb-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-          <div>
-            <p className="text-xs font-semibold text-primary">Distribuição geográfica</p>
-            <h2 className="mt-1 text-2xl font-bold sm:text-3xl">Ativações por {nivel === "regioes" ? "região" : nivel === "estados" ? "estado" : "cidade"}</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              <CountUp value={total} format={fmt} className="font-semibold text-foreground" /> ativações no período atual
-            </p>
-          </div>
-
-          <div className="grid gap-2 lg:flex lg:items-center lg:gap-3" aria-label="Filtros da visão gráfica">
-            <div>
-              <p className="mb-1.5 text-[11px] font-semibold text-muted-foreground sm:hidden">Visualizar por</p>
-              <div className="grid grid-cols-3 rounded-lg border bg-background p-1 shadow-sm">
-              {NIVEIS.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <Button
-                    key={item.key}
-                    type="button"
-                    variant={nivel === item.key ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => {
-                      setNivel(item.key);
-                      setSelecionado(null);
-                    }}
-                    className="h-10 min-w-0 rounded-md px-1.5 text-xs sm:h-9 sm:px-3 sm:text-sm"
-                  >
-                    <Icon className="h-4 w-4 shrink-0" /> <span className="truncate">{item.label}</span>
-                  </Button>
-                );
-              })}
-              </div>
-            </div>
-            <div>
-              <p className="mb-1.5 text-[11px] font-semibold text-muted-foreground sm:hidden">Plano</p>
-              <div className="grid grid-cols-3 rounded-lg border bg-background p-1 shadow-sm">
-                {PLANOS.map((item) => (
-                  <Button
-                    key={item.key}
-                    type="button"
-                    variant={plano === item.key ? "secondary" : "ghost"}
-                    size="sm"
-                    onClick={() => setPlano(item.key)}
-                    className="h-10 rounded-md px-2 text-xs sm:h-9 sm:px-3 sm:text-sm"
-                  >
-                    {item.label}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
         <section className="mb-5">
-          <div className="flex flex-col gap-3 sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
+          <div className="flex flex-col gap-3 sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
             <div className="min-w-0">
-              <h3 className="text-lg font-bold sm:text-xl">Distribuição por região</h3>
-              <p className="text-sm text-muted-foreground">Participação no total de ativações</p>
+              <h2 className="text-base font-semibold sm:text-lg">Distribuição por região</h2>
+              <p className="text-xs text-muted-foreground sm:text-sm">Participação no total de ativações</p>
             </div>
             <Select value={regiaoGrafico} onValueChange={setRegiaoGrafico}>
               <SelectTrigger className="h-11 w-full rounded-lg border-border bg-background px-3 text-xs shadow-sm sm:w-[190px] sm:text-sm">

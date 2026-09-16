@@ -321,8 +321,8 @@ export default function VisaoGrafica() {
                     <p className="mt-1 text-lg font-bold tabular-nums sm:text-xl">{fmt(linhaSelecionada.gb120)}</p>
                   </div>
                 </div>
-                <p className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <span className={`h-2 w-2 rounded-full ${lastUpdate?.regiao === linhaSelecionada.regiao ? "animate-pulse bg-live" : "bg-muted-foreground/40"}`} />
+                <p className="flex flex-wrap items-center gap-2 text-xs leading-relaxed text-muted-foreground">
+                  <span className={`h-2 w-2 shrink-0 rounded-full ${lastUpdate?.regiao === linhaSelecionada.regiao ? "animate-pulse bg-live" : "bg-muted-foreground/40"}`} />
                   Dados atualizados automaticamente a cada 3 segundos
                 </p>
               </div>
